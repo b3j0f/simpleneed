@@ -2,7 +2,10 @@
 A simple, free and open-source app for helping homeless people in facilitating the prevention and the assistance, without restrictions on locations, languages (interact with images) and with the respect of user and homeless privacy.
 
 # Why this application ?
-I used to know applications such as [homeless+](http://homelessplus.com) which is not working anymore. Without sources, it is impossible to launch this application on a new server. I want to develop an open-source application in order to make it [shareable, forkable](https://github.com/b3j0f/homeless/) and mainly not dependent from myself !
+Injury prevention and assistance are strongly helpful for homeless people, and I am sure several people would like to help them without a mean to know how, where and when to give help. With this king of application, you can know with who to share food, discussion, feelings and much more, anytime and anywhere. There are more people ready to help than homeless people. Let's use the technology to help each other to improve the society !
+
+The app [homeless+](http://homelessplus.com) is not working anymore. Without sources, it is impossible to launch this application on a new server. I want to develop an open-source application in order to make it [shareable, forkable](https://github.com/b3j0f/homeless/) and mainly not dependent from myself !
+Winter is coming...
 
 # What do I need ?
 - Your [advices/ideas](https://github.com/b3j0f/homeless/issues) : I want to improve the society with you !
