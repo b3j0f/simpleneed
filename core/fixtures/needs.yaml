@@ -1,0 +1,19 @@
+- model: core.Need
+  fields:
+    name: money
+
+- model: core.Need
+  fields:
+    name: coffee
+
+- model: core.Need
+  fields:
+    name: food
+
+- model: core.Need
+  fields:
+    name: clothes
+
+- model: core.Need
+  fields:
+    name: discuss
