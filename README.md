@@ -6,11 +6,12 @@ Injury prevention and assistance are strongly helpful for homeless people, and I
 
 With this kind of application, you can know with who to share food, discussion, feelings and much more, anytime and anywhere. There are more people ready to help than homeless people. Let's use the technology to help each other to improve the society !
 
+# Why open-source ?
 The app [homeless+](http://homelessplus.com) is not working anymore. Without sources, it is impossible to launch this application on a new server. I want to develop an open-source application in order to make it [shareable, forkable](https://github.com/b3j0f/homeless/) and mainly not dependent from myself !
 
 # What do I need ?
 - Your [advices/ideas](https://github.com/b3j0f/homeless/issues) : I want to improve the society with you !
-- time and money : I choosed to stop to be an employee anymore in order to have time to develop such applications. Therefore, I opened this crowd funding page and I have a [liberapay](https://liberapay.com/b3j0f/donate) account. I don't need too much money, cause I am sure the open-source nature of this project will find contributors and maintainers. The thing which is not free is server prices. Therefore, I plan to be transparent with money I will get and I will be transparent with expenses in order to encourage crowd financiary participation.
+- time and money : I choosed to stop to be an employee anymore in order to have time to develop such applications. Therefore, I opened this crowd funding page and I have a [liberapay](https://liberapay.com/b3j0f/donate) account. I don't need too much money, cause I am sure the open-source nature of this project will find contributors and maintainers. Server renting is not free. Therefore, I plan to be transparent with money I will get and I will be transparent with expenses in order to encourage crowd financiary participation.
 
 # When this application will be available ?
 As soon as possible because **winter is coming...**
