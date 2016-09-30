@@ -2,43 +2,65 @@ from django.db import models
 
 from enum import IntEnum, unique
 
+from .utils import obj2str
+
 
 @unique
-class Feeling(IntEnum):
-	happy = 1
-	neutral = 2
-	bad = 3
+class Mood(IntEnum):
+    happy = 1
+    neutral = 2
+    sad = 3
+    bad = 4
+    angry = 5
+
+    def __str__(self):
+
+        return self.name
 
 
 class HomelessNeed(models.Model):
 
-	name = models.CharField(max_length=32, primary_key=True)
-	img = models.ImageField()
+    name = models.CharField(max_length=32, primary_key=True)
+    img = models.ImageField()
 
-	def __str__(self):
+    def __str__(self):
 
-		return 'HomelessNeed({0}, {1})'.format(self.name, self.img)
+        return obj2str(self, 'name', 'img')
+
+
+@unique
+class Kind(IntEnum):
+
+    male = 1
+    female = 2
+
+    def __str__(self):
+
+        return self.name
 
 
 class HomelessSituation(models.Model):
 
-	location = models.CharField(max_length=32)
-	feeling = models.EnumField(Feeling)
-	comment = models.CharField(max_length=256)
-	needs = models.ManyToMany(HomelessNeed)
+    location = models.CharField(max_length=32)
+    mood = models.EnumField(Mood)
+    comment = models.CharField(max_length=256)
+    needs = models.ManyToMany(HomelessNeed)
+    handicapped = models.BooleanField()
+    kind = models.EnumField(Kind)
 
-	def __str__(self):
+    def __str__(self):
 
-		return 'HomelessSituation({0}, {1}, {2})'.format(
-			self.location, self.feeling, self.comment, self.needs
-		)
+        return obj2str(
+            self,
+            'location', 'feeling', 'comment', 'needs', 'handicapped', 'kind'
+        )
 
 
 class HelpContact(models.Model):
 
-	country = models.CharField(max_length=60)
-	number = models.CharField(max_length=15)
+    country = models.CharField(max_length=60)
+    number = models.CharField(max_length=15)
 
-	def __str__(self):
+    def __str__(self):
 
-		return 'HelpContact({0}, {1})'.format(country, number)
+        return obj2str(self, 'country', 'number')
