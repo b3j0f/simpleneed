@@ -17,7 +17,7 @@ The app [homeless+](http://homelessplus.com) is not working anymore. Without sou
 As soon as possible because **winter is coming...**
 
 # What do I mean by privacy ?
-I don't trust technology, therefore, I don't want to track people ! Only homeless location and needs will be shared anonymously !
+I don't trust in technology, therefore, I don't want to track people ! Only homeless location and needs will be shared anonymously, and location tracking will be on client side !
 
 [![](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/b3j0f/donate)
 
