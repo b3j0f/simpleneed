@@ -12,6 +12,12 @@ The app [homeless+](http://homelessplus.com) is not working anymore. Without sou
 - Your [advices/ideas](https://github.com/b3j0f/homeless/issues) : I want to improve the society with you !
 - time and money : I choosed to stop to be an employee anymore in order to have time to develop such applications. Therefore, I opened this crowd funding page and I have a [liberapay](https://liberapay.com/b3j0f/donate) account. I don't need too much money, cause I am sure the open-source nature of this project will find contributors and maintainers. The thing which is not free is server prices. Therefore, I plan to be transparent with money I will get and I will be transparent with expenses in order to encourage crowd financiary participation.
 
+# When this application will be available ?
+As soon as possible because **winter is coming...**
+
+# What do I ear by privacy ?
+I don't trust technology, therefore, I don't want to track people ! Only homeless location and needs will be shared anonymously !
+
 [![](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/b3j0f/donate)
 
 @b3j0f
