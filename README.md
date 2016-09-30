@@ -1,4 +1,4 @@
-# What is it
+# What is it ?
 A simple, free and open-source application about helping homeless people in facilitating the prevention and the assistance, without restrictions on locations, languages (interact with images) and with the respect of user and homeless privacy.
 
 # Why this application ?
