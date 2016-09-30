@@ -15,11 +15,9 @@ The app [homeless+](http://homelessplus.com) is not working anymore. Without sou
 # When this application will be available ?
 As soon as possible because **winter is coming...**
 
-# What do I ear by privacy ?
+# What do I mean by privacy ?
 I don't trust technology, therefore, I don't want to track people ! Only homeless location and needs will be shared anonymously !
 
 [![](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/b3j0f/donate)
 
 @b3j0f
-
-**Winter is coming...**
