@@ -16,4 +16,12 @@
 
 - model: core.Need
   fields:
-    name: discuss
+    name: company
+
+- model: core.Need
+  fields:
+    name: hygiene
+
+- model: core.Need
+  fields:
+    name: accomodation
