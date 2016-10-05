@@ -13,15 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
-from django.contrib import admin
+from django.conf.urls import url, include
 
-from .views import HomelessView, HomelessViews, ContactView, ContactViews
+from .views import (
+    HomelessView, HomelessViews, ContactView, ContactViews,
+    HomelessViewSet, ContactViewSet, MoodViewSet, GenderViewSet, NeedViewSet
+)
 
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'moods', MoodViewSet)
+router.register(r'needs', NeedViewSet)
+router.register(r'genders', GenderViewSet)
+router.register(r'homelesses', HomelessViewSet)
+router.register(r'contacts', ContactViewSet)
 
 urlpatterns = [
-    url(r'^homeless/{id}', HomelessView.get_view(), name='homeless'),
-    url(r'^homelesses/{query}', HomelessViews.get_view(), name='homelesses'),
-    url(r'^contact/{id}', ContactView.get_view(), name='contact'),
-    url(r'^contacts/{query}', ContactViews.get_view(), name='contacts'),
+    url(r'^', include(router.urls)),
+    #url(r'^homeless/{id}', HomelessView.as_view(), name='homeless'),
+    #url(r'^contact/{id}', ContactView.as_view(), name='contact'),
 ]

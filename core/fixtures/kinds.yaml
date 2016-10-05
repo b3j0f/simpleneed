@@ -1,7 +1,0 @@
-- model: core.Kind
-  fields:
-    name: male
-
-- model: core.Kind
-  fields:
-    name: female

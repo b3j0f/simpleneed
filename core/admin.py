@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Gender, Mood, Need, Homeless, HelpContact
+from .models import Gender, Mood, Need, Homeless, Contact
 
 # Register your models here.
-admin.sites.register(Gender)
-admin.sites.register(Mood)
-admin.sites.register(Need)
-admin.sites.register(HelpContact)
-admin.sites.register(Homeless)
+admin.site.register(Gender)
+admin.site.register(Mood)
+admin.site.register(Need)
+admin.site.register(Contact)
+admin.site.register(Homeless)

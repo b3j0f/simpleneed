@@ -1,3 +1,5 @@
 django
 psycopg2
-postgis
+#postgis
+djangorestframework
+pyyaml

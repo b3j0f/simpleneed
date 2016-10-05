@@ -3,7 +3,53 @@ from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from .models import Homeless
+from .models import Homeless, Contact, Mood, Need, Gender
+from .serializers import (
+	HomelessSerializer, ContactSerializer,
+	MoodSerializer, NeedSerializer, GenderSerializer
+)
+
+from rest_framework import viewsets
+
+
+class MoodViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows moods to be viewed or edited.
+    """
+    queryset = Mood.objects.all()
+    serializer_class = MoodSerializer
+
+
+class NeedViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows needs to be viewed or edited.
+    """
+    queryset = Need.objects.all()
+    serializer_class = NeedSerializer
+
+
+class GenderViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows genders to be viewed or edited.
+    """
+    queryset = Gender.objects.all()
+    serializer_class = GenderSerializer
+
+
+class HomelessViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows homelesses to be viewed or edited.
+    """
+    queryset = Homeless.objects.all()
+    serializer_class = HomelessSerializer
+
+
+class ContactViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows contacts to be viewed or edited.
+    """
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
 
 
 # Create your views here.

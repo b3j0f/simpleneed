@@ -1,0 +1,11 @@
+- model: core.Gender
+  fields:
+    name: male
+
+- model: core.Gender
+  fields:
+    name: female
+
+- model: core.Gender
+  fields:
+    name: other

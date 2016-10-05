@@ -1,4 +1,5 @@
-from django.contrib.gis.db import models
+#from django.contrib.gis.db import models
+from django.db import models
 
 from .utils import obj2str
 
@@ -16,11 +17,11 @@ class Mood(models.Model):
 class Need(models.Model):
 
     name = models.CharField(max_length=32, primary_key=True)
-    img = models.ImageField()
+    #img = models.ImageField()
 
     def __str__(self):
 
-        return obj2str(self, 'name', 'img')
+        return obj2str(self, 'name')
 
 
 class Gender(models.Model):
@@ -34,28 +35,29 @@ class Gender(models.Model):
 
 class Homeless(models.Model):
 
-    location = models.PointField()
-    mood = models.EnumField(Mood)
-    comment = models.CharField(max_length=256)
-    needs = models.ManyToMany(Need)
-    handicapped = models.BooleanField()
-    gender = models.EnumField(Gender)
+    #location = models.PointField()
+    mood = models.ForeignKey(Mood)
+    comment = models.CharField(max_length=256, default=None)
+    needs = models.ManyToManyField(Need)
+    handicapped = models.BooleanField(default=False)
+    gender = models.ForeignKey(Gender)
 
     def __str__(self):
 
         return obj2str(
             self,
-            'location', 'feeling', 'comment', 'needs', 'handicapped', 'gender'
+            'mood', 'comment', 'needs', 'handicapped', 'gender'
         )
 
 
 class Contact(models.Model):
 
     name = models.CharField(max_length=64, primary_key=True)
-    description = models.CharField(max_length=256)
-    phone = models.CharField(max_length=15)
-    area = models.MultiPolygonField()
+    description = models.CharField(max_length=256, null=True)
+    phone = models.CharField(max_length=15, default=None)
+    website = models.CharField(max_length=256, null=True)
+    #area = models.MultiPolygonField()
 
     def __str__(self):
 
-        return obj2str(self, 'country', 'phoneinformations')
+        return obj2str(self, 'name', 'description', 'phone', 'website')
