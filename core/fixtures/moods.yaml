@@ -17,3 +17,7 @@
 - model: core.Mood
   fields:
     name: angry
+
+- model: core.Mood
+  fields:
+    name: drunk

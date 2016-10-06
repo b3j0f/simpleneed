@@ -50,12 +50,12 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name='homeless',
+            model_name='simpleneed',
             name='mood',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Mood'),
         ),
         migrations.AddField(
-            model_name='homeless',
+            model_name='simpleneed',
             name='needs',
             field=models.ManyToManyField(to='core.Need'),
         ),

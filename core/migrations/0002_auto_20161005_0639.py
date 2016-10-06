@@ -28,12 +28,12 @@ class Migration(migrations.Migration):
             field=models.CharField(default=None, max_length=15),
         ),
         migrations.AlterField(
-            model_name='homeless',
+            model_name='simpleneed',
             name='comment',
             field=models.CharField(default=None, max_length=256),
         ),
         migrations.AlterField(
-            model_name='homeless',
+            model_name='simpleneed',
             name='handicapped',
             field=models.BooleanField(default=False),
         ),

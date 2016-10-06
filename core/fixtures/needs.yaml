@@ -25,3 +25,11 @@
 - model: core.Need
   fields:
     name: accomodation
+
+- model: core.Need
+  fields:
+    name: accessories
+
+- model: core.Need
+  fields:
+    name: health

@@ -17,7 +17,6 @@ class Mood(models.Model):
 class Need(models.Model):
 
     name = models.CharField(max_length=32, primary_key=True)
-    #img = models.ImageField()
 
     def __str__(self):
 
@@ -35,10 +34,12 @@ class Gender(models.Model):
 
 class Homeless(models.Model):
 
-    #location = models.PointField()
+    longitude = models.FloatField()
+    latitude = models.FloatField()
     mood = models.ForeignKey(Mood)
     comment = models.CharField(max_length=256, default=None)
     needs = models.ManyToManyField(Need)
+    answeredneeds = models.ManyToManyField(Need)
     handicapped = models.BooleanField(default=False)
     gender = models.ForeignKey(Gender)
 
@@ -46,7 +47,7 @@ class Homeless(models.Model):
 
         return obj2str(
             self,
-            'mood', 'comment', 'needs', 'handicapped', 'gender'
+            'mood', 'answeredneeds', 'comment', 'needs', 'handicapped', 'gender'
         )
 
 

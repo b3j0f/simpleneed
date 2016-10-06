@@ -38,7 +38,7 @@ class GenderViewSet(viewsets.ModelViewSet):
 
 class HomelessViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows homelesses to be viewed or edited.
+    API endpoint that allows simpleneedes to be viewed or edited.
     """
     queryset = Homeless.objects.all()
     serializer_class = HomelessSerializer

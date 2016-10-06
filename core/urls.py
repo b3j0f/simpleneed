@@ -1,4 +1,4 @@
-"""homeless URL Configuration
+"""simpleneed URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -26,11 +26,9 @@ router = routers.DefaultRouter()
 router.register(r'moods', MoodViewSet)
 router.register(r'needs', NeedViewSet)
 router.register(r'genders', GenderViewSet)
-router.register(r'homelesses', HomelessViewSet)
+router.register(r'simpleneedes', HomelessViewSet)
 router.register(r'contacts', ContactViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    #url(r'^homeless/{id}', HomelessView.as_view(), name='homeless'),
-    #url(r'^contact/{id}', ContactView.as_view(), name='contact'),
 ]
