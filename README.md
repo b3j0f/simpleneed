@@ -7,12 +7,12 @@ A **simple, free and open-source/data web/mobile application** for **helping hom
 **You have food to share ? Open the application, select a place around you where food is wanted and bring it there !**
 
 # Why this application ?
-Injury prevention and assistance are strongly helpful for homeless people and families in difficulty, and I am sure several people would like to help them without a mean to know how, where and when to help.
+Injury prevention and assistance are strongly helpful for homeless people and families in difficulty. I am sure several people would like to help them without a mean to know how, where and when to help.
 
 With this kind of application, **you can know with who to share food, discussion, feelings and much more, anytime and anywhere**. I am convinced there are more people ready to help than people in difficulty. Let's use the technology to help each other to improve the society !
 
 # Why open-source/data ?
-The app [homeless+](http://homeless.com) is not working anymore. Without sources, it is impossible to launch this application on a new server. I want to develop an open-source/data application in order to make it [shareable, forkable](https://github.com/b3j0f/simpleneed/), [KISS](https://en.wikipedia.org/wiki/KISS_principle)able and mainly not dependent from myself !
+The app [homeless+](http://homeless.com) is not working anymore. Without sources, it is impossible to launch this application on a new server. I want to develop an **open-source/data application in order to make it [shareable, forkable](https://github.com/b3j0f/simpleneed/), [KISS](https://en.wikipedia.org/wiki/KISS_principle)able and mainly not dependent from myself !**
 
 # What do I need ?
 - Your [advices/ideas](https://github.com/b3j0f/simpleneed/issues) : **I want to improve the society with you !**
