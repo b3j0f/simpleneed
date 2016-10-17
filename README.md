@@ -1,15 +1,15 @@
 [![](https://github.com/b3j0f/simpleneed/raw/master/static/images/banner.png)](https://b3j0f.github.io/simpleneed/)
 
 # What is it ?
-A simple, free and open-source/data web/mobile application for helping homeless people. Without restrictions on locations (usable on the entire earth), universal (no text, only images and view mode for partially-sighted persons) and with the respect of user and homeless privacy (no need to be tracked,  logged in and personal information).
+A simple, free and open-source/data web/mobile application for helping homeless people or in precarious situation. Without restrictions on locations (usable on the entire earth), universal (no text, only images and view mode for partially-sighted persons) and with the respect of user and people to help privacy (no need to be tracked,  logged in and personal information).
 
 # Use case ?
 You have food to share ? Open the application, select a place around you where food is wanted and bring it there !
 
 # Why this application ?
-Injury prevention and assistance are strongly helpful for homeless people, and I am sure several people would like to help them without a mean to know how, where and when to help.
+Injury prevention and assistance are strongly helpful for homeless people and families in difficulty, and I am sure several people would like to help them without a mean to know how, where and when to help.
 
-With this kind of application, you can know with who to share food, discussion, feelings and much more, anytime and anywhere. There are more people ready to help than homeless people in difficulty. Let's use the technology to help each other to improve the society !
+With this kind of application, you can know with who to share food, discussion, feelings and much more, anytime and anywhere. There are more people ready to help than people in difficulty. Let's use the technology to help each other to improve the society !
 
 # Why open-source/data ?
 The app [homeless+](http://homeless.com) is not working anymore. Without sources, it is impossible to launch this application on a new server. I want to develop an open-source/data application in order to make it [shareable, forkable](https://github.com/b3j0f/simpleneed/), [KISS](https://en.wikipedia.org/wiki/KISS_principle) and mainly not dependent from myself !
@@ -22,7 +22,7 @@ The app [homeless+](http://homeless.com) is not working anymore. Without sources
 As soon as possible because **winter is coming...**
 
 # What do I mean by privacy ?
-I don't trust in technology, therefore, I don't want to track people ! Only location of homeless needs will be shared anonymously, and location tracking will be optional on client side !
+I don't trust in technology, therefore, I don't want to track people ! Only location of needs of people in difficulty will be shared anonymously, and location tracking will be optional on client side !
 
 # Resources
 
