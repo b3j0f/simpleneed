@@ -1,0 +1,10 @@
+django
+psycopg2
+#postgis
+djangorestframework
+pyyaml
+django-filter
+coreapi
+markdown
+django-crispy-forms
+django-guardian

@@ -1,5 +1,0 @@
-django
-psycopg2
-#postgis
-djangorestframework
-pyyaml
