@@ -18,7 +18,7 @@ The app [homeless+](http://homeless.com) is not working anymore. Without sources
 - Your [advices/ideas](https://github.com/b3j0f/simpleneed/issues) : **I want to improve the society with you !**
 - Time and money : I choosed to stop to be an employee anymore in order to have time to develop such applications. Therefore, I opened this [crowd funding page](https://www.kickstarter.com/projects/b3j0f/1289896395) and I have a [liberapay account](https://liberapay.com/b3j0f/donate). **I need money only for development (about 105h * 25$), server renting (100$/month) and maintenance (500$/month)**. Beceause I think I need at least 10 monthes in order to convince an organisation such as the "[International Committee of the Red Cross](https://www.icrc.org)" to host this project on their dedicated servers, I target about 8625$. **I round this objective to 10 000$** with little extras I can not predict right now and which might come quickly.
 
-**In order to encourage crowd financiary participation, I plan to be transparent with expenses during [project progress](https://b3j0f.github.io/simpleneed/) (which has started already) and its use !**
+**In order to encourage crowd funding and participation, I plan to be transparent with expenses during [project progress](https://b3j0f.github.io/simpleneed/) (which has started already) and its use !**
 
 # When will be this application available ?
 As soon as possible because **winter is coming...**
