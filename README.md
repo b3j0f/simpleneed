@@ -4,7 +4,7 @@
 A simple, free and open-source/data web/mobile application for helping homeless people. Without restrictions on locations (usable on the entire earth), universal (no text, only images and view mode for partially-sighted persons) and with the respect of user and homeless privacy (no need to be tracked,  logged in and personnal information).
 
 # Why this application ?
-Injury prevention and assistance are strongly helpful for homeless people, and I am sure several people would like to help them without a mean to know how, where and when to give help.
+Injury prevention and assistance are strongly helpful for homeless people, and I am sure several people would like to help them without a mean to know how, where and when to help.
 
 With this kind of application, you can know with who to share food, discussion, feelings and much more, anytime and anywhere. There are more people ready to help than homeless people in difficulty. Let's use the technology to help each other to improve the society !
 
