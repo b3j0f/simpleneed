@@ -1,7 +1,7 @@
 [![](https://github.com/b3j0f/simpleneed/raw/master/static/images/banner.png)](https://b3j0f.github.io/simpleneed/)
 
 # What is it ?
-A **simple, free and open-source/data web/mobile application** for **helping homeless people or in precarious situation**. Without restrictions on locations (**usable on the entire earth**), **universal** (no text, only images and view mode for partially-sighted persons) and with the *respect of user and people privacy** (no need to be tracked, logged in and don't use personal information).
+A **simple, free and open-source/data web/mobile application** for **helping homeless people or in precarious situation**. Without restrictions on locations (**usable on the entire earth**), **universal** (no text, only images and view mode for partially-sighted persons) and with the **respect of user and people privacy** (no need to be tracked, logged in and don't use personal information).
 
 # Use case ?
 You have **food to share ? Open the application, select a place around you where food is wanted and bring it there !
