@@ -21,12 +21,13 @@ As soon as possible because **winter is coming...**
 # What do I mean by privacy ?
 I don't trust in technology, therefore, I don't want to track people ! Only location of homeless needs will be shared anonymously, and location tracking will be optional and on client side !
 
-[crowd funding page - kickstarter](https://kickstarter.com/projects/b3j0f/simpleneed)
-[![](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/b3j0f/donate)
+Resources:
 
-[Sources](https://github.com/b3j0f/simpleneed)
-[travis](https://travis.com/b3j0f/simpleneed)
-[documentation](https://readthedocs.com/b3j0f/simpleneed)
-[issues/ideas tracking](https://github.com/b3j0f/simpleneed/issues)
+- [crowd funding page - kickstarter](https://kickstarter.com/projects/b3j0f/simpleneed)
+- [![](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/b3j0f/donate)
+- [Sources](https://github.com/b3j0f/simpleneed)
+- [travis](https://travis.com/b3j0f/simpleneed)
+- [documentation](https://readthedocs.com/b3j0f/simpleneed)
+- [issues/ideas tracking](https://github.com/b3j0f/simpleneed/issues)
 
 @b3j0f
