@@ -3,6 +3,9 @@
 # What is it ?
 A simple, free and open-source/data web/mobile application for helping homeless people. Without restrictions on locations (usable on the entire earth), universal (no text, only images and view mode for partially-sighted persons) and with the respect of user and homeless privacy (no need to be tracked,  logged in and personal information).
 
+# Use case ?
+You have food to share ? Open the application, select a place around you where food is wanted and bring it there !
+
 # Why this application ?
 Injury prevention and assistance are strongly helpful for homeless people, and I am sure several people would like to help them without a mean to know how, where and when to help.
 
@@ -19,7 +22,7 @@ The app [homeless+](http://homeless.com) is not working anymore. Without sources
 As soon as possible because **winter is coming...**
 
 # What do I mean by privacy ?
-I don't trust in technology, therefore, I don't want to track people ! Only location of homeless needs will be shared anonymously, and location tracking will be optional and on client side !
+I don't trust in technology, therefore, I don't want to track people ! Only location of homeless needs will be shared anonymously, and location tracking will be optional on client side !
 
 # Resources
 
