@@ -2,7 +2,7 @@
 
 # Short Presentation
 
-![short presentation](https://prezi.com/embed/tpwlvyeo_ifc/?bgcolor=ffffff&lock_to_path=1)
+Thank you to click on this [link to see a short presentation](https://prezi.com/embed/tpwlvyeo_ifc/?bgcolor=ffffff&lock_to_path=1)
 
 # What is it ?
 A **simple, free, open-source ([MIT](https://en.wikipedia.org/wiki/MIT_License)), [open-data](https://en.wikipedia.org/wiki/Open_data) ([REST API](https://en.wikipedia.org/wiki/Representational_state_transfer)) web/mobile application** for **helping homeless and precarious people**. **Usable on the entire earth**, **universal** (no text and partially-sighted people option view mode) and with the **respect of user and people in difficulty privacy** (no need to be tracked, logged in and don't use personal information).
