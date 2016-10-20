@@ -1,15 +1,19 @@
 [![](https://github.com/b3j0f/simpleneed/raw/master/static/images/banner.png)](https://b3j0f.github.io/simpleneed/)
 
+# Short Presentation
+
+![short presentation](https://prezi.com/embed/tpwlvyeo_ifc/?bgcolor=ffffff&lock_to_path=1)
+
 # What is it ?
-A **simple, free, open-source ([MIT](https://en.wikipedia.org/wiki/MIT_License)), [open-data](https://en.wikipedia.org/wiki/Open_data) ([REST API](https://en.wikipedia.org/wiki/Representational_state_transfer)) web/mobile application** for **helping homeless people or in a precarious situation**. **Usable on the entire earth**, **universal** (no text, only images and view mode for partially-sighted persons) and with the **respect of user and people privacy** (no need to be tracked, logged in and don't use personal information).
+A **simple, free, open-source ([MIT](https://en.wikipedia.org/wiki/MIT_License)), [open-data](https://en.wikipedia.org/wiki/Open_data) ([REST API](https://en.wikipedia.org/wiki/Representational_state_transfer)) web/mobile application** for **helping homeless and precarious people**. **Usable on the entire earth**, **universal** (no text and partially-sighted people option view mode) and with the **respect of user and people in difficulty privacy** (no need to be tracked, logged in and don't use personal information).
 
 # Use case ?
-**You have food to share ? Open the application, select a place around you where food is wanted and bring it there !**
+**You have food to share ? Open the application, select a place around you where food is wanted and bring it there. Then notify the application if more needs are required.**
 
 # Why this application ?
-Injury prevention and assistance are strongly helpful for homeless people and families in difficulty. I am sure several people would like to help them without a mean to know how, where and when to help.
+I ear often people tell me they want to help spontaneously people in difficulty, and I don't find an open-source application able to do that.
 
-With this kind of application, **you can know with who to share food, discuss, accomodate and much more, anytime and anywhere**. I am convinced there are more people ready to help than people in difficulty. Let's use the technology to help each other to improve the society !
+With this kind of application, **you can know with who to share food, discuss, accomodate and much more, anytime and anywhere**. I am convinced there are more people ready to help than people who need help. Let's use some technology to help each other !
 
 # Why open-source/data ?
 The app [homeless+](http://homeless.com) is not working anymore. Without sources, it is impossible to launch this application on a new server. I want to develop an **open-source/data application in order to make it [shareable, forkable](https://github.com/b3j0f/simpleneed/), [KISS](https://en.wikipedia.org/wiki/KISS_principle)able and mainly not dependent from myself !**
