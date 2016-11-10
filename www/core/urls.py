@@ -16,8 +16,10 @@ Including another URLconf
 from django.conf.urls import url, include
 
 from .views import (
-    HomelessView, HomelessViews, ContactView, ContactViews,
-    HomelessViewSet, ContactViewSet, MoodViewSet, GenderViewSet, NeedViewSet
+    NeedLocationView, NeedLocationViews, ContactView, ContactViews,
+    RoamView, RoamViews
+    NeedLocationViewSet, ContactViewSet, MoodViewSet, GenderViewSet,
+    NeedViewSet, RoamViewSet
 )
 
 from rest_framework import routers
@@ -26,8 +28,9 @@ router = routers.DefaultRouter()
 router.register(r'moods', MoodViewSet)
 router.register(r'needs', NeedViewSet)
 router.register(r'genders', GenderViewSet)
-router.register(r'homelesses', HomelessViewSet)
+router.register(r'needlocations', NeedLocationViewSet)
 router.register(r'contacts', ContactViewSet)
+router.register(r'roams', RoamViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

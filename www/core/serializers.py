@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Homeless, Contact, Mood, Need, Gender
+from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
 
 
 class MoodSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,9 +21,9 @@ class GenderSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', )
 
 
-class HomelessSerializer(serializers.HyperlinkedModelSerializer):
+class NeedLocationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Homeless
+        model = NeedLocation
         fields = (
             'longitude', 'latitude', 'mood', 'comment', 'needs',
             'answeredneeds', 'handicapped', 'sick', 'gender'
@@ -34,3 +34,9 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
         fields = ('name', 'description', 'phone', 'website')
+
+
+class RoamSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Roam
+        fields = ('name', 'description')

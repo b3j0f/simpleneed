@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'rest_framework',
-    'django_filters',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -83,11 +83,14 @@ WSGI_APPLICATION = 'simpleneed.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'simpleneed',
+        'USER': 'simpleneed',
+    },
 }
 
+SPATIALITE_LIBRARY_PATH = '/usr/local/lib/mod_spatialite.dylib'
+SPATIALITE_LIBRARY_PATH = 'mod_spatialite'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -128,7 +131,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    # 'DEFAULT_PERMISSION_CLASSES':
+    #     ('rest_framework.permissions.IsAdminUser',),
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',

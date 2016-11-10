@@ -1,0 +1,73 @@
+#kivy 1.9.1
+<RootWidget@Widget>:
+	orientation: 'vertical'
+	HeaderWidget:
+	CenterWidget:
+	FootWidget:
+
+<HeaderWidget@BoxLayout>:
+	orientation: 'horizontal'
+
+
+<FootWidget@BoxLayout>:
+	orientation: 'horizontal'
+
+<CenterLayout@ScreenManager>:
+	pass
+
+<Moods@Slider>
+	pass
+
+<Needs@BoxLayout>:
+	orientation: 'horizontal'
+		CheckBox:
+			id: money
+		CheckBox:
+			id: coffee
+		CheckBox:
+			id: food
+		CheckBox:
+			id: clothes
+		CheckBox:
+			id: company
+		CheckBox:
+			id: hygiene
+		CheckBox:
+			id: accomodation
+		CheckBox:
+			id: accessories
+		CheckBox:
+			id: health
+
+<AnsweredNeeds@BoxLayout>:
+	orientation: 'horizontal'
+
+<HomelessDesc@Popup>:
+	Slider:
+		id: mood
+		max: 4
+	TextInput:
+		id: comment
+	Needs:
+		id: needs
+	Needs:
+		id: answeredneeds
+	CheckBox:
+		id: handicapped
+	CheckBox:
+		id: sick
+	DropDown:
+		id: gender
+
+<Filter@Popup>:
+	Slider:
+		id: mood
+		max: 4
+	Needs:
+		id: needs
+	CheckBox:
+		id: handicapped
+	CheckBox:
+		id: sick
+	DropDown:
+		id: gender

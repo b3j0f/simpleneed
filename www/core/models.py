@@ -1,10 +1,12 @@
-from django.db import models
+#from django.db import models
+from django.contrib.gis.db import models
 
 from .utils import obj2str
 
 
 # define your models here.
 class Mood(models.Model):
+    """Mood object"""
 
     name = models.CharField(max_length=32, primary_key=True)
 
@@ -14,6 +16,7 @@ class Mood(models.Model):
 
 
 class Need(models.Model):
+    """Need object."""
 
     name = models.CharField(max_length=32, primary_key=True)
 
@@ -31,8 +34,9 @@ class Gender(models.Model):
         return obj2str(self, 'name')
 
 
-class Homeless(models.Model):
+class NeedLocation(models.Model):
 
+    location = models.PointField()
     longitude = models.FloatField()
     latitude = models.FloatField()
     mood = models.ForeignKey(Mood, default='neutral')
@@ -64,3 +68,10 @@ class Contact(models.Model):
     def __str__(self):
 
         return obj2str(self, 'name', 'description', 'phone', 'website')
+
+
+class Roam(models.Model):
+
+    name = models.CharField(max_length=256)
+    description = models.CharField(max_length=256, default=None, null=True)
+    needlocations = models.ManyToManyField(NeedLocation)

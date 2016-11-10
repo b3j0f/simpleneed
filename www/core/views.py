@@ -1,9 +1,9 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from .models import Homeless, Contact, Mood, Need, Gender
+from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
 from .serializers import (
-    HomelessSerializer, ContactSerializer,
+    NeedLocationSerializer, ContactSerializer, RoamSerializer,
     MoodSerializer, NeedSerializer, GenderSerializer
 )
 
@@ -36,14 +36,24 @@ class GenderViewSet(viewsets.ModelViewSet):
     serializer_class = GenderSerializer
 
 
-class HomelessViewSet(viewsets.ModelViewSet):
+class NeedLocationViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows simpleneedes to be viewed or edited.
+    API endpoint that allows need locations to be viewed or edited.
     """
-    queryset = Homeless.objects.all()
-    serializer_class = HomelessSerializer
+    queryset = NeedLocation.objects.all()
+    serializer_class = NeedLocationSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('mood', 'needs', 'answeredneeds', 'handicapped', 'gender')
+
+
+class RoamViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows roams to be viewed or edited.
+    """
+    queryset = Roam.objects.all()
+    serializer_class = RoamSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('name', 'needlocations', 'description')
 
 
 class ContactViewSet(viewsets.ModelViewSet):
@@ -57,12 +67,12 @@ class ContactViewSet(viewsets.ModelViewSet):
 
 
 # Create your views here.
-class HomelessView(DetailView):
-    model = Homeless
+class NeedLocationView(DetailView):
+    model = NeedLocation
 
 
-class HomelessViews(ListView):
-    model = Homeless
+class NeedLocationViews(ListView):
+    model = NeedLocation
 
 
 class ContactView(DetailView):
