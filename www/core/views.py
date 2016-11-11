@@ -176,7 +176,7 @@ def needlocationcount(request):
     """Get count of need locations per area or datetime.
 
     :param dict area: location area with longitude, latitude and radius.
-    :param str datetime: datetime before need location enddatetimes.
+    :param str datetime: datetime before need location enddatetimes. Y-m-d H:M.
     :rtype: int
     """
     result = NeedLocation.objects.all()
@@ -189,6 +189,37 @@ def needlocationcount(request):
 
         qlatitude = abs(Q('latitude') - latitude) <= radius
         qlongitude = abs(Q('longitude') - longitude) <= radius
+
+        result = result.filter(qlatitude & qlongitude)
+
+    datetime = request.params.get('datetime')
+
+    if datetime is not None:
+        datetime = datetime.strptime(datetime, "%Y-%m-%d %H:%M")
+        qdatetime = Q('enddatetime') <= datetime
+
+        result = result.filter(qdatetime)
+
+    return Count(result)
+
+
+def roamcount(request):
+    """Get count of roams per area or datetime.
+
+    :param dict area: location area with longitude, latitude and radius.
+    :param str datetime: datetime before roam enddatetimes. Y-m-d H:M.
+    :rtype: int
+    """
+    result = Roam.objects.all()
+
+    area = request.params.get('area')
+
+    if area is not None:
+        latitude, longitude = area['longitude'], area['latitude']
+        radius = area['radius']
+
+        qlatitude = abs(Q('needlocations__latitude') - latitude) <= radius
+        qlongitude = abs(Q('needlocations__longitude') - longitude) <= radius
 
         result = result.filter(qlatitude & qlongitude)
 
