@@ -3,10 +3,8 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.db.models import Q, Count
-from django_filters import rest_framework as filters
-from django_filters.rest_framework import FilterSet
-from django_filters.rest_framework.filters import (
-    DateTimeFilter, AllValuesFilter, CharFilter, RelatedFilter
+from rest_framework_filters import (
+    RelatedFilter, FilterSet, DateTimeFilter, AllValuesFilter, CharFilter
 )
 
 from rest_framework import viewsets
@@ -119,7 +117,6 @@ class RoamViewSet(viewsets.ModelViewSet):
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
     filter_class = RoamFilterSet
 
 
@@ -128,7 +125,6 @@ class ContactViewSet(viewsets.ModelViewSet):
 
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('name',)
 
 

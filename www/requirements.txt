@@ -3,7 +3,7 @@ django
 #postgis
 djangorestframework
 pyyaml
-django-filter
+django-rest-framework-filters
 coreapi
 markdown
 django-crispy-forms
