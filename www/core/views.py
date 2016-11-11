@@ -20,7 +20,7 @@ class MoodViewSet(ModelViewSet):
 
     queryset = Mood.objects.all()
     serializer_class = MoodSerializer
-    filter_fields = ['name']
+    filter_fields = {'name': ['iregex']}
 
 
 class NeedViewSet(ModelViewSet):
@@ -28,7 +28,7 @@ class NeedViewSet(ModelViewSet):
 
     queryset = Need.objects.all()
     serializer_class = NeedSerializer
-    filter_fields = ['name']
+    filter_fields = {'name': ['iregex']}
 
 
 class GenderViewSet(ModelViewSet):
@@ -36,7 +36,7 @@ class GenderViewSet(ModelViewSet):
 
     queryset = Gender.objects.all()
     serializer_class = GenderSerializer
-    filter_fields = ['name']
+    filter_fields = {'name': ['iregex']}
 
 
 def getareaneedlocations(area=None, datetime=None, objects=None):
@@ -125,7 +125,7 @@ class RoamViewSet(ModelViewSet):
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
-    filter_fields = ['name', 'description']
+    filter_fields = {'name': ['iregex'], 'description': ['iregex']}
     ordering_fields = ['name', 'enddatetime']
     ordering = ('enddatetime', )
 
@@ -150,7 +150,7 @@ class ContactViewSet(ModelViewSet):
 
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
-    filter_fields = ['name']
+    filter_fields = {'name': ['iregex']}
 
 
 class NeedLocationView(DetailView):
