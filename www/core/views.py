@@ -49,7 +49,7 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
         'handicapped', 'gender', 'enddatetime'
     )
     area = AllValuesFilter()
-    datetime = DateTimeFilter(name='enddatetime')
+    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
     ordering = ('enddatetime',)
 
     def get_queryset(self):
@@ -73,14 +73,6 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
 
             result = result.filter(qlatitude & qlongitude)
 
-        datetime = self.kwargs.get('datetime')
-
-        if datetime is not None:
-            datetime = dt.strptime(datetime, "%Y-%m-%d %H:%M")
-            qdatetime = Q('enddatetime') <= datetime
-
-            result = result.filter(qdatetime)
-
         return result
 
 
@@ -90,9 +82,9 @@ class RoamViewSet(viewsets.ModelViewSet):
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('name', 'needlocations', 'description')
-
-    area = AllValuesFilter()
+    filter_fields = ('name', 'needlocations', 'description', 'enddatetime')
+    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
+    ordering = ('enddatetime',)
 
     def get_queryset(self):
         """Get roam related to attributes, enddatetime or need location area.
@@ -115,14 +107,6 @@ class RoamViewSet(viewsets.ModelViewSet):
             qlongitude = abs(qnllongitude - longitude) <= radius
 
             result = result.filter(qlatitude & qlongitude)
-
-        datetime = self.kwargs.get('datetime')
-
-        if datetime is not None:
-            datetime = dt.strptime(datetime, "%Y-%m-%d %H:%M")
-            qdatetime = Q('enddatetime') <= datetime
-
-            result = result.filter(qdatetime)
 
         return result
 
