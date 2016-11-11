@@ -1,4 +1,4 @@
-"""simpleneed URL Configuration
+"""simpleneed URL Configuration.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -13,11 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
 from django.conf.urls import url, include
 
 from .views import (
-    NeedLocationView, NeedLocationViews, ContactView, ContactViews,
-    RoamView, RoamViews,
     NeedLocationViewSet, ContactViewSet, MoodViewSet, GenderViewSet,
     NeedViewSet, RoamViewSet
 )
@@ -33,5 +32,5 @@ router.register(r'contacts', ContactViewSet)
 router.register(r'roams', RoamViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'^', include(router.urls))
 ]

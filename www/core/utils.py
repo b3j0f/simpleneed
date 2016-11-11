@@ -1,5 +1,8 @@
-def obj2str(obj, *members):
+"""Utils module."""
 
+
+def obj2str(obj, *members):
+    """Convert an object to a string representation."""
     result = '{0}('.format(type(obj).__name__)
 
     for member in members:
