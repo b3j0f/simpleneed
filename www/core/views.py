@@ -81,3 +81,7 @@ class ContactView(DetailView):
 
 class ContactViews(ListView):
     model = Contact
+
+
+class RoamViews(ListView):
+    model = Roam

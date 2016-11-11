@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 
 from .views import (
     NeedLocationView, NeedLocationViews, ContactView, ContactViews,
-    RoamView, RoamViews
+    RoamView, RoamViews,
     NeedLocationViewSet, ContactViewSet, MoodViewSet, GenderViewSet,
     NeedViewSet, RoamViewSet
 )

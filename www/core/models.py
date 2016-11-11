@@ -37,6 +37,7 @@ class Gender(models.Model):
 class NeedLocation(models.Model):
 
     location = models.PointField()
+
     longitude = models.FloatField()
     latitude = models.FloatField()
     mood = models.ForeignKey(Mood, default='neutral')
