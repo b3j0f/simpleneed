@@ -18,7 +18,7 @@ from django.conf.urls import url, include
 
 from .views import (
     NeedLocationViewSet, ContactViewSet, MoodViewSet, GenderViewSet,
-    NeedViewSet, RoamViewSet
+    NeedViewSet, RoamViewSet, needlocationcount
 )
 
 from rest_framework import routers
@@ -30,6 +30,7 @@ router.register(r'genders', GenderViewSet)
 router.register(r'needlocations', NeedLocationViewSet)
 router.register(r'contacts', ContactViewSet)
 router.register(r'roams', RoamViewSet)
+router.register(r'needlocationcount', needlocationcount)
 
 urlpatterns = [
     url(r'^', include(router.urls))

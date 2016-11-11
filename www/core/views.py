@@ -8,7 +8,7 @@ from django_filters.filters import DateTimeFilter, AllValuesFilter
 
 from rest_framework import viewsets
 
-from datetime import dt
+from datetime import datetime as dt
 
 from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
 from .serializers import (
@@ -56,8 +56,9 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
         """Get need location related to attributes or area or datetime.
 
         self.kwargs might contain:
-        - area: circle properties with latitude, longitude and radius.
-        - datetime: date time <= need location enddatetime.
+        - dict area: circle properties with latitude, longitude and radius.
+        - str datetime: date time <= need location enddatetime with format
+            Y-m-d H:M.
         """
         result = super(NeedLocationViewSet, self).get_queryset(self)
 
@@ -97,8 +98,8 @@ class RoamViewSet(viewsets.ModelViewSet):
         """Get roam related to attributes, enddatetime or need location area.
 
         self.kwargs might contain:
-        - area: circle properties with latitude, longitude and radius.
-        - datetime: date time <= roam enddatetime.
+        - dict area: circle properties with latitude, longitude and radius.
+        - str datetime: date time <= roam enddatetime with format Y-m-d H:M.
         """
         result = super(RoamViewSet, self).get_queryset(self)
 
@@ -171,8 +172,13 @@ class RoamViews(ListView):
     model = Roam
 
 
-def count_needlocations(request):
-    """Get count of locations per area or datetime."""
+def needlocationcount(request):
+    """Get count of need locations per area or datetime.
+
+    :param dict area: location area with longitude, latitude and radius.
+    :param str datetime: datetime before need location enddatetimes.
+    :rtype: int
+    """
     result = NeedLocation.objects.all()
 
     area = request.params.get('area')
