@@ -39,33 +39,6 @@ class GenderViewSet(ModelViewSet):
     filter_fields = ['name']
 
 
-class NeedLocationViewSet(ModelViewSet):
-    """API endpoint that allows need locations to be viewed or edited."""
-
-    queryset = NeedLocation.objects.all()
-    serializer_class = NeedLocationSerializer
-    filter_fields = ('mood', 'needs', 'handicapped', 'gender')
-    ordering_fields = ('enddatetime',)
-    ordering = ('enddatetime',)
-
-    def get_queryset(self):
-        """Get need location related to attributes or area or datetime.
-
-        self.kwargs might contain:
-        - dict area: circle properties with latitude, longitude and radius.
-        - str datetime: date time <= need location enddatetime with format
-            Y-m-d H:M.
-        """
-        result = super(NeedLocationViewSet, self).get_queryset()
-
-        area = self.kwargs.get('area')
-        datetime = self.kwargs.get('datetime')
-
-        return getareaneedlocations(
-            area=area, datetime=datetime, objects=result
-        )
-
-
 def getareaneedlocations(area=None, datetime=None, objects=None):
     """Get need location related to attributes or area or datetime.
 
@@ -91,6 +64,33 @@ def getareaneedlocations(area=None, datetime=None, objects=None):
         result = result.filter(Q('enddatetime') >= datetime)
 
     return result
+
+
+class NeedLocationViewSet(ModelViewSet):
+    """API endpoint that allows need locations to be viewed or edited."""
+
+    queryset = NeedLocation.objects.all()
+    serializer_class = NeedLocationSerializer
+    filter_fields = ('mood', 'needs', 'handicapped', 'gender', 'enddatetime')
+    ordering_fields = ('enddatetime',)
+    ordering = ('enddatetime',)
+
+    def get_queryset(self):
+        """Get need location related to attributes or area or datetime.
+
+        self.kwargs might contain:
+        - dict area: circle properties with latitude, longitude and radius.
+        - str datetime: date time <= need location enddatetime with format
+            Y-m-d H:M.
+        """
+        result = super(NeedLocationViewSet, self).get_queryset()
+
+        area = self.kwargs.get('area')
+        datetime = self.kwargs.get('datetime')
+
+        return getareaneedlocations(
+            area=area, datetime=datetime, objects=result
+        )
 
 
 def getarearoams(area=None, datetime=None, objects=None):
@@ -125,6 +125,7 @@ class RoamViewSet(ModelViewSet):
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
+    filter_fields = ['name', 'description', 'enddatetime']
     ordering_fields = ['name', 'enddatetime']
     ordering = ('enddatetime', )
 
@@ -149,7 +150,7 @@ class ContactViewSet(ModelViewSet):
 
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
-    filter_fields = {'name': '__all__'}
+    filter_fields = ['name']
 
 
 class NeedLocationView(DetailView):
