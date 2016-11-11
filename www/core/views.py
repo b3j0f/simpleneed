@@ -8,8 +8,6 @@ from django_filters.filters import DateTimeFilter, AllValuesFilter
 
 from rest_framework import viewsets
 
-from datetime import datetime as dt
-
 from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
 from .serializers import (
     NeedLocationSerializer, ContactSerializer, RoamSerializer,
@@ -46,11 +44,12 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = (
         'latitude', 'longitude', 'mood', 'needs',
-        'handicapped', 'gender', 'enddatetime'
+        'handicapped', 'gender', 'enddatetime', 'datetime', 'area'
     )
     area = AllValuesFilter()
     datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-    ordering = ('enddatetime',)
+    ordering_fields = ('enddatetime',)
+    ordering = 'enddatetime'
 
     def get_queryset(self):
         """Get need location related to attributes or area or datetime.
@@ -82,9 +81,12 @@ class RoamViewSet(viewsets.ModelViewSet):
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('name', 'needlocations', 'description', 'enddatetime')
+    filter_fields = (
+        'name', 'needlocations', 'description', 'enddatetime', 'datetime'
+    )
     datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-    ordering = ('enddatetime',)
+    ordering_fields = ('enddatetime',)
+    ordering = 'enddatetime'
 
     def get_queryset(self):
         """Get roam related to attributes, enddatetime or need location area.
