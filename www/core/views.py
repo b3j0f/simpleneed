@@ -4,7 +4,10 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.db.models import Q, Count
 from django_filters import rest_framework as filters
-from django_filters.filters import DateTimeFilter, AllValuesFilter
+from django_filters.rest_framework import FilterSet
+from django_filters.rest_framework.filters import (
+    DateTimeFilter, AllValuesFilter, CharFilter, RelatedFilter
+)
 
 from rest_framework import viewsets
 
@@ -36,20 +39,38 @@ class GenderViewSet(viewsets.ModelViewSet):
     serializer_class = GenderSerializer
 
 
+class NeedLocationFilterSet(FilterSet):
+    """Need location filter set."""
+
+    area = AllValuesFilter()
+    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
+    mood__name = CharFilter(name='mood__name')
+    needs__name = CharFilter(name='needs__name')
+    gender__name = CharFilter(name='gender__name')
+
+    class Meta:
+        """Meta need location filter set."""
+
+        model = NeedLocation
+        fields = {
+            'mood': '__all__',
+            'needs': '__all__',
+            'handicapped': '__all__',
+            'gender': '__all__',
+            'datetime': '__all__',
+            'area': '__all__',
+            'mood__name': '__all__',
+            'needs__name': '__all__',
+            'gender__name': '__all__'
+        }
+
+
 class NeedLocationViewSet(viewsets.ModelViewSet):
     """API endpoint that allows need locations to be viewed or edited."""
 
     queryset = NeedLocation.objects.all()
     serializer_class = NeedLocationSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = (
-        'latitude', 'longitude', 'mood', 'needs',
-        'handicapped', 'gender', 'enddatetime', 'datetime', 'area'
-    )
-    area = AllValuesFilter()
-    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-    ordering_fields = ('enddatetime',)
-    ordering = 'enddatetime'
+    filter_class = NeedLocationFilterSet
 
     def get_queryset(self):
         """Get need location related to attributes or area or datetime.
@@ -75,42 +96,31 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
         return result
 
 
+class RoamFilterSet(FilterSet):
+    """Roam filter set."""
+
+    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
+    needlocations = RelatedFilter(NeedLocationFilterSet, name='needlocations')
+
+    class Meta:
+        """Roam filter set meta."""
+
+        model = Roam
+        fields = {
+            'name': '__all__',
+            'description': '__all__',
+            'needlocations': '__all__',
+            'datetime': '__all__',
+        }
+
+
 class RoamViewSet(viewsets.ModelViewSet):
     """API endpoint that allows roams to be viewed or edited."""
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = (
-        'name', 'needlocations', 'description', 'enddatetime', 'datetime'
-    )
-    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-    ordering_fields = ('enddatetime',)
-    ordering = 'enddatetime'
-
-    def get_queryset(self):
-        """Get roam related to attributes, enddatetime or need location area.
-
-        self.kwargs might contain:
-        - dict area: circle properties with latitude, longitude and radius.
-        - str datetime: date time <= roam enddatetime with format Y-m-d H:M.
-        """
-        result = super(RoamViewSet, self).get_queryset()
-
-        area = self.kwargs.get('area')
-
-        if area is not None:
-            latitude, longitude = area['longitude'], area['latitude']
-            radius = area['radius']
-
-            qnllatitude = Q('needlocations__latitude')
-            qnllongitude = Q('needlocations__longitude')
-            qlatitude = abs(qnllatitude - latitude) <= radius
-            qlongitude = abs(qnllongitude - longitude) <= radius
-
-            result = result.filter(qlatitude & qlongitude)
-
-        return result
+    filter_class = RoamFilterSet
 
 
 class ContactViewSet(viewsets.ModelViewSet):
