@@ -71,7 +71,7 @@ class NeedLocationViewSet(ModelViewSet):
 
     queryset = NeedLocation.objects.all()
     serializer_class = NeedLocationSerializer
-    filter_fields = ('mood', 'needs', 'handicapped', 'gender', 'enddatetime')
+    filter_fields = ('mood', 'needs', 'handicapped', 'gender')
     ordering_fields = ('enddatetime',)
     ordering = ('enddatetime',)
 
@@ -125,7 +125,7 @@ class RoamViewSet(ModelViewSet):
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
-    filter_fields = ['name', 'description', 'enddatetime']
+    filter_fields = ['name', 'description']
     ordering_fields = ['name', 'enddatetime']
     ordering = ('enddatetime', )
 
