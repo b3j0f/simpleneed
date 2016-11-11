@@ -1,11 +1,11 @@
 """serializers module."""
 
-from rest_framework import serializers
+from rest_framework.serializers import HyperlinkedModelSerializer
 
 from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
 
 
-class MoodSerializer(serializers.HyperlinkedModelSerializer):
+class MoodSerializer(HyperlinkedModelSerializer):
     """Mood serializer."""
 
     class Meta:
@@ -15,7 +15,7 @@ class MoodSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', )
 
 
-class NeedSerializer(serializers.HyperlinkedModelSerializer):
+class NeedSerializer(HyperlinkedModelSerializer):
     """Need serializer."""
 
     class Meta:
@@ -25,7 +25,7 @@ class NeedSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', )
 
 
-class GenderSerializer(serializers.HyperlinkedModelSerializer):
+class GenderSerializer(HyperlinkedModelSerializer):
     """Gender serializer."""
 
     class Meta:
@@ -35,7 +35,7 @@ class GenderSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', )
 
 
-class NeedLocationSerializer(serializers.HyperlinkedModelSerializer):
+class NeedLocationSerializer(HyperlinkedModelSerializer):
     """Need location serializer."""
 
     class Meta:
@@ -48,7 +48,7 @@ class NeedLocationSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class ContactSerializer(serializers.HyperlinkedModelSerializer):
+class ContactSerializer(HyperlinkedModelSerializer):
     """Contact serializer."""
 
     class Meta:
@@ -58,7 +58,7 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', 'description', 'phone', 'website')
 
 
-class RoamSerializer(serializers.HyperlinkedModelSerializer):
+class RoamSerializer(HyperlinkedModelSerializer):
     """Roam serializer."""
 
     class Meta:
