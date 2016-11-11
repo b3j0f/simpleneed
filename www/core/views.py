@@ -3,11 +3,10 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.db.models import Q, Count
-from rest_framework_filters import (
-    RelatedFilter, FilterSet, DateTimeFilter, AllValuesFilter, CharFilter
-)
 
 from rest_framework import viewsets
+
+from datetime import datetime as dt
 
 from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
 from .serializers import (
@@ -37,38 +36,12 @@ class GenderViewSet(viewsets.ModelViewSet):
     serializer_class = GenderSerializer
 
 
-class NeedLocationFilterSet(FilterSet):
-    """Need location filter set."""
-
-    area = AllValuesFilter()
-    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-    mood__name = CharFilter(name='mood__name')
-    needs__name = CharFilter(name='needs__name')
-    gender__name = CharFilter(name='gender__name')
-
-    class Meta:
-        """Meta need location filter set."""
-
-        model = NeedLocation
-        fields = {
-            'mood': '__all__',
-            'needs': '__all__',
-            'handicapped': '__all__',
-            'gender': '__all__',
-            'datetime': '__all__',
-            'area': '__all__',
-            'mood__name': '__all__',
-            'needs__name': '__all__',
-            'gender__name': '__all__'
-        }
-
-
 class NeedLocationViewSet(viewsets.ModelViewSet):
     """API endpoint that allows need locations to be viewed or edited."""
 
     queryset = NeedLocation.objects.all()
     serializer_class = NeedLocationSerializer
-    filter_class = NeedLocationFilterSet
+    filter_fields = ('mood', 'needs', 'handicapped', 'gender')
 
     def get_queryset(self):
         """Get need location related to attributes or area or datetime.
@@ -91,25 +64,14 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
 
             result = result.filter(qlatitude & qlongitude)
 
+        datetime = self.kwargs.get('datetime')
+
+        if datetime is not None:
+            datetime = dt.strptime('%Y-%m-%d %H:%M')
+
+            result.filter(Q('enddatetime') >= datetime)
+
         return result
-
-
-class RoamFilterSet(FilterSet):
-    """Roam filter set."""
-
-    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-    needlocations = RelatedFilter(NeedLocationFilterSet, name='needlocations')
-
-    class Meta:
-        """Roam filter set meta."""
-
-        model = Roam
-        fields = {
-            'name': '__all__',
-            'description': '__all__',
-            'needlocations': '__all__',
-            'datetime': '__all__',
-        }
 
 
 class RoamViewSet(viewsets.ModelViewSet):
@@ -117,7 +79,40 @@ class RoamViewSet(viewsets.ModelViewSet):
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
-    filter_class = RoamFilterSet
+    filter_fields = ('name', 'description', 'needlocations')
+
+    def get_queryset(self):
+        """Get need location related to attributes or area or datetime.
+
+        self.kwargs might contain:
+        - dict area: circle properties with latitude, longitude and radius.
+        - str datetime: date time <= need location enddatetime with format
+            Y-m-d H:M.
+        """
+        result = super(RoamViewSet, self).get_queryset()
+
+        area = self.kwargs.get('area')
+
+        if area is not None:
+            latitude, longitude = area['longitude'], area['latitude']
+            radius = area['radius']
+
+            qlatitude = Q('needlocation__latitude')
+            qlongitude = Q('needlocation__longitude')
+
+            qlatitude = abs(qlatitude - latitude) <= radius
+            qlongitude = abs(qlongitude - longitude) <= radius
+
+            result = result.filter(qlatitude & qlongitude)
+
+        datetime = self.kwargs.get('datetime')
+
+        if datetime is not None:
+            datetime = dt.strptime('%Y-%m-%d %H:%M')
+
+            result.filter(Q('enddatetime') >= datetime)
+
+        return result
 
 
 class ContactViewSet(viewsets.ModelViewSet):
