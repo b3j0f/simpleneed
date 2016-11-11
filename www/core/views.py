@@ -60,7 +60,7 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
         - str datetime: date time <= need location enddatetime with format
             Y-m-d H:M.
         """
-        result = super(NeedLocationViewSet, self).get_queryset(self)
+        result = super(NeedLocationViewSet, self).get_queryset()
 
         area = self.kwargs.get('area')
 
@@ -101,7 +101,7 @@ class RoamViewSet(viewsets.ModelViewSet):
         - dict area: circle properties with latitude, longitude and radius.
         - str datetime: date time <= roam enddatetime with format Y-m-d H:M.
         """
-        result = super(RoamViewSet, self).get_queryset(self)
+        result = super(RoamViewSet, self).get_queryset()
 
         area = self.kwargs.get('area')
 
