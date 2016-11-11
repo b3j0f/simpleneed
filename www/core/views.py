@@ -4,11 +4,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.db.models import Q, Count
 
-from rest_framework_filters.filters import (
-    FilterSet, DateTimeFilter, AllValuesFilter, RelatedFilter
-)
+from rest_framework.viewsets import ModelViewSet
 
-from rest_framework import viewsets
+from datetime import datetime as dt
 
 from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
 from .serializers import (
@@ -17,57 +15,40 @@ from .serializers import (
 )
 
 
-class MoodViewSet(viewsets.ModelViewSet):
+class MoodViewSet(ModelViewSet):
     """API endpoint that allows moods to be viewed or edited."""
 
     queryset = Mood.objects.all()
     serializer_class = MoodSerializer
-    filter_fields = {'name': '__all__'}
+    filter_fields = ['name']
 
 
-class NeedViewSet(viewsets.ModelViewSet):
+class NeedViewSet(ModelViewSet):
     """API endpoint that allows needs to be viewed or edited."""
 
     queryset = Need.objects.all()
     serializer_class = NeedSerializer
-    filter_fields = {'name': '__all__'}
+    filter_fields = ['name']
 
 
-class GenderViewSet(viewsets.ModelViewSet):
+class GenderViewSet(ModelViewSet):
     """API endpoint that allows genders to be viewed or edited."""
 
     queryset = Gender.objects.all()
     serializer_class = GenderSerializer
-    filter_fields = {'name': '__all__'}
+    filter_fields = ['name']
 
 
-def f(*args, **kwargs):
-
-    print(args, kwargs)
-
-
-class NeedLocationFilterSet(FilterSet):
-    """Need location filter set."""
-
-    area = AllValuesFilter(method=f)
-    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-
-    class Meta:
-        """Meta need location filter set."""
-
-        model = NeedLocation
-        fields = ['mood', 'needs', 'gender', 'handicapped']
-
-
-class NeedLocationViewSet(viewsets.ModelViewSet):
+class NeedLocationViewSet(ModelViewSet):
     """API endpoint that allows need locations to be viewed or edited."""
 
     queryset = NeedLocation.objects.all()
     serializer_class = NeedLocationSerializer
-    filter_class = NeedLocationFilterSet
-    # filter_fields = ('mood', 'needs', 'handicapped', 'gender')
+    filter_fields = ('mood', 'needs', 'handicapped', 'gender')
+    ordering_fields = ('enddatetime',)
+    ordering = ('enddatetime',)
 
-    def _get_queryset(self):
+    def get_queryset(self):
         """Get need location related to attributes or area or datetime.
 
         self.kwargs might contain:
@@ -78,42 +59,76 @@ class NeedLocationViewSet(viewsets.ModelViewSet):
         result = super(NeedLocationViewSet, self).get_queryset()
 
         area = self.kwargs.get('area')
+        datetime = self.kwargs.get('datetime')
 
-        if area is not None:
-            latitude, longitude = area['longitude'], area['latitude']
-            radius = area['radius']
-
-            qlatitude = abs(Q('latitude') - latitude) <= radius
-            qlongitude = abs(Q('longitude') - longitude) <= radius
-
-            result = result.filter(qlatitude & qlongitude)
-
-        return result
+        return getareaneedlocations(
+            area=area, datetime=datetime, objects=result
+        )
 
 
-class RoamFilterSet(FilterSet):
-    """Roam filter set."""
+def getareaneedlocations(area=None, datetime=None, objects=None):
+    """Get need location related to attributes or area or datetime.
 
-    datetime = DateTimeFilter(name='enddatetime', lookup_expr='lte')
-    needlocations = RelatedFilter(NeedLocation, name='needlocations')
+    :param dict area: circle properties with latitude, longitude and radius.
+    :param str datetime: date time <= need location enddatetime with format
+        Y-m-d H:M.
+    """
+    result = objects or NeedLocation.objects.all()
 
-    class Meta:
-        """Meta Roam filter set."""
+    if area is not None:
+        latitude, longitude = area['longitude'], area['latitude']
+        radius = area['radius']
 
-        model = Roam
-        fields = ['name', 'description']
+        qlatitude = abs(Q('latitude') - latitude) <= radius
+        qlongitude = abs(Q('longitude') - longitude) <= radius
+
+        result = result.filter(qlatitude & qlongitude)
+
+    if datetime is not None:
+
+        datetime = dt.strptime('%Y-%m-%d %H:%M')
+
+        result = result.filter(Q('enddatetime') >= datetime)
+
+    return result
 
 
-class RoamViewSet(viewsets.ModelViewSet):
+def getarearoams(area=None, datetime=None, objects=None):
+    """Get roam related to attributes or area or datetime.
+
+    :param dict area: circle properties with latitude, longitude and radius.
+    :param str datetime: date time <= need location enddatetime with format
+        Y-m-d H:M.
+    """
+    result = objects or Roam.objects.all()
+
+    if area is not None:
+        latitude, longitude = area['longitude'], area['latitude']
+        radius = area['radius']
+
+        qlatitude = abs(Q('needlocations__latitude') - latitude) <= radius
+        qlongitude = abs(Q('needlocations__longitude') - longitude) <= radius
+
+        result = result.filter(qlatitude & qlongitude)
+
+    if datetime is not None:
+
+        datetime = dt.strptime('%Y-%m-%d %H:%M')
+
+        result = result.filter(Q('enddatetime') >= datetime)
+
+    return result
+
+
+class RoamViewSet(ModelViewSet):
     """API endpoint that allows roams to be viewed or edited."""
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
-    filter_class = RoamFilterSet
     ordering_fields = ['name', 'enddatetime']
     ordering = ('enddatetime', )
 
-    def _get_queryset(self):
+    def get_queryset(self):
         """Get need location related to attributes or area or datetime.
 
         self.kwargs might contain:
@@ -124,23 +139,12 @@ class RoamViewSet(viewsets.ModelViewSet):
         result = super(RoamViewSet, self).get_queryset()
 
         area = self.kwargs.get('area')
+        datetime = self.kwargs.get('datetime')
 
-        if area is not None:
-            latitude, longitude = area['longitude'], area['latitude']
-            radius = area['radius']
-
-            qlatitude = Q('needlocation__latitude')
-            qlongitude = Q('needlocation__longitude')
-
-            qlatitude = abs(qlatitude - latitude) <= radius
-            qlongitude = abs(qlongitude - longitude) <= radius
-
-            result = result.filter(qlatitude & qlongitude)
-
-        return result
+        return getarearoams(area=area, datetime=datetime, objects=result)
 
 
-class ContactViewSet(viewsets.ModelViewSet):
+class ContactViewSet(ModelViewSet):
     """API endpoint that allows contacts to be viewed or edited."""
 
     queryset = Contact.objects.all()
@@ -182,6 +186,22 @@ class RoamViews(ListView):
     """API endpoint that allowd roam to be viewed."""
 
     model = Roam
+
+
+def areaneedlocations(request):
+    """Get need locations."""
+    area = request.GET.get('area')
+    datetime = request.GET.get('datetime')
+
+    return getareaneedlocations(area=area, datetime=datetime)
+
+
+def arearoams(request):
+    """Get area roams."""
+    area = request.GET.get('area')
+    datetime = request.GET.get('datetime')
+
+    return getarearoams(area=area, datetime=datetime)
 
 
 def needlocationcount(request):
