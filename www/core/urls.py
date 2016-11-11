@@ -30,9 +30,9 @@ router.register(r'genders', GenderViewSet)
 router.register(r'needlocations', NeedLocationViewSet)
 router.register(r'contacts', ContactViewSet)
 router.register(r'roams', RoamViewSet)
-router.register(r'needlocationcount', needlocationcount)
-router.register(r'roamcount', roamcount)
 
 urlpatterns = [
-    url(r'^', include(router.urls))
+    url(r'^', include(router.urls)),
+    url(r'^needlocationcount/', needlocationcount),
+    url(r'^roamcount/', roamcount)
 ]
