@@ -2,7 +2,8 @@
 
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.db.models import Q, Count
+from django.db.models import Q
+from django.http import HttpResponse
 
 from rest_framework.viewsets import ModelViewSet
 
@@ -214,7 +215,7 @@ def needlocationcount(request):
     """
     result = NeedLocation.objects.all()
 
-    area = request.params.get('area')
+    area = request.GET.get('area')
 
     if area is not None:
         latitude, longitude = area['longitude'], area['latitude']
@@ -225,7 +226,7 @@ def needlocationcount(request):
 
         result = result.filter(qlatitude & qlongitude)
 
-    datetime = request.params.get('datetime')
+    datetime = request.GET.get('datetime')
 
     if datetime is not None:
         datetime = datetime.strptime(datetime, "%Y-%m-%d %H:%M")
@@ -233,7 +234,9 @@ def needlocationcount(request):
 
         result = result.filter(qdatetime)
 
-    return Count(result)
+    result = result.count()
+
+    result = HttpResponse(repr(result))
 
 
 def roamcount(request):
@@ -245,7 +248,7 @@ def roamcount(request):
     """
     result = Roam.objects.all()
 
-    area = request.params.get('area')
+    area = request.GET.get('area')
 
     if area is not None:
         latitude, longitude = area['longitude'], area['latitude']
@@ -256,7 +259,7 @@ def roamcount(request):
 
         result = result.filter(qlatitude & qlongitude)
 
-    datetime = request.params.get('datetime')
+    datetime = request.GET.get('datetime')
 
     if datetime is not None:
         datetime = datetime.strptime(datetime, "%Y-%m-%d %H:%M")
@@ -264,4 +267,6 @@ def roamcount(request):
 
         result = result.filter(qdatetime)
 
-    return Count(result)
+    result = result.count()
+
+    result = HttpResponse(repr(result))

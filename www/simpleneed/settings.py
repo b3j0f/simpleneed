@@ -136,6 +136,6 @@ REST_FRAMEWORK = {
     #     ('rest_framework.permissions.IsAdminUser',),
     'PAGE_SIZE': 500,
     'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework_filters.backends.DjangoFilterBackend',
+        'django_filters.rest_framework.DjangoFilterBackend',
     )
 }
