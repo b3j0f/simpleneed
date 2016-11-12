@@ -9,8 +9,8 @@ import { StatsPage } from '../stats/stats';
 export class TabsPage {
   // this tells the tabs component which Pages
   // should be each tab's root Page
-  mapRoot: any = MapPage;
-  statsRoot: any = StatsPage;
+  mapPage: any = MapPage;
+  statsPage: any = StatsPage;
 
   constructor() {
 

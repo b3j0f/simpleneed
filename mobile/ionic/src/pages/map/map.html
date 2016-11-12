@@ -1,18 +1,14 @@
 <ion-header>
   <ion-navbar>
-    <ion-icon name="map"/>
-    <ion-title>Home</ion-title>
+    <button ion-button icon-only>
+      <ion-icon name="eye"></ion-icon>
+    </button>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+<ion-content>
+<button ion-button block round icon-only>
+	<ion-icon name="search"></ion-icon>
+</button>
+  <map-component></map-component>
 </ion-content>

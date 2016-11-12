@@ -2,16 +2,18 @@ import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
-import { HomePage } from '../pages/home/home';
+import { MapPage } from '../pages/map/map';
+import { StatsPage } from '../pages/stats/stats';
 import { TabsPage } from '../pages/tabs/tabs';
+import { MapComponent } from '../components/map-component/map-component';
 
 @NgModule({
   declarations: [
     MyApp,
     AboutPage,
-    ContactPage,
-    HomePage,
+    MapComponent,
+    MapPage,
+    StatsPage,
     TabsPage
   ],
   imports: [
@@ -21,8 +23,9 @@ import { TabsPage } from '../pages/tabs/tabs';
   entryComponents: [
     MyApp,
     AboutPage,
-    ContactPage,
-    HomePage,
+    MapComponent,
+    MapPage,
+    StatsPage,
     TabsPage
   ],
   providers: []
