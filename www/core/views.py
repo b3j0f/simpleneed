@@ -195,7 +195,7 @@ def areaneedlocations(request):
     area = request.GET.get('area')
     datetime = request.GET.get('datetime')
 
-    return getareaneedlocations(area=area, datetime=datetime)
+    return HttpResponse(getareaneedlocations(area=area, datetime=datetime))
 
 
 def arearoams(request):
@@ -203,7 +203,7 @@ def arearoams(request):
     area = request.GET.get('area')
     datetime = request.GET.get('datetime')
 
-    return getarearoams(area=area, datetime=datetime)
+    return HttpResponse(getarearoams(area=area, datetime=datetime))
 
 
 def needlocationcount(request):
@@ -234,9 +234,7 @@ def needlocationcount(request):
 
         result = result.filter(qdatetime)
 
-    result = result.count()
-
-    result = HttpResponse(repr(result))
+    return HttpResponse(result.count())
 
 
 def roamcount(request):
@@ -267,6 +265,4 @@ def roamcount(request):
 
         result = result.filter(qdatetime)
 
-    result = result.count()
-
-    result = HttpResponse(repr(result))
+    return HttpResponse(result.count())
