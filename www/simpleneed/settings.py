@@ -134,7 +134,7 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES':
     #     ('rest_framework.permissions.IsAdminUser',),
-    'PAGE_SIZE': 500,
+    'PAGE_SIZE': 100,
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     )

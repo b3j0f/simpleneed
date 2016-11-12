@@ -2,7 +2,7 @@
 
 from rest_framework.serializers import HyperlinkedModelSerializer
 
-from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
+from .models import NeedLocation, Contact, Mood, Need, Gender, Roam, Stats
 
 
 class MoodSerializer(HyperlinkedModelSerializer):
@@ -65,4 +65,17 @@ class RoamSerializer(HyperlinkedModelSerializer):
         """Roam serializer."""
 
         model = Roam
-        fields = ('name', 'description', 'needlocations', 'enddatetime')
+        fields = (
+            'name', 'description', 'needlocations', 'enddatetime',
+            'longitude', 'latitude'
+        )
+
+
+class StatsSerializer(HyperlinkedModelSerializer):
+    """Stats serializer."""
+
+    class Meta:
+        """Stats serializer."""
+
+        model = Stats
+        fields = ('day', 'year', 'month', 'needs', 'answeredneeds', 'roams')

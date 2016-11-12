@@ -3,7 +3,7 @@
 from django.db import models
 # from django.contrib.gis.db import models
 
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from datetime import datetime
@@ -83,6 +83,8 @@ class Roam(models.Model):
 
     name = models.CharField(max_length=256)
     description = models.CharField(max_length=256, default=None, null=True)
+    longitude = models.FloatField()
+    latitude = models.FloatField()
     needlocations = models.ManyToManyField(NeedLocation)
     enddatetime = models.DateTimeField(null=False)
 
@@ -96,35 +98,35 @@ class Roam(models.Model):
 class Stats(models.Model):
     """Stats model."""
 
-    allneeds = models.IntegerField(default=0)
-    allansweredneeds = models.IntegerField(default=0)
-
-
-class YearStats(Stats):
-    """Year stats model."""
+    needs = models.IntegerField(default=0)
+    answeredneeds = models.IntegerField(default=0)
+    roams = models.IntegerField(default=0)
 
     year = models.IntegerField()
-
-
-class MonthStats(YearStats):
-    """Month stats model."""
-
     month = models.IntegerField()
-
-
-class DayStats(MonthStats):
-    """Day stats model."""
-
     day = models.IntegerField()
+
+
+@receiver(post_save, sender=Roam)
+def add_roam(sender, instance, **kwargs):
+    """Add roam count in stats."""
+    now = datetime.now()
+    statskwargs = {'year': now.year, 'month': now.month, 'day': now.day}
+    stats = Stats.objects.get(**statskwargs)
+
+    if stats is None:
+        Stats.objects.create(roams=1, **statskwargs)
+
+    else:
+        stats.__iadd__('roams', 1)
+        stats.save()
 
 
 @receiver(pre_save, sender=NeedLocation)
 def add_stats(sender, instance, **kwargs):
     """Need location post save hook which add stats."""
-    now = datetime.now()
-
-    allneedscount = len(instance.needs)
-    allansweredneedscount = 0
+    needscount = len(instance.needs)
+    answeredneedscount = 0
 
     oldinstance = sender.objects.get(id=instance.id)
 
@@ -136,30 +138,20 @@ def add_stats(sender, instance, **kwargs):
         newneeds = instanceneeds - oldneeds
         answeredneeds = oldneeds - instanceneeds
 
-        allneedscount = len(newneeds)
-        allansweredneedscount = len(answeredneeds)
+        needscount = len(newneeds)
+        answeredneedscount = len(answeredneeds)
 
-    def addstats(
-            cls,
-            allneedscount=allneedscount,
-            allansweredneedscount=allansweredneedscount, **kwargs
-    ):
-        """Add a stats object in database related to input needlocation."""
-        stats = cls.objects.get(**kwargs)
+    now = datetime.now()
+    statskwargs = {'year': now.year, 'month': now.month, 'day': now.day}
+    stats = Stats.objects.get(**statskwargs)
 
-        if stats is None:
-            cls.objects.create(
-                allneeds=allneedscount, allansweredneeds=allansweredneedscount,
-                **kwargs
-            )
+    if stats is None:
+        Stats.objects.create(
+            allneeds=needscount, allansweredneeds=answeredneedscount,
+            **statskwargs
+        )
 
-        else:
-            stats.__iadd__('allneeds', allneedscount)
-            stats.__iadd__('allansweredneeds', allansweredneedscount)
-
-            stats.save()
-
-    addstats(Stats)
-    addstats(YearStats, year=now.year)
-    addstats(MonthStats, year=now.year, month=now.month)
-    addstats(DayStats, year=now.year, month=now.month, day=now.day)
+    else:
+        stats.__iadd__('needs', needscount)
+        stats.__iadd__('answeredneeds', answeredneedscount)
+        stats.save()

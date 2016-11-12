@@ -9,10 +9,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from datetime import datetime as dt
 
-from .models import NeedLocation, Contact, Mood, Need, Gender, Roam
+from .models import NeedLocation, Contact, Mood, Need, Gender, Roam, Stats
 from .serializers import (
     NeedLocationSerializer, ContactSerializer, RoamSerializer,
-    MoodSerializer, NeedSerializer, GenderSerializer
+    MoodSerializer, NeedSerializer, GenderSerializer, StatsSerializer
 )
 
 
@@ -72,7 +72,15 @@ class NeedLocationViewSet(ModelViewSet):
 
     queryset = NeedLocation.objects.all()
     serializer_class = NeedLocationSerializer
-    filter_fields = ('mood', 'needs', 'handicapped', 'gender')
+    filter_fields = {
+        'mood': ['exact'],
+        'needs': ['exact'],
+        'handicapped': ['exact'],
+        'gender': ['exact'],
+        'longitude': ['exact', 'gte', 'lte'],
+        'latitude': ['exact', 'gte', 'lte'],
+        'enddatetime': ['exact', 'gte', 'lte']
+    }
     ordering_fields = ('enddatetime',)
     ordering = ('enddatetime',)
 
@@ -126,7 +134,13 @@ class RoamViewSet(ModelViewSet):
 
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
-    filter_fields = {'name': ['iregex'], 'description': ['iregex']}
+    filter_fields = {
+        'name': ['iregex'],
+        'description': ['iregex'],
+        'enddatetime': ['exact', 'gte', 'lte'],
+        'longitude': ['exact', 'gte', 'lte'],
+        'latitude': ['exact', 'gte', 'lte']
+    }
     ordering_fields = ['name', 'enddatetime']
     ordering = ('enddatetime', )
 
@@ -152,6 +166,21 @@ class ContactViewSet(ModelViewSet):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
     filter_fields = {'name': ['iregex']}
+
+
+class StatsViewSet(ModelViewSet):
+    """API endpoint that allows stats to be viewed or edited."""
+
+    queryset = Stats.objects.all()
+    serializer_class = StatsSerializer
+    filter_fields = {
+        'year': ['exact', 'gte', 'lte'],
+        'month': ['exact', 'gte', 'lte'],
+        'day': ['exact', 'gte', 'lte'],
+        'needs': ['exact', 'gte', 'lte'],
+        'answeredneeds': ['exact', 'gte', 'lte'],
+        'roams': ['exact', 'gte', 'lte']
+    }
 
 
 class NeedLocationView(DetailView):
@@ -188,6 +217,12 @@ class RoamViews(ListView):
     """API endpoint that allowd roam to be viewed."""
 
     model = Roam
+
+
+class StatsViews(ListView):
+    """API endpoint that allowd stats to be viewed."""
+
+    model = Stats
 
 
 def areaneedlocations(request):
