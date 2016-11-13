@@ -50,12 +50,15 @@ class LocatedElement(models.Model):
     description = models.TextField()
     enddatetime = models.DateTimeField(null=False)
     people = models.IntegerField(default=1)
+    rroam = models.OneToOneField('Roam', parent_link=True)
+    rneedlocation = models.OneToOneField('NeedLocation', parent_link=True)
 
     def __str__(self):
         """representation."""
         return obj2str(
             self,
-            'longitude', 'latitude', 'description', 'enddatetime', 'people'
+            'longitude', 'latitude', 'description', 'enddatetime', 'people',
+            'rroam', 'rneedlocation'
         )
 
 
@@ -64,7 +67,7 @@ class Message(models.Model):
 
     element = models.ForeignKey(LocatedElement)
     content = models.TextField(null=False)
-    datetime = models.DateTimeField(default=now())
+    datetime = models.DateTimeField(default=now)
 
     def __str__(self):
         """representation."""
@@ -153,7 +156,6 @@ def add_stats(sender, instance, **kwargs):
     oldinstance = sender.objects.get(id=instance.id)
 
     if oldinstance is not None:
-
         instanceneeds = set(need.name for need in instance.needs)
         oldneeds = set(need.name for need in oldinstance.needs)
 

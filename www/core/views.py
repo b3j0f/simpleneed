@@ -79,7 +79,8 @@ class NeedLocationViewSet(LocatedElementViewSet):
         'mood': ['exact'],
         'needs': ['exact'],
         'handicapped': ['exact'],
-        'gender': ['exact']
+        'gender': ['exact'],
+        'roam': ['exact']
     }
     filter_fields.update(LocatedElementViewSet.filter_fields)
 
@@ -104,6 +105,11 @@ def _relatedfilter(source, target, name):
         target.filter_fields[key] = source.filter_fields[filter_field]
 
 _relatedfilter(NeedLocationViewSet, RoamViewSet, 'needlocations')
+_relatedfilter(RoamViewSet, NeedLocationViewSet, 'roam')
+_relatedfilter(LocatedElementViewSet, Message, 'element')
+_relatedfilter(Message, LocatedElementViewSet, 'messages')
+_relatedfilter(Message, NeedLocationViewSet, 'messages')
+_relatedfilter(Message, RoamViewSet, 'messages')
 
 
 class ContactViewSet(ModelViewSet):
