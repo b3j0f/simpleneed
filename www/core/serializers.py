@@ -45,10 +45,11 @@ class LocatedElementSerializer(HyperlinkedModelSerializer):
         """Located element serializer."""
 
         model = LocatedElement
-        fields = [
+        _fields = [
             'description', 'longitude', 'latitude', 'enddatetime', 'messages',
-            'people', 'rroam', 'rneedlocation', 'child'
+            'people'
         ]
+        fields = _fields + ['rroam', 'rneedlocation', 'child']
 
 
 class MessageSerializer(HyperlinkedModelSerializer):
@@ -70,7 +71,7 @@ class NeedLocationSerializer(LocatedElementSerializer):
         model = NeedLocation
         fields = [
             'mood', 'needs', 'handicapped', 'sick', 'gender', 'roam'
-        ] + LocatedElementSerializer.Meta.fields[:-2]
+        ] + LocatedElementSerializer.Meta._fields
 
 
 class ContactSerializer(HyperlinkedModelSerializer):
@@ -92,7 +93,7 @@ class RoamSerializer(LocatedElementSerializer):
         model = Roam
         fields = [
             'name', 'needlocations'
-        ] + LocatedElementSerializer.Meta.fields[:-2]
+        ] + LocatedElementSerializer.Meta._fields
 
 
 class StatsSerializer(HyperlinkedModelSerializer):

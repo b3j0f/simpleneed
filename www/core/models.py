@@ -68,7 +68,7 @@ class LocatedElement(models.Model):
 class Message(models.Model):
     """Message model."""
 
-    element = models.ForeignKey(LocatedElement)
+    element = models.ForeignKey(LocatedElement, related_name='messages')
     content = models.TextField(null=False)
     datetime = models.DateTimeField(default=now)
 
@@ -95,12 +95,18 @@ class NeedLocation(LocatedElement):
 
     # location = models.PointField()
 
-    mood = models.ForeignKey(Mood, default='neutral')
-    needs = models.ManyToManyField(Need)
+    mood = models.ForeignKey(
+        Mood, default='neutral', related_name='needlocations'
+    )
+    needs = models.ManyToManyField(Need, related_name='needlocations')
     handicapped = models.BooleanField(default=False)
     sick = models.BooleanField(default=False)
-    gender = models.ForeignKey(Gender, default='other')
-    roam = models.ForeignKey(Roam, null=True, default=None)
+    gender = models.ForeignKey(
+        Gender, default='other', related_name='needlocations'
+    )
+    roam = models.ForeignKey(
+        Roam, null=True, default=None, related_name='needlocations'
+    )
     base = models.OneToOneField(
         LocatedElement, parent_link=True, related_name='rneedlocation'
     )

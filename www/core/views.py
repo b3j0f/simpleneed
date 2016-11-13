@@ -50,7 +50,6 @@ class LocatedElementViewSet(ModelViewSet):
         'longitude': ['exact', 'gte', 'lte'],
         'latitude': ['exact', 'gte', 'lte'],
         'enddatetime': ['exact', 'gte', 'lte'],
-        'roam': ['exact'],
         'messages': ['exact'],
         'people': ['exact', 'gte', 'lte']
     }
@@ -96,20 +95,6 @@ class RoamViewSet(LocatedElementViewSet):
     }
     filter_fields.update(LocatedElementViewSet.filter_fields)
     ordering_fields = ['name', 'enddatetime']
-
-
-def _relatedfilter(source, target, name):
-    """Add source filters to target filters."""
-    for filter_field in source.filter_fields:
-        key = '{0}__{1}'.format(filter_field, name)
-        target.filter_fields[key] = source.filter_fields[filter_field]
-
-_relatedfilter(NeedLocationViewSet, RoamViewSet, 'needlocations')
-_relatedfilter(RoamViewSet, NeedLocationViewSet, 'roam')
-_relatedfilter(LocatedElementViewSet, MessageViewSet, 'element')
-_relatedfilter(MessageViewSet, LocatedElementViewSet, 'messages')
-_relatedfilter(MessageViewSet, NeedLocationViewSet, 'messages')
-_relatedfilter(MessageViewSet, RoamViewSet, 'messages')
 
 
 class ContactViewSet(ModelViewSet):
