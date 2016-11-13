@@ -1,7 +1,6 @@
 """Model module."""
 
 from django.db import models
-# from django.contrib.gis.db import models
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
@@ -46,9 +45,9 @@ class Gender(models.Model):
 class LocatedElement(models.Model):
     """abstract model for located elements."""
 
-    longitude = models.FloatField()
-    latitude = models.FloatField()
-    description = models.TextField(null=True, default='')
+    longitude = models.FloatField(null=False)
+    latitude = models.FloatField(null=False)
+    description = models.TextField(default='')
     enddatetime = models.DateTimeField(null=False)
     people = models.IntegerField(default=1)
     pwd = models.CharField(max_length=32, default='')
@@ -70,7 +69,9 @@ class LocatedElement(models.Model):
 class Message(models.Model):
     """Message model."""
 
-    element = models.ForeignKey(LocatedElement, related_name='messages')
+    element = models.ForeignKey(
+        LocatedElement, null=False, related_name='messages'
+    )
     content = models.TextField(null=False)
     datetime = models.DateTimeField(default=now)
 
@@ -82,7 +83,7 @@ class Message(models.Model):
 class Roam(LocatedElement):
     """Roam model."""
 
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, null=False)
     base = models.OneToOneField(
         LocatedElement, parent_link=True, related_name='rroam'
     )
@@ -95,12 +96,12 @@ class Roam(LocatedElement):
 class NeedLocation(LocatedElement):
     """need location model."""
 
-    # location = models.PointField()
-
     mood = models.ForeignKey(
         Mood, default='neutral', related_name='needlocations'
     )
-    needs = models.ManyToManyField(Need, related_name='needlocations')
+    needs = models.ManyToManyField(
+        Need, null=True, related_name='needlocations'
+    )
     handicapped = models.BooleanField(default=False)
     sick = models.BooleanField(default=False)
     gender = models.ForeignKey(
