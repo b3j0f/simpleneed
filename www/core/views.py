@@ -67,6 +67,8 @@ class MessageViewSet(ModelViewSet):
         'element': ['exact'],
         'datetime': ['exact', 'gte', 'lte']
     }
+    ordering_fields = ['datetime']
+    ordering = ['datetime']
 
 
 class NeedLocationViewSet(LocatedElementViewSet):

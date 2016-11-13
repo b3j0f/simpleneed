@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 
-from datetime import datetime, date
+from datetime import date
 
 from md5 import md5
 
@@ -85,7 +85,7 @@ class Roam(LocatedElement):
 
     name = models.CharField(max_length=256, null=False)
     base = models.OneToOneField(
-        LocatedElement, parent_link=True, related_name='rroam'
+        LocatedElement, parent_link=True, related_name='rroam', null=False
     )
 
     def __str__(self):
@@ -111,7 +111,8 @@ class NeedLocation(LocatedElement):
         Roam, null=True, default=None, related_name='needlocations'
     )
     base = models.OneToOneField(
-        LocatedElement, parent_link=True, related_name='rneedlocation'
+        LocatedElement, parent_link=True, related_name='rneedlocation',
+        null=False
     )
 
     def __str__(self):
@@ -140,11 +141,11 @@ class Contact(models.Model):
 class Stats(models.Model):
     """Stats model."""
 
+    date = models.DateField(default=date.today, primary_key=True)
+
     needs = models.IntegerField(default=0)
     answeredneeds = models.IntegerField(default=0)
     roams = models.IntegerField(default=0)
-
-    date = models.DateField(default=date.today)
 
 
 @receiver(pre_save, sender=LocatedElement)
