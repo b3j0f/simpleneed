@@ -103,4 +103,4 @@ class StatsSerializer(HyperlinkedModelSerializer):
         """Stats serializer."""
 
         model = Stats
-        fields = ['day', 'year', 'month', 'needs', 'answeredneeds', 'roams']
+        fields = ['date', 'needs', 'answeredneeds', 'roams']

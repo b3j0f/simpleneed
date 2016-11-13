@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 
-from datetime import datetime
+from datetime import datetime, date
 
 from md5 import md5
 
@@ -100,7 +100,7 @@ class NeedLocation(LocatedElement):
         Mood, default='neutral', related_name='needlocations'
     )
     needs = models.ManyToManyField(
-        Need, null=True, related_name='needlocations'
+        Need, blank=True, related_name='needlocations'
     )
     handicapped = models.BooleanField(default=False)
     sick = models.BooleanField(default=False)
@@ -144,9 +144,7 @@ class Stats(models.Model):
     answeredneeds = models.IntegerField(default=0)
     roams = models.IntegerField(default=0)
 
-    year = models.IntegerField()
-    month = models.IntegerField()
-    day = models.IntegerField()
+    date = models.DateField(default=date.today)
 
 
 @receiver(pre_save, sender=LocatedElement)
@@ -163,14 +161,13 @@ def checkkey(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Roam)
-def addroam(sender, instance, **kwargs):
+def addroamstats(sender, instance, **kwargs):
     """Add roam count in stats."""
-    now = datetime.now()
-    statskwargs = {'year': now.year, 'month': now.month, 'day': now.day}
-    stats = Stats.objects.get(**statskwargs)
+    today = date.today()
+    stats = Stats.objects.get(date=today)
 
     if stats is None:
-        Stats.objects.create(roams=1, **statskwargs)
+        Stats.objects.create(roams=1)
 
     else:
         stats.__iadd__('roams', 1)
@@ -178,7 +175,7 @@ def addroam(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=NeedLocation)
-def addstats(sender, instance, **kwargs):
+def addneedlocationstats(sender, instance, **kwargs):
     """Need location post save hook which add stats."""
     needscount = len(instance.needs)
     answeredneedscount = 0
@@ -196,15 +193,13 @@ def addstats(sender, instance, **kwargs):
         needscount = len(newneeds)
         answeredneedscount = len(answeredneeds)
 
-    now = datetime.now()
-    statskwargs = {'year': now.year, 'month': now.month, 'day': now.day}
-    stats = Stats.objects.get(**statskwargs)
+    today = date.today()
+    stats = Stats.objects.get(date=today)
 
     if stats is None:
         Stats.objects.create(
             allneeds=needscount * people,
-            allansweredneeds=answeredneedscount * people,
-            **statskwargs
+            allansweredneeds=answeredneedscount * people
         )
 
     else:

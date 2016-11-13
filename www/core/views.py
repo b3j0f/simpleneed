@@ -111,9 +111,7 @@ class StatsViewSet(ModelViewSet):
     queryset = Stats.objects.all()
     serializer_class = StatsSerializer
     filter_fields = {
-        'year': ['exact', 'gte', 'lte'],
-        'month': ['exact', 'gte', 'lte'],
-        'day': ['exact', 'gte', 'lte'],
+        'date': ['exact', 'gte', 'lte'],
         'needs': ['exact', 'gte', 'lte'],
         'answeredneeds': ['exact', 'gte', 'lte'],
         'roams': ['exact', 'gte', 'lte']
