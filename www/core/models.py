@@ -47,9 +47,10 @@ class LocatedElement(models.Model):
 
     longitude = models.FloatField()
     latitude = models.FloatField()
-    description = models.TextField()
+    description = models.TextField(null=True, default='')
     enddatetime = models.DateTimeField(null=False)
     people = models.IntegerField(default=1)
+    key = models.CharField(max_length=4, null=True, default='')
 
     @property
     def child(self):
@@ -146,8 +147,17 @@ class Stats(models.Model):
     day = models.IntegerField()
 
 
+@receiver(pre_save, sender=LocatedElement)
+def checkkey(sender, instance, **kwargs):
+    """Check key."""
+    old = LocatedElement.objects.get(id=instance.id)
+
+    if old and old.key and old.key != instance.key:
+        raise KeyError('{0} is not the right key'.format(instance.key))
+
+
 @receiver(post_save, sender=Roam)
-def add_roam(sender, instance, **kwargs):
+def addroam(sender, instance, **kwargs):
     """Add roam count in stats."""
     now = datetime.now()
     statskwargs = {'year': now.year, 'month': now.month, 'day': now.day}
@@ -162,7 +172,7 @@ def add_roam(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=NeedLocation)
-def add_stats(sender, instance, **kwargs):
+def addstats(sender, instance, **kwargs):
     """Need location post save hook which add stats."""
     needscount = len(instance.needs)
     answeredneedscount = 0
