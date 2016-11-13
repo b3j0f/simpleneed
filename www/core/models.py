@@ -50,8 +50,11 @@ class LocatedElement(models.Model):
     description = models.TextField()
     enddatetime = models.DateTimeField(null=False)
     people = models.IntegerField(default=1)
-    rroam = models.OneToOneField('Roam', parent_link=True)
-    rneedlocation = models.OneToOneField('NeedLocation', parent_link=True)
+
+    @property
+    def child(self):
+        """Get child object."""
+        return self.rroam or self.rneedlocation
 
     def __str__(self):
         """representation."""
@@ -78,6 +81,9 @@ class Roam(LocatedElement):
     """Roam model."""
 
     name = models.CharField(max_length=256)
+    base = models.OneToOneField(
+        LocatedElement, parent_link=True, related_name='rroam'
+    )
 
     def __str__(self):
         """representation."""
@@ -95,6 +101,9 @@ class NeedLocation(LocatedElement):
     sick = models.BooleanField(default=False)
     gender = models.ForeignKey(Gender, default='other')
     roam = models.ForeignKey(Roam, null=True, default=None)
+    base = models.OneToOneField(
+        LocatedElement, parent_link=True, related_name='rneedlocation'
+    )
 
     def __str__(self):
         """representation."""

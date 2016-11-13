@@ -106,10 +106,10 @@ def _relatedfilter(source, target, name):
 
 _relatedfilter(NeedLocationViewSet, RoamViewSet, 'needlocations')
 _relatedfilter(RoamViewSet, NeedLocationViewSet, 'roam')
-_relatedfilter(LocatedElementViewSet, Message, 'element')
-_relatedfilter(Message, LocatedElementViewSet, 'messages')
-_relatedfilter(Message, NeedLocationViewSet, 'messages')
-_relatedfilter(Message, RoamViewSet, 'messages')
+_relatedfilter(LocatedElementViewSet, MessageViewSet, 'element')
+_relatedfilter(MessageViewSet, LocatedElementViewSet, 'messages')
+_relatedfilter(MessageViewSet, NeedLocationViewSet, 'messages')
+_relatedfilter(MessageViewSet, RoamViewSet, 'messages')
 
 
 class ContactViewSet(ModelViewSet):
