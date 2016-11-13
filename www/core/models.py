@@ -5,6 +5,7 @@ from django.db import models
 
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from django.utils.timezone import now
 
 from datetime import datetime
 
@@ -41,27 +42,64 @@ class Gender(models.Model):
         return obj2str(self, 'name')
 
 
-class NeedLocation(models.Model):
-    """need location model."""
-
-    # location = models.PointField()
+class LocatedElement(models.Model):
+    """abstract model for located elements."""
 
     longitude = models.FloatField()
     latitude = models.FloatField()
-    mood = models.ForeignKey(Mood, default='neutral')
-    comment = models.CharField(max_length=256, default=None, null=True)
-    needs = models.ManyToManyField(Need)
-    handicapped = models.BooleanField(default=False)
-    sick = models.BooleanField(default=False)
-    gender = models.ForeignKey(Gender, default='other')
+    description = models.TextField()
     enddatetime = models.DateTimeField(null=False)
+    people = models.IntegerField(default=1)
 
     def __str__(self):
         """representation."""
         return obj2str(
             self,
-            'latitude', 'longitude', 'mood', 'comment',
-            'needs', 'handicapped', 'gender', 'enddatetime'
+            'longitude', 'latitude', 'description', 'enddatetime', 'people'
+        )
+
+
+class Message(models.Model):
+    """Message model."""
+
+    element = models.ForeignKey(LocatedElement)
+    content = models.TextField(null=False)
+    datetime = models.DateTimeField(default=now())
+
+    def __str__(self):
+        """representation."""
+        return obj2str(self, 'element', 'content', 'datetime')
+
+
+class Roam(LocatedElement):
+    """Roam model."""
+
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        """representation."""
+        return obj2str(self, 'name', 'description', 'enddatetime', 'people')
+
+
+class NeedLocation(LocatedElement):
+    """need location model."""
+
+    # location = models.PointField()
+
+    mood = models.ForeignKey(Mood, default='neutral')
+    needs = models.ManyToManyField(Need)
+    handicapped = models.BooleanField(default=False)
+    sick = models.BooleanField(default=False)
+    gender = models.ForeignKey(Gender, default='other')
+    roam = models.ForeignKey(Roam, null=True, default=None)
+
+    def __str__(self):
+        """representation."""
+        return obj2str(
+            self,
+            'latitude', 'longitude', 'mood', 'description',
+            'needs', 'handicapped', 'gender', 'enddatetime', 'people',
+            'roam'
         )
 
 
@@ -76,23 +114,6 @@ class Contact(models.Model):
     def __str__(self):
         """representation."""
         return obj2str(self, 'name', 'description', 'phone', 'website')
-
-
-class Roam(models.Model):
-    """Roam model."""
-
-    name = models.CharField(max_length=256)
-    description = models.CharField(max_length=256, default=None, null=True)
-    longitude = models.FloatField()
-    latitude = models.FloatField()
-    needlocations = models.ManyToManyField(NeedLocation)
-    enddatetime = models.DateTimeField(null=False)
-
-    def __str__(self):
-        """representation."""
-        return obj2str(
-            self, 'name', 'description', 'needlocations', 'enddatetime'
-        )
 
 
 class Stats(models.Model):
@@ -127,6 +148,7 @@ def add_stats(sender, instance, **kwargs):
     """Need location post save hook which add stats."""
     needscount = len(instance.needs)
     answeredneedscount = 0
+    people = instance.people
 
     oldinstance = sender.objects.get(id=instance.id)
 
@@ -147,11 +169,12 @@ def add_stats(sender, instance, **kwargs):
 
     if stats is None:
         Stats.objects.create(
-            allneeds=needscount, allansweredneeds=answeredneedscount,
+            allneeds=needscount * people,
+            allansweredneeds=answeredneedscount * people,
             **statskwargs
         )
 
     else:
-        stats.__iadd__('needs', needscount)
-        stats.__iadd__('answeredneeds', answeredneedscount)
+        stats.__iadd__('needs', needscount * people)
+        stats.__iadd__('answeredneeds', answeredneedscount * people)
         stats.save()

@@ -2,7 +2,9 @@
 
 from django.contrib import admin
 
-from .models import Gender, Mood, Need, NeedLocation, Contact, Roam, Stats
+from .models import (
+    Gender, Mood, Need, NeedLocation, Contact, Roam, Stats, Message
+)
 
 # Register your models here.
 admin.site.register(Gender)
@@ -12,3 +14,4 @@ admin.site.register(Contact)
 admin.site.register(NeedLocation)
 admin.site.register(Roam)
 admin.site.register(Stats)
+admin.site.register(Message)

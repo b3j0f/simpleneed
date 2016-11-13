@@ -4,7 +4,7 @@
 
 - model: core.Need
   fields:
-    name: coffee
+    name: snack
 
 - model: core.Need
   fields:

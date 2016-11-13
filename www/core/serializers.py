@@ -2,7 +2,10 @@
 
 from rest_framework.serializers import HyperlinkedModelSerializer
 
-from .models import NeedLocation, Contact, Mood, Need, Gender, Roam, Stats
+from .models import (
+    NeedLocation, Contact, Mood, Need, Gender, Roam, Stats, Message,
+    LocatedElement
+)
 
 
 class MoodSerializer(HyperlinkedModelSerializer):
@@ -12,40 +15,62 @@ class MoodSerializer(HyperlinkedModelSerializer):
         """Meta mood serializer."""
 
         model = Mood
-        fields = ('name', )
+        fields = ['name']
 
 
 class NeedSerializer(HyperlinkedModelSerializer):
     """Need serializer."""
 
     class Meta:
-        """Need serializer."""
+        """Meta need serializer."""
 
         model = Need
-        fields = ('name', )
+        fields = ['name']
 
 
 class GenderSerializer(HyperlinkedModelSerializer):
     """Gender serializer."""
 
     class Meta:
-        """Gender serializer."""
+        """Meta gender serializer."""
 
         model = Gender
-        fields = ('name', )
+        fields = ['name']
 
 
-class NeedLocationSerializer(HyperlinkedModelSerializer):
+class LocatedElementSerializer(HyperlinkedModelSerializer):
+    """Located element serializer."""
+
+    class Meta:
+        """Located element serializer."""
+
+        model = LocatedElement
+        fields = [
+            'description', 'longitude', 'latitude', 'enddatetime', 'messages',
+            'people'
+        ]
+
+
+class MessageSerializer(HyperlinkedModelSerializer):
+    """Message serializer."""
+
+    class Meta:
+        """Message serializer."""
+
+        model = Message
+        fields = ['element', 'content', 'datetime']
+
+
+class NeedLocationSerializer(LocatedElementSerializer):
     """Need location serializer."""
 
     class Meta:
         """Need location serializer."""
 
         model = NeedLocation
-        fields = (
-            'longitude', 'latitude', 'mood', 'comment', 'needs',
-            'handicapped', 'sick', 'gender', 'enddatetime'
-        )
+        fields = [
+            'mood', 'needs', 'handicapped', 'sick', 'gender', 'roam'
+        ] + LocatedElementSerializer.Meta.fields
 
 
 class ContactSerializer(HyperlinkedModelSerializer):
@@ -55,20 +80,19 @@ class ContactSerializer(HyperlinkedModelSerializer):
         """Contact serializer."""
 
         model = Contact
-        fields = ('name', 'description', 'phone', 'website')
+        fields = ['name', 'description', 'phone', 'website']
 
 
-class RoamSerializer(HyperlinkedModelSerializer):
+class RoamSerializer(LocatedElementSerializer):
     """Roam serializer."""
 
     class Meta:
         """Roam serializer."""
 
         model = Roam
-        fields = (
-            'name', 'description', 'needlocations', 'enddatetime',
-            'longitude', 'latitude'
-        )
+        fields = [
+            'name', 'needlocations'
+        ] + LocatedElementSerializer.Meta.fields
 
 
 class StatsSerializer(HyperlinkedModelSerializer):
@@ -78,4 +102,4 @@ class StatsSerializer(HyperlinkedModelSerializer):
         """Stats serializer."""
 
         model = Stats
-        fields = ('day', 'year', 'month', 'needs', 'answeredneeds', 'roams')
+        fields = ['day', 'year', 'month', 'needs', 'answeredneeds', 'roams']
