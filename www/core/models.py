@@ -2,12 +2,13 @@
 
 from django.db import models
 # from django.contrib.gis.db import models
-
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 
 from datetime import datetime
+
+from md5 import md5
 
 from .utils import obj2str
 
@@ -50,7 +51,7 @@ class LocatedElement(models.Model):
     description = models.TextField(null=True, default='')
     enddatetime = models.DateTimeField(null=False)
     people = models.IntegerField(default=1)
-    key = models.CharField(max_length=4, null=True, default='')
+    pwd = models.CharField(max_length=32, default='')
 
     @property
     def child(self):
@@ -149,11 +150,15 @@ class Stats(models.Model):
 
 @receiver(pre_save, sender=LocatedElement)
 def checkkey(sender, instance, **kwargs):
-    """Check key."""
+    """Check pwd."""
     old = LocatedElement.objects.get(id=instance.id)
 
-    if old and old.key and old.key != instance.key:
-        raise KeyError('{0} is not the right key'.format(instance.key))
+    pwd = md5(instance.pwd).digest()
+
+    if old and old.pwd != pwd:  # compare md5s
+        raise KeyError('Wrong pwd in {0}'.format(instance))
+
+    instance.pwd = pwd  # set md5 value
 
 
 @receiver(post_save, sender=Roam)
