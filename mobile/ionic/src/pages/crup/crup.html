@@ -17,13 +17,13 @@
 				<ion-label>
 					<ion-icon name="clipboard"></ion-icon>
 				</ion-label>
-				<ion-input [(ngModel)]="name" type="search" placeholder="name"></ion-input>
+				<ion-input [(ngModel)]="name" type="text" placeholder="name"></ion-input>
 			</ion-item>
 			<ion-item>
 				<ion-label>
 					<ion-icon name="quote"></ion-icon>
 				</ion-label>
-				<ion-input [(ngModel)]="description" type="search" placeholder="description"></ion-input>
+				<ion-textarea [(ngModel)]="description" placeholder="description"></ion-textarea>
 			</ion-item>
 			<ion-item>
 				<ion-range min=1 max=24 [(ngModel)]="duration" snaps pin>
@@ -114,11 +114,11 @@
 				<ion-label>
 					<ion-icon name="quote"></ion-icon>
 				</ion-label>
-				<ion-input [(ngModel)]="description" type="search" placeholder="description"></ion-input>
+				<ion-textarea [(ngModel)]="description" placeholder="description"></ion-textarea>
 			</ion-item>
 		</ion-list>
 	</div>
-	<button ion-button block icon-only (click)="search()">
+	<button ion-button block icon-only (click)="save()">
 		<ion-icon name="checkmark" large></ion-icon>
 	</button>
 </ion-content>

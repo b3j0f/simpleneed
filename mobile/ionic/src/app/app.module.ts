@@ -6,6 +6,10 @@ import { MapPage } from '../pages/map/map';
 import { StatsPage } from '../pages/stats/stats';
 import { TabsPage } from '../pages/tabs/tabs';
 import { MapComponent } from '../components/map-component/map-component';
+import { CRUPPage } from '../pages/crup/crup';
+import { FilterPage } from '../pages/filter/filter';
+import { MenuComponent } from '../components/menu/menu';
+import { NavBarComponent } from '../components/navbar/navbar';
 
 @NgModule({
   declarations: [
@@ -14,7 +18,11 @@ import { MapComponent } from '../components/map-component/map-component';
     MapComponent,
     MapPage,
     StatsPage,
-    TabsPage
+    TabsPage,
+    CRUPPage,
+    FilterPage,
+    MenuComponent,
+    NavBarComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -26,7 +34,11 @@ import { MapComponent } from '../components/map-component/map-component';
     MapComponent,
     MapPage,
     StatsPage,
-    TabsPage
+    TabsPage,
+    CRUPPage,
+    FilterPage,
+    MenuComponent,
+    NavBarComponent
   ],
   providers: []
 })

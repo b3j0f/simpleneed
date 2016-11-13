@@ -3,22 +3,26 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 @Component({
-    selector: 'page-filter',
-    templateUrl: 'filter.html'
+    selector: 'page-crup',
+    templateUrl: 'crup.html'
 })
-export class FilterPage {
+export class CRUPPage {
 
     parent: any;
 
-    filter: any = {
+    // default parmas
+    params: any = {
         kind: 'needlocation',
         mood: 2,
-        needs: [],
-        description: '',
-        enddatetime: new Date(new Date().getTime() + 8 * 3600 * 1000)
-    }
+        people: 1,
+        comment: '',
+        enddatetime: new Date(new Date().getTime() + 8 * 3600 * 1000),
+        coordinate: [0, 0]
+    };
 
-    kind: string = 'needlocation';
+    kind: string = "needlocation";
+
+    coordinate: any = [0, 0];
 
     // need location properties
     mood: number = 2;
@@ -32,48 +36,51 @@ export class FilterPage {
     accomodation: boolean = false;
     accessories: boolean = false;
     health: boolean = false;
+    comment: string = '';
 
     // roam properties
     name: string = '';
+    description: string = '';
 
     // both properties
     duration: number = 4;
-    description: string = '';
 
     constructor(public navCtrl: NavController, navParams: NavParams) {
         this.parent = navParams.get('parent');
-        let filter = navParams.get('filter');
-        this.setfilter(filter);
+        let params = navParams.get('params');
+        let coordinate = navParams.get('coordinate');
+        this.setparams(params);
     }
 
-    setfilter(filter) {
-        if (filter == undefined) {
-            filter = this.filter;
-        }
-        if (filter != undefined) {
-            if (filter.kind == 'needlocation') {
-                for (let need in filter.needs) {
-                    this[need] = true;
-                }
-                this.people = filter.people;
-            } else {
-                this.name = filter.name;
-            }
-            this.description = filter.description;
-            this.duration = Math.round(
-                Math.abs(filter.enddatetime.getTime() - new Date().getTime()) / (3600000)
-            );
-        }
-        console.log(this.duration);
-    }
-
-    search() {
-        let filter = this.getfilter();
-        this.parent.refresh(filter);
+    save() {
+        let params = this.getparams();
+        this.parent.save(params);
         this.navCtrl.pop();
     }
 
-    getfilter() {
+    setparams(params) {
+        if (params == undefined) {
+            params = this.params;
+        }
+        if (params.kind == 'needlocation') {
+            for(let need in params.needs) {
+                this[need] = true;
+            }
+            this.people = params.people;
+            this.comment = params.comment;
+        } else {
+            this.name = params.name;
+            this.description = params.description;
+        }
+        this.duration = Math.round(
+            Math.abs(
+                params.enddatetime.getTime() - new Date().getTime()
+            ) / (3600 * 1000)
+        );
+        this.coordinate = this.params.coordinate;
+    }
+
+    getparams() {
 
         let result;
 
@@ -97,25 +104,22 @@ export class FilterPage {
             result = {
                 mood: this.mood,
                 people: this.people,
-                needs: needs
+                needs: needs,
+                comment: this.comment
             }
         } else {
             result = {
-                name: this.name
+                name: this.name,
+                description: this.description
             }
         }
-        result.description = this.description;
+
         result.enddatetime = new Date(
             new Date().getTime() + this.duration * 3600 * 1000
         )
         result.kind = this.kind;
 
         return result;
-    }
-
-    clickneed(name) {
-        console.log(this);
-        this[name] = !this[name];
     }
 
 }
