@@ -52,7 +52,8 @@ class LocatedElementViewSet(ModelViewSet):
         'startdatetime': ['exact', 'gte', 'lte'],
         'enddatetime': ['exact', 'gte', 'lte'],
         'messages': ['exact'],
-        'people': ['exact', 'gte', 'lte']
+        'people': ['exact', 'gte', 'lte'],
+        'haspwd': ['exact']
     }
     ordering_fields = ['enddatetime']
     ordering = ['enddatetime']

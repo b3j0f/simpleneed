@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 
 import * as ol from 'openlayers';
 
@@ -7,8 +7,6 @@ import * as ol from 'openlayers';
     templateUrl: 'map-component.html'
     })
 export class MapComponent {
-
-    //@ViewChild('map') map;
 
     coordinate: any = [0, 0];
     zoom: number = 2;

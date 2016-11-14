@@ -65,12 +65,17 @@ class LocatedElement(models.Model):
         """Get child object."""
         return self.rroam or self.rneedlocation
 
+    @property
+    def haspwd(self):
+        """True if this has a password."""
+        return bool(self.pwd)
+
     def __str__(self):
         """representation."""
         return obj2str(
             self,
             'longitude', 'latitude', 'description', 'startdatetime',
-            'enddatetime', 'people', 'rroam', 'rneedlocation'
+            'enddatetime', 'people', 'rroam', 'rneedlocation', 'haspwd'
         )
 
 
@@ -159,17 +164,34 @@ class Stats(models.Model):
     roams = models.IntegerField(default=0)
 
 
+@receiver(pre_save, sender=NeedLocation)
+def checkneeds(sender, instance, **kwargs):
+    """If needs are empty, set enddatetime to at most now."""
+    if not instance.needs:
+
+        dt.now()
+
+        if dt < instance.enddatetime:
+            instance.enddatetime = dt
+
+
 @receiver(pre_save, sender=LocatedElement)
 def checkkey(sender, instance, **kwargs):
     """Check pwd."""
     old = LocatedElement.objects.get(id=instance.id)
 
-    pwd = md5(instance.pwd).digest()
+    if old is None:
+        if instance.haspwd:
+            instance.pwd = md5(instance.pwd).digest()
 
-    if old and old.pwd != pwd:  # compare md5s
-        raise KeyError('Wrong pwd in {0}'.format(instance))
+    elif old.haspwd:
 
-    instance.pwd = pwd  # set md5 value
+        pwd = md5(instance.pwd).digest()
+
+        if old.pwd != pwd:
+            raise KeyError('Wrong pwd in {0}'.format(instance))
+
+        instance.pwd = pwd
 
 
 @receiver(post_save, sender=Roam)

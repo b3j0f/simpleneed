@@ -9,7 +9,7 @@
 			<ion-icon name="pin"></ion-icon>
 		</ion-segment-button>
 		<ion-segment-button value="roam">
-			<label>roam
+			<label>group
 			<ion-icon name="contacts"></ion-icon>
 			</label>
 		</ion-segment-button>
@@ -28,12 +28,6 @@
 				</ion-label>
 				<ion-input *ngIf="isFilter()" [(ngModel)]="item.description" type="search" placeholder="description"></ion-input>
 				<ion-textarea *ngIf="!isFilter()" [(ngModel)]="item.description" [placeholder]="item.description"></ion-textarea>
-			</ion-item>
-			<ion-item>
-				<ion-range min=0 max=24 [(ngModel)]="item.durations" snaps pin step=2 dualKnobs>
-					<ion-label range-left><ion-icon name="timer"></ion-icon> {{item.durations.lower}}:00</ion-label>
-					<ion-label range-right>{{item.durations.upper}}:00</ion-label>
-				</ion-range>
 			</ion-item>
 		</ion-list>
 		<ion-list *ngSwitchCase="'needlocation'">
@@ -109,8 +103,20 @@
 			</ion-item>
 		</ion-list>
 	</div>
-	<ion-input *ngIf="!isFilter()" type="password" [(ngModel)]="item.password"></ion-input>
-	<button ion-button icon-only block round (click)="doAction()">
-		<ion-icon name="checkmark" large></ion-icon>
-	</button>
+	<ion-list>
+		<ion-item>
+			<ion-range min=0 max=24 [(ngModel)]="item.durations" snaps pin step=2 dualKnobs>
+				<ion-label range-left><ion-icon name="timer"></ion-icon> {{item.durations.lower}}:00</ion-label>
+				<ion-label range-right>{{item.durations.upper}}:00</ion-label>
+			</ion-range>
+		</ion-item>
+	</ion-list>
+	<ion-item *ngIf="!isFilter()">
+		<ion-input type="password" [(ngModel)]="item.password"></ion-input>
+	</ion-item>
+	<ion-item>
+		<button ion-button icon-only block round (click)="doAction()">
+			<ion-icon name="checkmark" large></ion-icon>
+		</button>
+	</ion-item>
 </ion-content>
