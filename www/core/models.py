@@ -44,6 +44,11 @@ class Gender(models.Model):
         return obj2str(self, 'name')
 
 
+def add4hours():
+    """Add 4 hours to currend datetime."""
+    return dt.fromtimestamp(time() + 4 * 3600)
+
+
 class LocatedElement(models.Model):
     """abstract model for located elements."""
 
@@ -51,9 +56,7 @@ class LocatedElement(models.Model):
     latitude = models.FloatField(null=False)
     description = models.TextField(default='')
     startdatetime = models.DateTimeField(default=dt.now)
-    enddatetime = models.DateTimeField(
-        default=lambda: dt.fromtimestamp(time() + 4 * 3600)
-    )
+    enddatetime = models.DateTimeField(default=add4hours)
     people = models.IntegerField(default=1)
     pwd = models.CharField(max_length=32, default='')
 
