@@ -5,7 +5,9 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 
-from datetime import date
+from datetime import datetime as dt, date
+
+from time import time
 
 from md5 import md5
 
@@ -48,7 +50,10 @@ class LocatedElement(models.Model):
     longitude = models.FloatField(null=False)
     latitude = models.FloatField(null=False)
     description = models.TextField(default='')
-    enddatetime = models.DateTimeField(null=False)
+    startdatetime = models.DateTimeField(default=dt.now)
+    enddatetime = models.DateTimeField(
+        default=lambda: dt.fromtimestamp(time() + 4 * 3600)
+    )
     people = models.IntegerField(default=1)
     pwd = models.CharField(max_length=32, default='')
 
@@ -61,8 +66,8 @@ class LocatedElement(models.Model):
         """representation."""
         return obj2str(
             self,
-            'longitude', 'latitude', 'description', 'enddatetime', 'people',
-            'rroam', 'rneedlocation'
+            'longitude', 'latitude', 'description', 'startdatetime',
+            'enddatetime', 'people', 'rroam', 'rneedlocation'
         )
 
 
@@ -90,7 +95,10 @@ class Roam(LocatedElement):
 
     def __str__(self):
         """representation."""
-        return obj2str(self, 'name', 'description', 'enddatetime', 'people')
+        return obj2str(
+            self,
+            'name', 'description', 'startdatetime', 'enddatetime', 'people'
+        )
 
 
 class NeedLocation(LocatedElement):
@@ -120,8 +128,8 @@ class NeedLocation(LocatedElement):
         return obj2str(
             self,
             'latitude', 'longitude', 'mood', 'description',
-            'needs', 'handicapped', 'gender', 'enddatetime', 'people',
-            'roam'
+            'needs', 'handicapped', 'gender', 'startdatetime', 'enddatetime',
+            'people', 'roam'
         )
 
 

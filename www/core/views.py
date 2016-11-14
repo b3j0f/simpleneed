@@ -49,6 +49,7 @@ class LocatedElementViewSet(ModelViewSet):
         'description': ['iregex'],
         'longitude': ['exact', 'gte', 'lte'],
         'latitude': ['exact', 'gte', 'lte'],
+        'startdatetime': ['exact', 'gte', 'lte'],
         'enddatetime': ['exact', 'gte', 'lte'],
         'messages': ['exact'],
         'people': ['exact', 'gte', 'lte']

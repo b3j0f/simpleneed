@@ -47,7 +47,7 @@ class LocatedElementSerializer(HyperlinkedModelSerializer):
         model = LocatedElement
         _fields = [
             'description', 'longitude', 'latitude', 'enddatetime', 'messages',
-            'people'
+            'people', 'startdatetime'
         ]
         fields = _fields + ['rroam', 'rneedlocation', 'child']
 

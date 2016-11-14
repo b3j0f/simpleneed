@@ -1,4 +1,5 @@
-import { NgModule } from '@angular/core';
+//import { captureException, config } from 'raven-js';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
@@ -6,10 +7,19 @@ import { MapPage } from '../pages/map/map';
 import { StatsPage } from '../pages/stats/stats';
 import { TabsPage } from '../pages/tabs/tabs';
 import { MapComponent } from '../components/map-component/map-component';
-import { CRUPPage } from '../pages/crup/crup';
-import { FilterPage } from '../pages/filter/filter';
+import { LocatedElementPage } from '../pages/located-element/located-element';
 import { MenuComponent } from '../components/menu/menu';
 import { NavBarComponent } from '../components/navbar/navbar';
+import { HTTP } from '../providers/http';
+
+//config('https://7ca3f181c11f40aea28d05fe60acd978@sentry.io/114226')
+//  .install();
+
+/*class RavenErrorHandler implements ErrorHandler {
+  handleError(err:any) : void {
+    captureException(err.originalError);
+  }
+}*/
 
 @NgModule({
   declarations: [
@@ -19,8 +29,7 @@ import { NavBarComponent } from '../components/navbar/navbar';
     MapPage,
     StatsPage,
     TabsPage,
-    CRUPPage,
-    FilterPage,
+    LocatedElementPage,
     MenuComponent,
     NavBarComponent
   ],
@@ -35,11 +44,10 @@ import { NavBarComponent } from '../components/navbar/navbar';
     MapPage,
     StatsPage,
     TabsPage,
-    CRUPPage,
-    FilterPage,
+    LocatedElementPage,
     MenuComponent,
     NavBarComponent
   ],
-  providers: []
+  providers: [ HTTP /*{ /*provide: ErrorHandler, /*useClass: RavenErrorHandler }*/]
 })
 export class AppModule {}

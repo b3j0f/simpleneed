@@ -1,0 +1,116 @@
+<ion-header>
+	<navbar-component #navbar ></navbar-component>
+</ion-header>
+
+<ion-content>
+	<ion-segment [(ngModel)]="kind">
+		<ion-segment-button value="needlocation">
+			need location
+			<ion-icon name="contact"></ion-icon>
+		</ion-segment-button>
+		<ion-segment-button value="roam">
+			<label>roam
+			<ion-icon name="contacts"></ion-icon>
+			</label>
+		</ion-segment-button>
+	</ion-segment>
+	<div [ngSwitch]="kind">
+		<ion-list *ngSwitchCase="'roam'">
+			<ion-item>
+				<ion-label>
+					<ion-icon name="clipboard"></ion-icon>
+				</ion-label>
+				<ion-input [(ngModel)]="item.name" type="search" placeholder="name"></ion-input>
+			</ion-item>
+			<ion-item>
+				<ion-label>
+					<ion-icon name="quote"></ion-icon>
+				</ion-label>
+				<ion-input *ngIf="isFilter()" [(ngModel)]="item.description" type="search" placeholder="description"></ion-input>
+				<ion-textarea *ngIf="!isFilter()" [(ngModel)]="item.description" [placeholder]="item.description"></ion-textarea>
+			</ion-item>
+			<ion-item>
+				<ion-range min=0 max=24 [(ngModel)]="item.durations" snaps pin step=2 dualKnobs>
+					<ion-label range-left><ion-icon name="timer"></ion-icon> {{item.durations.lower}}:00</ion-label>
+					<ion-label range-right>{{item.durations.upper}}:00</ion-label>
+				</ion-range>
+			</ion-item>
+		</ion-list>
+		<ion-list *ngSwitchCase="'needlocation'">
+			<ion-item>
+				<ion-label>
+					<button ion-button round [color]="item.snack ? 'primary' : 'light'" icon-right block (click)="clickNeed('snack')">
+						snack
+						<ion-icon name="cafe"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button round [color]="item.food ? 'primary' : 'light'" icon-right block (click)="clickNeed('food')">
+					meal
+						<ion-icon name="pizza"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="item.money ? 'primary' : 'light'" icon-right block round (click)="clickNeed('money')" width="50%">money
+						<ion-icon name="cash"></ion-icon>
+					</button>
+				</ion-label>
+			</ion-item>
+			<ion-item>
+				<ion-label>
+					<button ion-button [color]="item.clothes ? 'primary' : 'light'" round icon-right block (click)="clickNeed('clothes')" width="50%">
+						clothes
+						<ion-icon name="shirt"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="item.company ? 'primary' : 'light'" round icon-right block (click)="clickNeed('company')" width="50%">
+					company
+						<ion-icon name="chatbubbles"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="item.hygiene ? 'primary' : 'light'" round icon-right block (click)="clickNeed('hygiene')" width="50%">hygiene
+						<ion-icon name="water"></ion-icon>
+					</button>
+				</ion-label>
+			</ion-item>
+			<ion-item>
+				<ion-label>
+					<button ion-button [color]="item.accomodation ? 'primary' : 'light'" round icon-right block (click)="clickNeed('accomodation')" width="50%">
+						home
+						<ion-icon name="home"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="item.stuffs ? 'primary' : 'light'" round icon-right block (click)="clickNeed('stuffs')" width="50%">
+					stuffs
+						<ion-icon name="help"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="item.health ? 'primary' : 'light'" round icon-right block (click)="clickNeed('health')" width="50%">health
+						<ion-icon name="medkit"></ion-icon>
+					</button>
+				</ion-label>
+			</ion-item>
+			<ion-item>
+				<ion-label>
+					<ion-icon name="quote"></ion-icon>
+				</ion-label>
+				<ion-input *ngIf="isFilter()" [(ngModel)]="item.description" type="search" placeholder="description"></ion-input>
+				<ion-textarea *ngIf="!isFilter()" [(ngModel)]="item.description" [placeholder]="item.description"></ion-textarea>
+			</ion-item>
+			<ion-item>
+				<ion-range min=0 max=24 [(ngModel)]="item.durations" snaps pin step=2 dualKnobs>
+					<ion-label range-left><ion-icon name="timer"></ion-icon> {{item.durations.lower}}:00</ion-label>
+					<ion-label range-right>{{item.durations.upper}}:00</ion-label>
+				</ion-range>
+			</ion-item>
+		</ion-list>
+	</div>
+	<ion-input *ngIf="!isFilter()" type="password" [(ngModel)]="item.password"></ion-input>
+	<button ion-button icon-only block round (click)="doAction()">
+		<ion-icon name="checkmark" large></ion-icon>
+	</button>
+</ion-content>
