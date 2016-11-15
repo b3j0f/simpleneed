@@ -8,5 +8,10 @@
 			<ion-icon name="search"></ion-icon>
 		</button>
 	</ion-fab>
+	<ion-fab bottom right>
+		<button ion-fab icon-only (click)="findLocation()">
+			<ion-icon name="pin"></ion-icon>
+		</button>
+	</ion-fab>
   	<map-component #map></map-component>
 </ion-content>

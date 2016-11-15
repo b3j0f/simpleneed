@@ -3,11 +3,10 @@
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from django.utils.timezone import now
 
-from datetime import datetime as dt, date
+from datetime import datetime as datetime, date
 
-from time import time
+from time import time, mktime
 
 from md5 import md5
 
@@ -46,7 +45,7 @@ class Gender(models.Model):
 
 def add4hours():
     """Add 4 hours to currend datetime."""
-    return dt.fromtimestamp(time() + 4 * 3600)
+    return time() + 4 * 3600
 
 
 class LocatedElement(models.Model):
@@ -55,10 +54,20 @@ class LocatedElement(models.Model):
     longitude = models.FloatField(null=False)
     latitude = models.FloatField(null=False)
     description = models.TextField(default='')
-    startdatetime = models.DateTimeField(default=dt.now)
-    enddatetime = models.DateTimeField(default=add4hours)
+    startts = models.FloatField(default=time)
+    endts = models.FloatField(default=add4hours)
     people = models.IntegerField(default=1)
     pwd = models.CharField(max_length=32, default='')
+
+    @property
+    def utcstartdatetime(self):
+        """Get start datetime."""
+        return datetime.utcfromtimestamp(self.startts)
+
+    @property
+    def utcenddatetime(self):
+        """Get start datetime."""
+        return datetime.utcfromtimestamp(self.endts)
 
     @property
     def child(self):
@@ -74,8 +83,9 @@ class LocatedElement(models.Model):
         """representation."""
         return obj2str(
             self,
-            'longitude', 'latitude', 'description', 'startdatetime',
-            'enddatetime', 'people', 'rroam', 'rneedlocation', 'haspwd'
+            'longitude', 'latitude', 'description', 'startts', 'endts',
+            'people', 'rroam', 'rneedlocation',
+            'utcstartdatetime', 'utcenddatetime', 'haspwd'
         )
 
 
@@ -86,11 +96,16 @@ class Message(models.Model):
         LocatedElement, null=False, related_name='messages'
     )
     content = models.TextField(null=False)
-    datetime = models.DateTimeField(default=now)
+    ts = models.FloatField(default=time)
+
+    @property
+    def utcdatetime(self):
+        """Get datetime."""
+        return datetime.utcfromtimestamp(self.ts)
 
     def __str__(self):
         """representation."""
-        return obj2str(self, 'element', 'content', 'datetime')
+        return obj2str(self, 'element', 'content', 'ts', 'utcdatetime')
 
 
 class Roam(LocatedElement):
@@ -105,7 +120,8 @@ class Roam(LocatedElement):
         """representation."""
         return obj2str(
             self,
-            'name', 'description', 'startdatetime', 'enddatetime', 'people'
+            'name', 'description', 'startts', 'endts', 'people'
+            'utcstartdatetime', 'utcenddatetime',
         )
 
 
@@ -136,8 +152,9 @@ class NeedLocation(LocatedElement):
         return obj2str(
             self,
             'latitude', 'longitude', 'mood', 'description',
-            'needs', 'handicapped', 'gender', 'startdatetime', 'enddatetime',
-            'people', 'roam'
+            'needs', 'handicapped', 'gender', 'startts', 'endts',
+            'people', 'roam',
+            'startdatetime', 'enddatetime',
         )
 
 
@@ -154,25 +171,39 @@ class Contact(models.Model):
         return obj2str(self, 'name', 'description', 'phone', 'website')
 
 
+def currentdatets():
+    """Get current date timestamp."""
+    return mktime(date.today())
+
+
 class Stats(models.Model):
     """Stats model."""
 
-    date = models.DateField(default=date.today, primary_key=True)
+    ts = models.IntegerField(default=currentdatets, primary_key=True)
 
     needs = models.IntegerField(default=0)
     answeredneeds = models.IntegerField(default=0)
     roams = models.IntegerField(default=0)
+
+    def utcdate(self):
+        """Get utc date."""
+        return datetime.utcfromtimestamp(self.ts)
+
+    def __str__(self):
+        """representation."""
+        return obj2str(
+            self, 'ts', 'needs', 'answeredneeds', 'roams', 'utcdate'
+        )
 
 
 @receiver(pre_save, sender=NeedLocation)
 def checkneeds(sender, instance, **kwargs):
     """If needs are empty, set enddatetime to at most now."""
     if not instance.needs:
+        now = time()
 
-        dt.now()
-
-        if dt < instance.enddatetime:
-            instance.enddatetime = dt
+        if now < instance.endts:
+            instance.endts = now
 
 
 @receiver(pre_save, sender=LocatedElement)
@@ -197,8 +228,8 @@ def checkkey(sender, instance, **kwargs):
 @receiver(post_save, sender=Roam)
 def addroamstats(sender, instance, **kwargs):
     """Add roam count in stats."""
-    today = date.today()
-    stats = Stats.objects.get(date=today)
+    todayts = currentdatets()
+    stats = Stats.objects.get(ts=todayts)
 
     if stats is None:
         Stats.objects.create(roams=1)
@@ -227,8 +258,8 @@ def addneedlocationstats(sender, instance, **kwargs):
         needscount = len(newneeds)
         answeredneedscount = len(answeredneeds)
 
-    today = date.today()
-    stats = Stats.objects.get(date=today)
+    todayts = currentdatets()
+    stats = Stats.objects.get(ts=todayts)
 
     if stats is None:
         Stats.objects.create(

@@ -1,8 +1,10 @@
 import { Component , ViewChild } from '@angular/core';
 import { MapComponent } from './../../components/map-component/map-component';
 import { HTTP } from '../../providers/http';
-import { LoadingController, NavController } from 'ionic-angular';
+import { NavController, LoadingController } from 'ionic-angular';
 import { ACTION_FILTER, ACTION_CRUP, LocatedElementPage } from '../located-element/located-element';
+//import { Geolocation, DeviceOrientation, CompassHeading, Network, Diagnostic, CallNumber, AppRate } from 'ionic-native';
+import { Geolocation } from 'ionic-native';
 
 @Component({
     selector: 'page-map',
@@ -14,14 +16,16 @@ export class MapPage {
     @ViewChild('map') mapcomponent: MapComponent;
     map: any;
 
+    // pos: Array<number> = Geolocation.getCurrentPosition()
+
     _filter: any = {
         needs: [],
-        sick: false,
-        gender: 'other',
-        mood: 2,
-        handicapped: false,
-        people: 1,
-        durations: {lower: 2, upper: 8}
+        //sick: false,
+        //gender: 'other',
+        //mood: 2,
+        //handicapped: false,
+        //people: 1,
+        durations: {lower: 0, upper: 8}
     };
     filter: any = this._filter;
     kind: string = 'needlocation';
@@ -41,14 +45,41 @@ export class MapPage {
         this.mapcomponent.map.on(
             'singleclick', (event) => {
                 console.log(event);
-                let elt = {'item': undefined, 'kind': undefined};
-                let item = elt.item;
-                let kind = elt.kind;
-                item['longitude'] = event.coordinate[0];
-                item['latitude'] = event.coordinate[1];
+                if (event.elt === undefined) {
+                    let item = {
+                        longitude: event.coordinate[0],
+                        latitude: event.coordinate[1]
+                    }
+                    for(let key in self._filters) {
+                        item[key] = self._filters[key];
+                    }
+                    let kind = 'needlocation';
+                } else {
+                    let item = elt.item;
+                    let kind = elt.kind;
+                }
+
                 this.openCRUP(kind, item);
             }
         );
+    }
+
+    findLocation() {
+        let loading = this.loadingCtrl.create();
+        loading.present();
+        Geolocation.getCurrentPosition().then(
+            resp => {
+                loading.dismiss();
+                console.log(resp);
+                this.mapcomponent.map.getView().SetCenter(
+                    resp.coords.longitude,
+                    resp.coords.latitude
+                );
+            }
+        ).catch(error => {
+            loading.dismiss();
+            console.log(error);
+        });
     }
 
     openFilter() {
@@ -74,30 +105,26 @@ export class MapPage {
     }
 
     refresh(kind, filter) {
-        console.log(this, filter);
         let apifilter = this.getAPIFilter(filter);
-
-        let loading = this.loadingCtrl.create();
-        loading.present();
-
-        this.http.get(kind, apifilter).then(
-            data => {
-                loading.dismiss();
-            }
-        );
+        this.http.get(kind + 's', apifilter);
     }
 
     getAPIFilter(filter) {
         let result = {};
-        let applyproperty = (name, suffix: string = '') => {
-            if (filter[name] != undefined) {
-                result[name + suffix] = filter[name];
+        let applyproperty = (
+            name, suffix: string = '', name2: string = null
+        ) => {
+            if (name2 === null) {
+                name2 = name;
+            }
+            if (filter[name2] != undefined) {
+                result[name + suffix] = filter[name2];
             }
         }
 
         applyproperty('people', '__lte');
-        applyproperty('startdatetime', '__gte');
-        applyproperty('enddatetime', '__lte');
+        applyproperty('startdatetime', '__lte', 'enddatetime');
+        applyproperty('enddatetime', '__gte', 'startdatetime');
         applyproperty('description', '__iregex');
         applyproperty('name');
         applyproperty('mood');
@@ -122,11 +149,9 @@ export class MapPage {
     process(action, kind, item) {
         if (action === ACTION_CRUP) {
             let method = 'id' in item ? this.http.put : this.http.post;
-            let loading = this.loadingCtrl.create();
-            loading.present();
-            method(kind, item).then(() => {
-                loading.dismiss(); this.refresh(kind, item);
-            });
+            method(kind + 's', item).then(
+                data => this.refresh(kind, data)
+            ).catch(error => this.refresh(kind, item));
         } else {
             this.refresh(kind, item);
         }

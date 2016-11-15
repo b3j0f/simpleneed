@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-
 import { NavController, NavParams } from 'ionic-angular';
+//import { SocialSharing, Shake, SecureStorage, Globalization } from 'ionic-native';
 
 export let ACTION_FILTER: string = 'filter';
 export let ACTION_CRUP: string = 'crup';
@@ -23,43 +23,52 @@ export class LocatedElementPage {
         this.kind = navParams.get('kind') || 'needlocation';
 
         let item = navParams.get('item');
-        this.fillForm(item);
+        this.item = {};
+        for(let key in item) {
+            this.item[key] = item[key];
+        }
+        this.fillForm();
     }
 
     isFilter() {
         return this.action === ACTION_FILTER;
     }
 
-    fillForm(item) {
+    fillForm() {
         // fill this form with item
-        if (item !== undefined) {
-            this.item = {};
-            for(let key in item) {
-                this.item[key] = item[key];
-            }
-            if (item.durations === undefined) {
-                item.durations = [];
-                if (item.startdatetime !== undefined) {
-                    item.durations.lower = Math.round(
-                        Math.abs(
-                            item.startdatetime.getTime() - new Date().getTime()
-                        ) / 3600000
-                    );
-                } else {
-                    item.durations.lower = 2;
-                }
-                if (item.enddatetime !== undefined) {
-                    item.durations.upper = Math.round(
-                        Math.abs(
-                            item.enddatetime.getTime() - new Date().getTime()
-                        ) / 3600000
-                    );
-                } else {
-                    item.durations.upper = 8;
-                }
+        if (this.item.durations === undefined) {
+            this.item.durations = {};
+            let startdatetime = this.item.startdatetime;
+            if (startdatetime === undefined) {
+                this.item.startdatetime = new Date();
+                this.item.duration.lower = 0;
             } else {
-                item.durations = [2, 8];
+                this.item.durations.lower = Math.floor(
+                    Math.max(
+                        Math.abs(
+                            startdatetime.getTime() - new Date().getTime()
+                        ) / 3600000,
+                        0
+                    )
+                );
             }
+            let enddatetime = this.item.enddatetime;
+            if (enddatetime !== undefined) {
+                this.item.durations.upper = Math.round(
+                    Math.abs(
+                        enddatetime.getTime() - new Date().getTime()
+                    ) / 3600000
+                );
+            } else {
+                this.item.durations.upper = 8;
+            }
+        } else {
+            this.item.durations = {
+                lower: Math.floor(
+                    Math.max(this.item.startdatetime.getTime() / 3600000, 0)
+                ),
+                upper: Math.ceil(this.item.enddatetime.getTime() / 3600000, 0)
+            };
         }
     }
 
@@ -71,11 +80,21 @@ export class LocatedElementPage {
             new Date().getTime() + this.item.durations.upper * 3600000
         );
         this.navCtrl.pop();
+        console.log('FFFF', this.callback);
         this.callback(this.kind, this.item);
     }
 
     clickNeed(name) {
-        this.item[name] = !this.item[name];
+        let index = this.item.needs.indexOf(name);
+        if (index === -1) {
+            this.item.needs.push(name);
+        } else {
+            this.item.needs.splice(index, 1);
+        }
+    }
+
+    hasNeed(name) {
+        return this.item.needs.indexOf(name) !== -1;
     }
 
 }

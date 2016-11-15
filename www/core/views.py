@@ -49,8 +49,8 @@ class LocatedElementViewSet(ModelViewSet):
         'description': ['iregex'],
         'longitude': ['exact', 'gte', 'lte'],
         'latitude': ['exact', 'gte', 'lte'],
-        'startdatetime': ['exact', 'gte', 'lte'],
-        'enddatetime': ['exact', 'gte', 'lte'],
+        'startts': ['exact', 'gte', 'lte'],
+        'endts': ['exact', 'gte', 'lte'],
         'messages': ['exact'],
         'people': ['exact', 'gte', 'lte']
     }
@@ -66,7 +66,7 @@ class MessageViewSet(ModelViewSet):
     filter_fields = {
         'content': ['iregex'],
         'element': ['exact'],
-        'datetime': ['exact', 'gte', 'lte']
+        'ts': ['exact', 'gte', 'lte']
     }
     ordering_fields = ['datetime']
     ordering = ['datetime']
@@ -114,7 +114,7 @@ class StatsViewSet(ModelViewSet):
     queryset = Stats.objects.all()
     serializer_class = StatsSerializer
     filter_fields = {
-        'date': ['exact', 'gte', 'lte'],
+        'ts': ['exact', 'gte', 'lte'],
         'needs': ['exact', 'gte', 'lte'],
         'answeredneeds': ['exact', 'gte', 'lte'],
         'roams': ['exact', 'gte', 'lte']

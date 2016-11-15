@@ -22,101 +22,89 @@
 				</ion-label>
 				<ion-input [(ngModel)]="item.name" type="search" placeholder="name"></ion-input>
 			</ion-item>
-			<ion-item>
-				<ion-label>
-					<ion-icon name="quote"></ion-icon>
-				</ion-label>
-				<ion-input *ngIf="isFilter()" [(ngModel)]="item.description" type="search" placeholder="description"></ion-input>
-				<ion-textarea *ngIf="!isFilter()" [(ngModel)]="item.description" [placeholder]="item.description"></ion-textarea>
-			</ion-item>
 		</ion-list>
 		<ion-list *ngSwitchCase="'needlocation'">
 			<ion-item>
 				<ion-label>
-					<button ion-button round [color]="item.snack ? 'primary' : 'light'" icon-right block (click)="clickNeed('snack')">
+					<button ion-button round [color]="hasNeed('snack') ? 'danger' : 'primary'" icon-right block small (click)="clickNeed('snack')">
 						snack
 						<ion-icon name="cafe"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button round [color]="item.food ? 'primary' : 'light'" icon-right block (click)="clickNeed('food')">
+					<button ion-button round [color]="hasNeed('food') ? 'danger' : 'primary'" icon-right block small (click)="clickNeed('food')">
 					meal
 						<ion-icon name="pizza"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="item.money ? 'primary' : 'light'" icon-right block round (click)="clickNeed('money')" width="50%">money
+					<button ion-button [color]="hasNeed('money') ? 'danger' : 'primary'" icon-right block round small (click)="clickNeed('money')">money
 						<ion-icon name="cash"></ion-icon>
 					</button>
 				</ion-label>
 			</ion-item>
 			<ion-item>
 				<ion-label>
-					<button ion-button [color]="item.clothes ? 'primary' : 'light'" round icon-right block (click)="clickNeed('clothes')" width="50%">
+					<button ion-button [color]="hasNeed('clothes') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('clothes')">
 						clothes
 						<ion-icon name="shirt"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="item.company ? 'primary' : 'light'" round icon-right block (click)="clickNeed('company')" width="50%">
+					<button ion-button [color]="hasNeed('company') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('company')">
 					company
 						<ion-icon name="chatbubbles"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="item.hygiene ? 'primary' : 'light'" round icon-right block (click)="clickNeed('hygiene')" width="50%">hygiene
+					<button ion-button [color]="hasNeed('hygiene') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('hygiene')">hygiene
 						<ion-icon name="water"></ion-icon>
 					</button>
 				</ion-label>
 			</ion-item>
 			<ion-item>
 				<ion-label>
-					<button ion-button [color]="item.accomodation ? 'primary' : 'light'" round icon-right block (click)="clickNeed('accomodation')" width="50%">
+					<button ion-button [color]="hasNeed('accomodation') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('accomodation')">
 						home
 						<ion-icon name="home"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="item.stuffs ? 'primary' : 'light'" round icon-right block (click)="clickNeed('stuffs')" width="50%">
+					<button ion-button [color]="hasNeed('stuffs') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('stuffs')">
 					stuffs
 						<ion-icon name="help"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="item.health ? 'primary' : 'light'" round icon-right block (click)="clickNeed('health')" width="50%">health
+					<button ion-button [color]="hasNeed('health') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('health')">health
 						<ion-icon name="medkit"></ion-icon>
 					</button>
 				</ion-label>
-			</ion-item>
-			<ion-item>
-				<ion-label>
-					<ion-icon name="quote"></ion-icon>
-				</ion-label>
-				<ion-input *ngIf="isFilter()" [(ngModel)]="item.description" type="search" placeholder="description"></ion-input>
-				<ion-textarea *ngIf="!isFilter()" [(ngModel)]="item.description" [placeholder]="item.description"></ion-textarea>
-			</ion-item>
-			<ion-item>
-				<ion-range min=0 max=24 [(ngModel)]="item.durations" snaps pin step=2 dualKnobs>
-					<ion-label range-left><ion-icon name="timer"></ion-icon> {{item.durations.lower}}:00</ion-label>
-					<ion-label range-right>{{item.durations.upper}}:00</ion-label>
-				</ion-range>
 			</ion-item>
 		</ion-list>
 	</div>
 	<ion-list>
 		<ion-item>
+			<ion-label>
+				<ion-icon name="quote"></ion-icon>
+			</ion-label>
+			<ion-input *ngIf="isFilter()" [(ngModel)]="item.description" type="search" placeholder="description"></ion-input>
+			<ion-textarea *ngIf="!isFilter()" [(ngModel)]="item.description" [placeholder]="item.description"></ion-textarea>
+		</ion-item>
+		<ion-item>
+			<ion-icon name="timer"></ion-icon>
 			<ion-range min=0 max=24 [(ngModel)]="item.durations" snaps pin step=2 dualKnobs>
-				<ion-label range-left><ion-icon name="timer"></ion-icon> {{item.durations.lower}}:00</ion-label>
+				<ion-label range-left> {{item.durations.lower}}:00</ion-label>
 				<ion-label range-right>{{item.durations.upper}}:00</ion-label>
 			</ion-range>
 		</ion-item>
+		<ion-item *ngIf="!isFilter()">
+			<ion-input type="password" [(ngModel)]="item.password"></ion-input>
+		</ion-item>
+		<ion-item>
+			<button ion-button icon-only block round (click)="doAction()">
+				<ion-icon name="checkmark" large></ion-icon>
+			</button>
+		</ion-item>
 	</ion-list>
-	<ion-item *ngIf="!isFilter()">
-		<ion-input type="password" [(ngModel)]="item.password"></ion-input>
-	</ion-item>
-	<ion-item>
-		<button ion-button icon-only block round (click)="doAction()">
-			<ion-icon name="checkmark" large></ion-icon>
-		</button>
-	</ion-item>
 </ion-content>
