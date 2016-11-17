@@ -71,7 +71,8 @@ class NeedLocationSerializer(LocatedElementSerializer):
 
         model = NeedLocation
         fields = [
-            'mood', 'needs', 'handicapped', 'sick', 'gender', 'roam'
+            'roam', 'needs', 'emergency'
+            # 'handicapped', 'sick', 'gender', 'mood'
         ] + LocatedElementSerializer.Meta._fields
 
 

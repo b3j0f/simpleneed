@@ -20,7 +20,7 @@ class Mood(models.Model):
 
     def __str__(self):
         """representation."""
-        return obj2str(self, 'name')
+        return 'Mood({0})'.format(self.name)
 
 
 class Need(models.Model):
@@ -30,7 +30,7 @@ class Need(models.Model):
 
     def __str__(self):
         """representation."""
-        return obj2str(self, 'name')
+        return 'Need({0})'.format(self.name)
 
 
 class Gender(models.Model):
@@ -40,24 +40,24 @@ class Gender(models.Model):
 
     def __str__(self):
         """representation."""
-        return obj2str(self, 'name')
+        return 'Gender({0})'.format(self.name)
 
 
-def add4hours():
+def add8hours():
     """Add 4 hours to currend datetime."""
-    return time() + 4 * 3600
+    return time() + 8 * 3600
 
 
 class LocatedElement(models.Model):
     """abstract model for located elements."""
 
-    longitude = models.FloatField(null=False)
-    latitude = models.FloatField(null=False)
-    description = models.TextField(default='')
-    startts = models.FloatField(default=time)
-    endts = models.FloatField(default=add4hours)
-    people = models.IntegerField(default=1)
-    pwd = models.CharField(max_length=32, default='')
+    longitude = models.FloatField(null=False, blank=False)
+    latitude = models.FloatField(null=False, blank=False)
+    description = models.TextField(default='', blank=True)
+    startts = models.FloatField(default=time, blank=True)
+    endts = models.FloatField(default=add8hours, blank=True)
+    people = models.IntegerField(default=1, blank=True)
+    pwd = models.CharField(max_length=32, default='', blank=True)
 
     @property
     def utcstartdatetime(self):
@@ -79,24 +79,15 @@ class LocatedElement(models.Model):
         """True if this has a password."""
         return bool(self.pwd)
 
-    def __str__(self):
-        """representation."""
-        return obj2str(
-            self,
-            'longitude', 'latitude', 'description', 'startts', 'endts',
-            'people', 'rroam', 'rneedlocation',
-            'utcstartdatetime', 'utcenddatetime', 'haspwd'
-        )
-
 
 class Message(models.Model):
     """Message model."""
 
     element = models.ForeignKey(
-        LocatedElement, null=False, related_name='messages'
+        LocatedElement, related_name='messages', blank=False, null=True
     )
-    content = models.TextField(null=False)
-    ts = models.FloatField(default=time)
+    content = models.TextField(blank=False)
+    ts = models.FloatField(default=time, blank=True)
 
     @property
     def utcdatetime(self):
@@ -105,57 +96,55 @@ class Message(models.Model):
 
     def __str__(self):
         """representation."""
-        return obj2str(self, 'element', 'content', 'ts', 'utcdatetime')
+        result = 'Message('
+
+        if self.element:
+            result += 'element: {0}, '.format(self.element)
+
+        if self.content:
+            result += 'content: {0}, '.format(self.content)
+
+        if self.ts:
+            result += 'ts: {0}, '.format(self.ts)
+
+        return result + ')'
 
 
 class Roam(LocatedElement):
     """Roam model."""
 
-    name = models.CharField(max_length=256, null=False)
+    name = models.CharField(max_length=256, null=False, blank=False)
     base = models.OneToOneField(
-        LocatedElement, parent_link=True, related_name='rroam', null=False
+        LocatedElement, parent_link=True, related_name='rroam', blank=True
     )
 
     def __str__(self):
         """representation."""
-        return obj2str(
-            self,
-            'name', 'description', 'startts', 'endts', 'people'
-            'utcstartdatetime', 'utcenddatetime',
-        )
+        return 'Roam({0})/{1}'.format(self.name, super(Roam, self).__str__())
 
 
 class NeedLocation(LocatedElement):
     """need location model."""
 
-    mood = models.ForeignKey(
-        Mood, default='neutral', related_name='needlocations'
-    )
-    needs = models.ManyToManyField(
-        Need, blank=True, related_name='needlocations'
-    )
-    handicapped = models.BooleanField(default=False)
-    sick = models.BooleanField(default=False)
-    gender = models.ForeignKey(
-        Gender, default='other', related_name='needlocations'
-    )
+    # mood = models.ForeignKey(Mood, default='neutral')
+    needs = models.ManyToManyField(Need, blank=True)
+    # handicapped = models.BooleanField(default=False)
+    # sick = models.BooleanField(default=False)
+    # gender = models.ForeignKey(Gender, default='other')
+    emergency = models.BooleanField(default=False, blank=True)
     roam = models.ForeignKey(
-        Roam, null=True, default=None, related_name='needlocations'
+        Roam, blank=True, default=None, related_name='needlocations', null=True
     )
     base = models.OneToOneField(
         LocatedElement, parent_link=True, related_name='rneedlocation',
-        null=False
+        null=False, blank=True
     )
 
-    def __str__(self):
-        """representation."""
-        return obj2str(
-            self,
-            'latitude', 'longitude', 'mood', 'description',
-            'needs', 'handicapped', 'gender', 'startts', 'endts',
-            'people', 'roam',
-            'startdatetime', 'enddatetime',
-        )
+
+class Follower(models.Model):
+    """Located element followers."""
+
+    follow = models.ManyToManyField(LocatedElement)
 
 
 class Contact(models.Model):
@@ -173,7 +162,7 @@ class Contact(models.Model):
 
 def currentdatets():
     """Get current date timestamp."""
-    return mktime(date.today())
+    return mktime(date.today().timetuple())
 
 
 class Stats(models.Model):
@@ -197,12 +186,16 @@ class Stats(models.Model):
 
 
 @receiver(pre_save, sender=NeedLocation)
-def checkneeds(sender, instance, **kwargs):
+def cleanneedlocation(sender, instance, **kwargs):
     """If needs are empty, set enddatetime to at most now."""
-    if not instance.needs:
-        now = time()
+    now = time()
 
-        if now < instance.endts:
+    if instance.id is not None:
+
+        if (
+            (not instance.needs and now <= instance.endts) or
+            instance.endts <= (instance.startts + 8 * 3600)
+        ):
             instance.endts = now
 
 
@@ -242,6 +235,7 @@ def addroamstats(sender, instance, **kwargs):
 @receiver(pre_save, sender=NeedLocation)
 def addneedlocationstats(sender, instance, **kwargs):
     """Need location post save hook which add stats."""
+    return
     needscount = len(instance.needs)
     answeredneedscount = 0
     people = instance.people

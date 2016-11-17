@@ -78,11 +78,12 @@ class NeedLocationViewSet(LocatedElementViewSet):
     queryset = NeedLocation.objects.all()
     serializer_class = NeedLocationSerializer
     filter_fields = {
-        'mood': ['exact'],
+        # 'mood': ['exact'],
         'needs': ['exact'],
-        'handicapped': ['exact'],
-        'gender': ['exact'],
-        'roam': ['exact']
+        # 'handicapped': ['exact'],
+        # 'gender': ['exact'],
+        'roam': ['exact'],
+        'emergency': ['exact']
     }
     filter_fields.update(LocatedElementViewSet.filter_fields)
 
