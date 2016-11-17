@@ -127,7 +127,7 @@ class NeedLocation(LocatedElement):
     """need location model."""
 
     # mood = models.ForeignKey(Mood, default='neutral')
-    needs = models.ManyToManyField(Need, blank=True)
+    needs = models.ManyToManyField(Need, blank=True, default=[])
     # handicapped = models.BooleanField(default=False)
     # sick = models.BooleanField(default=False)
     # gender = models.ForeignKey(Gender, default='other')
@@ -193,42 +193,51 @@ def cleanneedlocation(sender, instance, **kwargs):
     if instance.id is not None:
 
         if (
-            (not instance.needs and now <= instance.endts) or
+            (not instance.needs.all() and now <= instance.endts) or
             instance.endts <= (instance.startts + 8 * 3600)
         ):
             instance.endts = now
 
 
 @receiver(pre_save, sender=LocatedElement)
+@receiver(pre_save, sender=NeedLocation)
+@receiver(pre_save, sender=Roam)
 def checkkey(sender, instance, **kwargs):
     """Check pwd."""
-    old = LocatedElement.objects.get(id=instance.id)
+    try:
+        old = type(instance).objects.get(pk=instance.id)
 
-    if old is None:
+    except type(instance).DoesNotExist:
         if instance.haspwd:
             instance.pwd = md5(instance.pwd).digest()
 
-    elif old.haspwd:
+    else:
+        print(instance.pwd)
+        if old.haspwd:
+            pwd = md5(instance.pwd).digest()
 
-        pwd = md5(instance.pwd).digest()
+            if old.pwd != pwd:
+                raise ValueError('Wrong pwd in {0}'.format(instance))
 
-        if old.pwd != pwd:
-            raise KeyError('Wrong pwd in {0}'.format(instance))
+            instance.pwd = pwd
 
-        instance.pwd = pwd
+        elif instance.haspwd:
+            instance.pwd = md5(instance.pwd).digest()
 
 
 @receiver(post_save, sender=Roam)
 def addroamstats(sender, instance, **kwargs):
     """Add roam count in stats."""
     todayts = currentdatets()
-    stats = Stats.objects.get(ts=todayts)
 
-    if stats is None:
+    try:
+        stats = Stats.objects.get(pk=todayts)
+
+    except Stats.DoesNotExist:
         Stats.objects.create(roams=1)
 
     else:
-        stats.__iadd__('roams', 1)
+        stats.roams = stats.roams + 1
         stats.save()
 
 
@@ -236,15 +245,16 @@ def addroamstats(sender, instance, **kwargs):
 def addneedlocationstats(sender, instance, **kwargs):
     """Need location post save hook which add stats."""
     return
-    needscount = len(instance.needs)
+    needscount = len(instance.needs.all())
     answeredneedscount = 0
     people = instance.people
 
-    oldinstance = sender.objects.get(id=instance.id)
+    try:
+        oldinstance = sender.objects.get(pk=instance.id)
 
-    if oldinstance is not None:
-        instanceneeds = set(need.name for need in instance.needs)
-        oldneeds = set(need.name for need in oldinstance.needs)
+    except NeedLocation.DoesNotExist:
+        instanceneeds = set(need.name for need in instance.needs.all())
+        oldneeds = set(need.name for need in oldinstance.needs.all())
 
         newneeds = instanceneeds - oldneeds
         answeredneeds = oldneeds - instanceneeds
@@ -253,15 +263,17 @@ def addneedlocationstats(sender, instance, **kwargs):
         answeredneedscount = len(answeredneeds)
 
     todayts = currentdatets()
-    stats = Stats.objects.get(ts=todayts)
 
-    if stats is None:
+    try:
+        stats = Stats.objects.get(pk=todayts)
+
+    except Stats.DoesNotExist:
         Stats.objects.create(
             allneeds=needscount * people,
             allansweredneeds=answeredneedscount * people
         )
 
     else:
-        stats.__iadd__('needs', needscount * people)
-        stats.__iadd__('answeredneeds', answeredneedscount * people)
+        stats.needs = stats.needs + needscount * people
+        stats.answeredneedscount = stats.answeredneedscount + answeredneedscount * people
         stats.save()

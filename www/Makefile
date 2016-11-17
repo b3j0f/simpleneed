@@ -4,20 +4,23 @@ INSTALL:= pip install -r
 
 all: clean rundev
 
+test: cleandev settingsdev dependenciesdev migrate loaddata
+	$(MANAGE) test
+
 clean:
 	rm -rf core/migrations/0*
 
 cleandev: clean
-	rm -rf db.sql
+	rm -rf db.sqlite
 
 cleanprod: clean
 	$(MANAGE) flush
 
 settingsdev:
-	$DJANGO_SETTINGS="simpleneed/settings-dev.py"
+	export DJANGO_SETTINGS_MODULE="simpleneed/settings-dev.py"
 
 settingsprod:
-	$DJANGO_SETTINGS="simpleneed/settings-prod.py"
+	export DJANGO_SETTINGS_MODULE="simpleneed/settings-prod.py"
 
 dependenciesdev:
 	$(INSTALL) requirements-dev.txt
@@ -33,9 +36,6 @@ migrate: migrations
 
 loaddata:
 	$(MANAGE) loaddata core/fixtures/*
-
-run:
-	$(MANAGE) collectstatic
 
 runprod: settingsprod dependenciesprod migrate loaddata
 	$(MANAGE) collectstatic
