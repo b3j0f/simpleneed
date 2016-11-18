@@ -130,7 +130,7 @@ class NeedLocation(LocatedElement):
     needs = models.ManyToManyField(Need, blank=True, default=[])
     # handicapped = models.BooleanField(default=False)
     # sick = models.BooleanField(default=False)
-    # gender = models.ForeignKey(Gender, default='other')
+    gender = models.ForeignKey(Gender, default='other')
     emergency = models.BooleanField(default=False, blank=True)
     roam = models.ForeignKey(
         Roam, blank=True, default=None, related_name='needlocations', null=True

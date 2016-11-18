@@ -21,7 +21,7 @@ class MoodViewSet(ModelViewSet):
 
     queryset = Mood.objects.all()
     serializer_class = MoodSerializer
-    filter_fields = {'name': ['iregex']}
+    filter_fields = {'name': ['iregex', 'exact']}
 
 
 class NeedViewSet(ModelViewSet):
@@ -29,7 +29,7 @@ class NeedViewSet(ModelViewSet):
 
     queryset = Need.objects.all()
     serializer_class = NeedSerializer
-    filter_fields = {'name': ['iregex']}
+    filter_fields = {'name': ['iregex', 'exact']}
 
 
 class GenderViewSet(ModelViewSet):
@@ -37,7 +37,7 @@ class GenderViewSet(ModelViewSet):
 
     queryset = Gender.objects.all()
     serializer_class = GenderSerializer
-    filter_fields = {'name': ['iregex']}
+    filter_fields = {'name': ['iregex', 'exact']}
 
 
 class LocatedElementViewSet(ModelViewSet):
@@ -94,7 +94,7 @@ class RoamViewSet(LocatedElementViewSet):
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
     filter_fields = {
-        'name': ['iregex'],
+        'name': ['iregex', 'exact'],
         'needlocations': ['exact']
     }
     filter_fields.update(LocatedElementViewSet.filter_fields)
@@ -106,7 +106,7 @@ class ContactViewSet(ModelViewSet):
 
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
-    filter_fields = {'name': ['iregex']}
+    filter_fields = {'name': ['iregex', 'exact']}
 
 
 class StatsViewSet(ModelViewSet):

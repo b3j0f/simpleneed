@@ -4,9 +4,7 @@ from django.test import TestCase
 
 from .models import NeedLocation, Roam, Message, Stats, Need, currentdatets
 
-from unittest import TestCase, main
-
-from time import time
+from unittest import main
 
 from md5 import md5
 
@@ -132,6 +130,16 @@ class RoamTest(TestCase):
 
         self.assertEqual(stats.roams + 1, newstats.roams)
 
+
+class NeedTest(TestCase):
+
+    def test_exact(self):
+
+        Need.objects.get(name='food')
+
+    def test_iregex(self):
+
+        Need.objects.get(name__iregex='.*oo.*')
 
 if __name__ == '__main__':
     main()

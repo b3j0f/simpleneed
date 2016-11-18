@@ -1,7 +1,7 @@
 import { ToastController, LoadingController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Http } from '@angular/http';
+import { Http, Request, RequestMethod, RequestOptions, Response, Headers } from '@angular/http';
 /*
     Generated class for the HTTP provider.
 
@@ -11,8 +11,7 @@ import { Http } from '@angular/http';
 @Injectable()
 export class HTTP {
 
-    root: string = 'http://ovh:8000/rest/v1/';
-    maxduration: number = 5000;
+    root: string = 'http://localhost:8000/rest/v1/';
 
     constructor(
         public http: Http,
@@ -36,39 +35,47 @@ export class HTTP {
     }
 
     post(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('post', lookup, data, headers);
+        return this.process('Post', lookup, data, headers);
     }
     get(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('get', this.getpath(lookup, data), data, headers);
+        return this.process('Get', this.getpath(lookup, data), data, headers);
     }
     put(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('put', lookup, data, headers);
+        return this.process('Put', lookup, data, headers);
     }
     delete(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('delete', this.getpath(lookup, data), data, headers);
+        return this.process('Delete', this.getpath(lookup, data), data, headers);
     }
 
     process(
         method: string, path: string, data: any, headers: any
     ) {
-        let options = {
-            method: method,
-            body: data,
-            headers: headers
-        };
+        let body = JSON.stringify(data);
+        let _headers = new Headers(
+            { 'Content-Type': 'application/json;charset=utf-8' }
+        );
+
+        let requestoptions: RequestOptions = new RequestOptions({
+            method: RequestMethod[method],
+            url: this.root + path,
+            headers: _headers,
+            body: body
+        })
 
         let loading = this.loadingCtrl.create();
         loading.present();
-        console.log('process', options, loading);
 
-        return new Promise(resolve => {
-            this.http[method](this.root + path)
-                .map(res => res.json())
-                .subscribe(data => {
-                    loading.dismiss();
-                    resolve(data);
-                });
-        });
+        return new Promise(
+            resolve =>
+                this.http.request(new Request(requestoptions))
+                    .map((res: Response) => { return res.json(); })
+                    .subscribe(
+                        data => {
+                            loading.dismiss();
+                            resolve(data)
+                        }
+                    )
+            ).catch(error => console.error(error));
     }
 
 }

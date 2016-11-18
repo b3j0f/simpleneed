@@ -16,6 +16,7 @@ export class LocatedElementPage {
     item: any;
     kind: string = 'needlocation';
     duration: Array<number> = [];
+    lastmessage: string = '';
 
     constructor(public navCtrl: NavController, navParams: NavParams) {
         this.action = navParams.get('action');
@@ -36,51 +37,41 @@ export class LocatedElementPage {
 
     fillForm() {
         // fill this form with item
-        if (this.item.durations === undefined) {
-            this.item.durations = {};
-            let startdatetime = this.item.startdatetime;
-            if (startdatetime === undefined) {
-                this.item.startdatetime = new Date();
-                this.item.duration.lower = 0;
-            } else {
-                this.item.durations.lower = Math.floor(
-                    Math.max(
-                        Math.abs(
-                            startdatetime.getTime() - new Date().getTime()
-                        ) / 3600000,
-                        0
-                    )
-                );
-            }
-            let enddatetime = this.item.enddatetime;
-            if (enddatetime !== undefined) {
-                this.item.durations.upper = Math.round(
-                    Math.abs(
-                        enddatetime.getTime() - new Date().getTime()
-                    ) / 3600000
-                );
-            } else {
-                this.item.durations.upper = 8;
-            }
+        this.item.durations = {};
+        let startts = this.item.startts;
+        if (startts === undefined) {
+            this.item.durations.lower = 0;
         } else {
-            this.item.durations = {
-                lower: Math.floor(
-                    Math.max(this.item.startdatetime.getTime() / 3600000, 0)
-                ),
-                upper: Math.ceil(this.item.enddatetime.getTime() / 3600000, 0)
-            };
+            this.item.durations.lower = Math.floor(
+                Math.abs(new Date().getTime() / 1000 - startts) / 3600
+            );
+        }
+        let endts = this.item.endts;
+        if (endts === undefined) {
+            this.item.durations.upper = 8;
+        } else {
+            this.item.durations.upper = Math.ceil(
+                Math.abs(new Date().getTime() / 1000 - endts) / 3600
+            );
         }
     }
 
     doAction() {
-        this.item.startdatetime = new Date(
-            new Date().getTime() + this.item.durations.lower * 3600000
-        );
-        this.item.enddatetime = new Date(
-            new Date().getTime() + this.item.durations.upper * 3600000
-        );
+        let now = new Date().getTime() / 1000;
+        let lower = this.item.durations.lower;
+        if (lower === 0 && this.item.startts !== undefined) {
+            this.item.startts = Math.min(
+                this.item.startts,
+                now + lower * 3600
+            )
+        } else {
+            this.item.startts = now + lower * 3600
+        }
+        this.item.endts = now + this.item.durations.upper * 3600;
+        if (this.lastmessage !== '') {
+            this.item.messages.push(this.lastmessage);
+        }
         this.navCtrl.pop();
-        console.log('FFFF', this.callback);
         this.callback(this.kind, this.item);
     }
 
@@ -95,6 +86,16 @@ export class LocatedElementPage {
 
     hasNeed(name) {
         return this.item.needs.indexOf(name) !== -1;
+    }
+
+    hasPwd() {
+        return this.item.haspwd || (
+            this.item.pwd !== undefined && this.item.pwd !== ''
+        );
+    }
+
+    islocked() {
+        return this.hasPwd();
     }
 
 }

@@ -3,6 +3,12 @@
 </ion-header>
 
 <ion-content>
+	<ion-fab top right>
+		<button ion-fab icon-only (click)="doAction()">
+			<ion-icon *ngIf="isFilter()" name="search" large></ion-icon>
+			<ion-icon *ngIf="!isFilter()" name="checkmark" large></ion-icon>
+		</button>
+	</ion-fab>
 	<ion-segment [(ngModel)]="kind">
 		<ion-segment-button value="needlocation">
 			location
@@ -17,10 +23,12 @@
 	<div [ngSwitch]="kind">
 		<ion-list *ngSwitchCase="'roam'">
 			<ion-item>
-				<ion-label>
-					<ion-icon name="clipboard"></ion-icon>
-				</ion-label>
+				<ion-icon name="clipboard" item-left large></ion-icon>
 				<ion-input [(ngModel)]="item.name" type="search" placeholder="name"></ion-input>
+				<button ion-button icon-only>
+					<ion-icon *ngIf="hasPwd()" name="lock"></ion-icon>
+					<ion-icon *ngIf="!hasPwd()" name="unlock"></ion-icon>
+				</button>
 			</ion-item>
 		</ion-list>
 		<ion-list *ngSwitchCase="'needlocation'">
@@ -85,26 +93,30 @@
 	</div>
 	<ion-list>
 		<ion-item>
-			<ion-label>
-				<ion-icon name="quote"></ion-icon>
-			</ion-label>
+			<ion-icon name="quote" item-left large></ion-icon>
 			<ion-input *ngIf="isFilter()" [(ngModel)]="item.description" type="search" placeholder="description"></ion-input>
 			<ion-textarea *ngIf="!isFilter()" [(ngModel)]="item.description" [placeholder]="item.description"></ion-textarea>
 		</ion-item>
 		<ion-item>
-			<ion-icon name="timer"></ion-icon>
+			<ion-icon name="timer" item-left large></ion-icon>
 			<ion-range min=0 max=24 [(ngModel)]="item.durations" snaps pin step=2 dualKnobs>
-				<ion-label range-left> {{item.durations.lower}}:00</ion-label>
+				<ion-label range-left>{{item.durations.lower}}:00</ion-label>
 				<ion-label range-right>{{item.durations.upper}}:00</ion-label>
 			</ion-range>
 		</ion-item>
 		<ion-item *ngIf="!isFilter()">
-			<ion-input type="password" [(ngModel)]="item.password"></ion-input>
+			<ion-icon *ngIf="hasPwd()" name="lock" item-left></ion-icon>
+			<ion-icon *ngIf="!hasPwd()" name="unlock" item-left></ion-icon>
+			<ion-input type="password" [(ngModel)]="item.pwd"></ion-input>
 		</ion-item>
-		<ion-item>
-			<button ion-button icon-only block round (click)="doAction()">
-				<ion-icon name="checkmark" large></ion-icon>
-			</button>
+	</ion-list>
+	<ion-list *ngIf="item.messages.length > 0">
+		<ion-list-header>
+			<ion-icon name="text" item-left></ion-icon>
+			<ion-label item-right>Messages</ion-label>
+		</ion-list-header>
+		<ion-item *ngFor="let message of item.messages">
+			{{message}}
 		</ion-item>
 	</ion-list>
 </ion-content>

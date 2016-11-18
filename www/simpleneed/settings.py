@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'simpleneed.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite'
+        'NAME': 'db.sqlite3'
     }
 }
 

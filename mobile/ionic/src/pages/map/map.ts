@@ -20,6 +20,9 @@ export class MapPage {
 
     _filter: any = {
         needs: [],
+        haspwd: false,
+        messages: [],
+        description: '',
         //sick: false,
         //gender: 'other',
         //mood: 2,
@@ -33,6 +36,8 @@ export class MapPage {
     needlocations: any = [];
     roams: any = [];
 
+    refreshtask: any;
+
     constructor(
         public navCtrl: NavController,
         public http: HTTP,
@@ -42,25 +47,8 @@ export class MapPage {
     }
 
     ngAfterViewInit() {
-        this.mapcomponent.map.on(
-            'singleclick', (event) => {
-                console.log(event);
-                if (event.elt === undefined) {
-                    let item = {
-                        longitude: event.coordinate[0],
-                        latitude: event.coordinate[1]
-                    }
-                    for(let key in self._filters) {
-                        item[key] = self._filters[key];
-                    }
-                    let kind = 'needlocation';
-                } else {
-                    let item = elt.item;
-                    let kind = elt.kind;
-                }
-
-                this.openCRUP(kind, item);
-            }
+        this.mapcomponent.edit = (elt, coordinate) => this.edit(
+            elt, coordinate
         );
     }
 
@@ -70,16 +58,17 @@ export class MapPage {
         Geolocation.getCurrentPosition().then(
             resp => {
                 loading.dismiss();
-                console.log(resp);
-                this.mapcomponent.map.getView().SetCenter(
+                this.mapcomponent.setCenter(
                     resp.coords.longitude,
                     resp.coords.latitude
                 );
             }
-        ).catch(error => {
-            loading.dismiss();
-            console.log(error);
-        });
+        ).catch(
+            error => {
+                loading.dismiss();
+                console.error(error);
+            }
+        );
     }
 
     openFilter() {
@@ -93,20 +82,43 @@ export class MapPage {
         );
     }
 
+    edit(elt, coordinate) {
+        let item, kind;
+        if (elt === undefined) {
+            item = {
+                longitude: coordinate[0],
+                latitude: coordinate[1],
+                needs: [],
+                haspwd: false
+            }
+            for(let key in this._filter) {
+                item[key] = this._filter[key];
+            }
+            kind = 'needlocation';
+        } else {
+            item = elt.item;
+            kind = elt.kind;
+        }
+        this.openCRUP(kind, item);
+    }
+
     openCRUP(kind, item) {
         this.navCtrl.push(
             LocatedElementPage, {
                 kind: kind,
                 item: item,
                 action: ACTION_CRUP,
-                callback: (kind, item) => this.save(kind, item)
+                callback: (kind, item) => {
+                    this.save(kind, item);
+                }
             }
         );
     }
 
-    refresh(kind, filter) {
-        let apifilter = this.getAPIFilter(filter);
-        this.http.get(kind + 's', apifilter);
+    refresh() {
+        let filter = {'endts__gte': new Date().getTime() / 1000};
+        let func = data => this.mapcomponent.addLocatedElements(data.results);
+        this.http.get('locatedelements/', filter).then(func);
     }
 
     getAPIFilter(filter) {
@@ -123,8 +135,8 @@ export class MapPage {
         }
 
         applyproperty('people', '__lte');
-        applyproperty('startdatetime', '__lte', 'enddatetime');
-        applyproperty('enddatetime', '__gte', 'startdatetime');
+        applyproperty('startts', '__lte', 'endts');
+        applyproperty('endts', '__gte', 'startts');
         applyproperty('description', '__iregex');
         applyproperty('name');
         applyproperty('mood');
@@ -148,12 +160,12 @@ export class MapPage {
 
     process(action, kind, item) {
         if (action === ACTION_CRUP) {
-            let method = 'id' in item ? this.http.put : this.http.post;
-            method(kind + 's', item).then(
-                data => this.refresh(kind, data)
-            ).catch(error => this.refresh(kind, item));
+            let method = (url, options) => item.id === undefined ? this.http.post(url, options) : this.http.put(url, options);
+            method(kind + 's/', item).then(
+                data => this.mapcomponent.addLocatedElements([data])
+            ).catch(error => this.refresh());
         } else {
-            this.refresh(kind, item);
+            this.refresh();
         }
     }
 
