@@ -49,15 +49,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware'
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'simpleneed.urls'
 
-CORS_ORIGIN_WHITELIST = (
-    '127.0.0.1:8100', 'localhost:8100', '0.0.0.0:8100'  # ionic source urls.
-)
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {

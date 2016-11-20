@@ -121,7 +121,7 @@ export class MapPage {
         this.http.get('locatedelements/', filter).then(
             data => {
                 console.log(data);
-                this.mapcomponent.addLocatedElements(data.results);
+                this.mapcomponent.addLocatedElements(data['results']);
             }
         );
     }
