@@ -46,6 +46,7 @@ class LocatedElementViewSet(ModelViewSet):
     queryset = LocatedElement.objects.all()
     serializer_class = LocatedElementSerializer
     filter_fields = {
+        'id': ['exact'],
         'description': ['iregex'],
         'longitude': ['exact', 'gte', 'lte'],
         'latitude': ['exact', 'gte', 'lte'],
@@ -64,6 +65,7 @@ class MessageViewSet(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     filter_fields = {
+        'id': ['exact'],
         'content': ['iregex'],
         'element': ['exact'],
         'ts': ['exact', 'gte', 'lte']

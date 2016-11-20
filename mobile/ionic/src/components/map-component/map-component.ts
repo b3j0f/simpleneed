@@ -9,7 +9,7 @@ import * as ol from 'openlayers';
 export class MapComponent {
 
     coordinate: any = [0, 0];
-    zoom: number = 2;
+    zoom: number = 5;
 
     map: any;
 
@@ -61,12 +61,12 @@ export class MapComponent {
         let styleClusterCache = {};
         let clusters = new ol.layer.Vector({
             source: clusterSource,
-            style: function(feature) {
+            style: (feature) => {
                 let size = feature.get('features').length;
                 let style = styleClusterCache[size];
                 if (!style) {
                     if (size == 1) {
-                        style = this.getLocatedElementstyle(feature);
+                        style = this.getLocatedElementStyle(feature);
                     } else {
                         style = this.getClusterStyle(size);
                         styleClusterCache[size] = style;

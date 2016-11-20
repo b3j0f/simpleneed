@@ -50,6 +50,7 @@ export class MapPage {
         this.mapcomponent.edit = (elt, coordinate) => this.edit(
             elt, coordinate
         );
+        this.refresh();
     }
 
     findLocation() {
@@ -117,8 +118,12 @@ export class MapPage {
 
     refresh() {
         let filter = {'endts__gte': new Date().getTime() / 1000};
-        let func = data => this.mapcomponent.addLocatedElements(data.results);
-        this.http.get('locatedelements/', filter).then(func);
+        this.http.get('locatedelements/', filter).then(
+            data => {
+                console.log(data);
+                this.mapcomponent.addLocatedElements(data.results);
+            }
+        );
     }
 
     getAPIFilter(filter) {
@@ -155,6 +160,10 @@ export class MapPage {
     }
 
     save(kind, item) {
+        for(let pos in item.needs) {
+            let need = item.needs[pos];
+            item.needs[pos] = this.http.root + 'needs/' + need + '/';
+        }
         this.process(ACTION_CRUP, kind, item);
     }
 

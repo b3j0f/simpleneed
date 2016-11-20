@@ -46,7 +46,7 @@ class LocatedElementSerializer(HyperlinkedModelSerializer):
 
         model = LocatedElement
         _fields = [
-            'description', 'longitude', 'latitude', 'messages',
+            'id', 'description', 'longitude', 'latitude', 'messages',
             'people', 'haspwd', 'startts', 'endts',
             'utcstartdatetime', 'utcenddatetime'
         ]
@@ -60,7 +60,7 @@ class MessageSerializer(HyperlinkedModelSerializer):
         """Message serializer."""
 
         model = Message
-        fields = ['element', 'content', 'ts', 'utcdatetime']
+        fields = ['id', 'element', 'content', 'ts', 'utcdatetime']
 
 
 class NeedLocationSerializer(LocatedElementSerializer):
