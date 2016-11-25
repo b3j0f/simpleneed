@@ -120,7 +120,7 @@ export class MapComponent {
                 let features = feature.get('features');
                 return null;
             },
-            layers: [clusterSource.getSource()]
+            //layers: [clusterSource.getSource()]
         });
         this.map.addInteraction(selectSingleClick);
         //this.map.addInteraction(selectSingleClick);
