@@ -3,6 +3,7 @@
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from django.utils.encoding import python_2_unicode_compatible
 
 from datetime import datetime as datetime, date
 
@@ -13,6 +14,7 @@ from md5 import md5
 from .utils import obj2str
 
 
+@python_2_unicode_compatible
 class Mood(models.Model):
     """Mood model."""
 
@@ -23,6 +25,7 @@ class Mood(models.Model):
         return 'Mood({0})'.format(self.name)
 
 
+@python_2_unicode_compatible
 class Need(models.Model):
     """Need model."""
 
@@ -33,6 +36,7 @@ class Need(models.Model):
         return 'Need({0})'.format(self.name)
 
 
+@python_2_unicode_compatible
 class Gender(models.Model):
     """Gender model."""
 
@@ -48,6 +52,7 @@ def add8hours():
     return time() + 8 * 3600
 
 
+# @python_2_unicode_compatible
 class LocatedElement(models.Model):
     """abstract model for located elements."""
 
@@ -80,11 +85,12 @@ class LocatedElement(models.Model):
         return bool(self.pwd)
 
 
+@python_2_unicode_compatible
 class Message(models.Model):
     """Message model."""
 
     element = models.ForeignKey(
-        LocatedElement, related_name='messages', blank=False, null=True
+        LocatedElement, related_name='messages', blank=True, null=True
     )
     content = models.TextField(blank=False)
     ts = models.FloatField(default=time, blank=True)
@@ -110,6 +116,7 @@ class Message(models.Model):
         return result + ')'
 
 
+@python_2_unicode_compatible
 class Roam(LocatedElement):
     """Roam model."""
 
@@ -123,6 +130,7 @@ class Roam(LocatedElement):
         return 'Roam({0})/{1}'.format(self.name, super(Roam, self).__str__())
 
 
+# @python_2_unicode_compatible
 class NeedLocation(LocatedElement):
     """need location model."""
 
@@ -147,6 +155,7 @@ class Follower(models.Model):
     follow = models.ManyToManyField(LocatedElement)
 
 
+@python_2_unicode_compatible
 class Contact(models.Model):
     """Contact model."""
 
@@ -192,14 +201,10 @@ def cleanneedlocation(sender, instance, **kwargs):
 
     if instance.id is not None:
 
-        if (
-            (not instance.needs.all() and now <= instance.endts) or
-            instance.endts <= (instance.startts + 8 * 3600)
-        ):
+        if not instance.needs.all():
             instance.endts = now
 
 
-@receiver(pre_save, sender=LocatedElement)
 @receiver(pre_save, sender=NeedLocation)
 @receiver(pre_save, sender=Roam)
 def checkkey(sender, instance, **kwargs):
@@ -275,5 +280,7 @@ def addneedlocationstats(sender, instance, **kwargs):
 
     else:
         stats.needs = stats.needs + needscount * people
-        stats.answeredneedscount = stats.answeredneedscount + answeredneedscount * people
+        stats.answeredneedscount = (
+            stats.answeredneedscount + answeredneedscount * people
+        )
         stats.save()

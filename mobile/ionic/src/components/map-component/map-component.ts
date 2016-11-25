@@ -20,7 +20,7 @@ export class MapComponent {
     getClusterStyle(size) {
         return new ol.style.Style({
             image: new ol.style.Circle({
-                radius: 10,
+                radius: 10 + 1.5 * size,
                 stroke: new ol.style.Stroke({
                     color: '#fff'
                 }),
@@ -38,7 +38,14 @@ export class MapComponent {
     }
 
     getLocatedElementStyle(feature) {
-        return new ol.style.Style();
+        //let kind = feature.elt.needs === undefined ? 'roam' : 'needlocation';
+
+        return new ol.style.Style({
+            image: new ol.style.Icon({
+                //anchor: [0.5, 1],
+                src: 'https://openlayers.org/en/v3.19.1/examples/data/icon.png'
+            })
+        });
     }
 
     refresh(coordinate, zoom) {
@@ -54,7 +61,7 @@ export class MapComponent {
 
     ngAfterViewInit() {
         let clusterSource = new ol.source.Cluster({
-            distance: 30,
+            distance: parseInt('40', 10),
             source: this.features
         });
 
@@ -62,11 +69,12 @@ export class MapComponent {
         let clusters = new ol.layer.Vector({
             source: clusterSource,
             style: (feature) => {
-                let size = feature.get('features').length;
+                let features = feature.get('features');
+                let size = features.length;
                 let style = styleClusterCache[size];
                 if (!style) {
                     if (size == 1) {
-                        style = this.getLocatedElementStyle(feature);
+                        style = this.getLocatedElementStyle(features[0]);
                     } else {
                         style = this.getClusterStyle(size);
                         styleClusterCache[size] = style;
@@ -95,7 +103,7 @@ export class MapComponent {
             }),
         });
 
-        this.map.on('singleclick', event => {
+        this.map.on('singleclick', (event, layer) => {
             let coordinate = event.coordinate;
             let feature = this.map.forEachFeatureAtPixel(
                 event.pixel,
@@ -103,13 +111,38 @@ export class MapComponent {
             ) || {'elt': undefined};
             this.edit(feature.elt, coordinate);
         });
-        this.map.on(
-            'dblclick',
+
+        // select interaction working on "singleclick"
+        var selectSingleClick = new ol.interaction.Select({
+            condition: ol.events.condition.singleClick,
+            style: (feature, q) => {
+                this.features.toString();
+                let features = feature.get('features');
+                return null;
+            },
+            layers: [clusterSource.getSource()]
+        });
+        this.map.addInteraction(selectSingleClick);
+        //this.map.addInteraction(selectSingleClick);
+        /*selectSingleClick.on(
+            'select',
             event => {
-                console.log(event.coordinate);
-                console.log(this.map.getView().getZoom())
+                let features = event.target.getFeatures();
+                if (features.length === 1) {
+                    this.edit(features[0].elt, event.coordinate);
+                }
             }
-        );
+        );*/
+
+        // select interaction working on "pointermove"
+        let selectPointerMove = new ol.interaction.Select({
+            condition: ol.events.condition.pointerMove
+        });
+        this.map.addInteraction(selectPointerMove);
+        selectPointerMove.on('select', event => {
+            //console.log(event);
+        });
+
     }
 
     addLocatedElements(elts) {
@@ -117,7 +150,8 @@ export class MapComponent {
         for(let elt of elts) {
             let feature = new ol.Feature({
                 geometry: new ol.geom.Point([elt.longitude, elt.latitude]),
-                id: elt.id
+                id: elt.id,
+                elt: elt
             });
             result.push(feature);
         }
@@ -128,6 +162,6 @@ export class MapComponent {
     setCenter(longitude, latitude) {
         console.log(longitude, latitude);
         this.map.getView().setCenter([longitude, latitude]);
-        this.map.getView().setZoom(17);
+        // this.map.getView().setZoom(17);
     }
 }

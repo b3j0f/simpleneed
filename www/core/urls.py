@@ -35,4 +35,4 @@ router.register(r'stats', StatsViewSet)
 router.register(r'messages', MessageViewSet)
 router.register(r'locatedelements', LocatedElementViewSet)
 
-urlpatterns = [url(r'rest/v1/', include(router.urls))]
+urlpatterns = [url(r'api/v1/', include(router.urls))]

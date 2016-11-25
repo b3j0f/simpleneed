@@ -1,5 +1,5 @@
-//import { captureException, config } from 'raven-js';
-import { NgModule, /* ErrorHandler*/ } from '@angular/core';
+// import { captureException, config } from 'raven-js';
+import { NgModule, /*ErrorHandler*/ } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
@@ -8,7 +8,7 @@ import { StatsPage } from '../pages/stats/stats';
 import { TabsPage } from '../pages/tabs/tabs';
 import { EmergencyPage } from '../pages/emergency/emergency';
 import { MapComponent } from '../components/map-component/map-component';
-import { LocatedElementPage } from '../pages/located-element/located-element';
+import { CRUPPage } from '../pages/crup/crup';
 import { MenuComponent } from '../components/menu/menu';
 import { NavBarComponent } from '../components/navbar/navbar';
 import { HTTP } from '../providers/http';
@@ -32,7 +32,7 @@ import { BrowserModule } from '@angular/platform-browser';
     MapPage,
     StatsPage,
     TabsPage,
-    LocatedElementPage,
+    CRUPPage,
     MenuComponent,
     NavBarComponent,
     EmergencyPage
@@ -48,11 +48,11 @@ import { BrowserModule } from '@angular/platform-browser';
     MapPage,
     StatsPage,
     TabsPage,
-    LocatedElementPage,
+    CRUPPage,
     MenuComponent,
     NavBarComponent,
     EmergencyPage
   ],
-  providers: [ HTTP /*{ /*provide: ErrorHandler, /*useClass: RavenErrorHandler }*/]
+  providers: [ HTTP, /*{ provide: ErrorHandler, useClass: RavenErrorHandler }*/]
 })
 export class AppModule {}

@@ -11,7 +11,7 @@ import { Http, Request, RequestMethod, RequestOptions, Response, Headers } from 
 @Injectable()
 export class HTTP {
 
-    root: string = 'http://localhost:8000/rest/v1/';
+    root: string = 'http://localhost:8000/api/v1/';
 
     constructor(
         public http: Http,
@@ -28,7 +28,14 @@ export class HTTP {
                 result += '?';
             }
             for(let key in data) {
-                result += (key + '=' + data[key] + '&');
+                let val = data[key];
+                if (val instanceof Array) {
+                    for(let item of val) {
+                        result += (key + '=' + item + '&');
+                    }
+                } else {
+                    result += (key + '=' + data[key] + '&');
+                }
             }
         }
         return result;
@@ -73,9 +80,13 @@ export class HTTP {
                         data => {
                             loading.dismiss();
                             resolve(data)
+                        },
+                        error => {
+                            loading.dismiss();
+                            resolve(error);
                         }
                     )
-            ).catch(error => console.error(error));
+            );
     }
 
 }

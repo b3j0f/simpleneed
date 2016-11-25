@@ -2,9 +2,9 @@ import { Component , ViewChild } from '@angular/core';
 import { MapComponent } from './../../components/map-component/map-component';
 import { HTTP } from '../../providers/http';
 import { NavController, LoadingController } from 'ionic-angular';
-import { ACTION_FILTER, ACTION_CRUP, LocatedElementPage } from '../located-element/located-element';
+import { CRUPPage } from '../crup/crup';
 //import { Geolocation, DeviceOrientation, CompassHeading, Network, Diagnostic, CallNumber, AppRate } from 'ionic-native';
-import { Geolocation } from 'ionic-native';
+import { Geolocation, /*Shake*/ } from 'ionic-native';
 
 @Component({
     selector: 'page-map',
@@ -14,29 +14,21 @@ import { Geolocation } from 'ionic-native';
 export class MapPage {
 
     @ViewChild('map') mapcomponent: MapComponent;
-    map: any;
 
-    // pos: Array<number> = Geolocation.getCurrentPosition()
-
-    _filter: any = {
-        needs: [],
-        haspwd: false,
-        messages: [],
-        description: '',
-        //sick: false,
-        //gender: 'other',
-        //mood: 2,
-        //handicapped: false,
-        //people: 1,
-        durations: {lower: 0, upper: 8}
+    needs: any = {
+        'health': true,
+        'money': true,
+        'accomodation': true,
+        'hygiene': true,
+        'food': true,
+        'snack': true,
+        'clothes': true,
+        'stuffs': true
     };
-    filter: any = this._filter;
-    kind: string = 'needlocation';
-
-    needlocations: any = [];
-    roams: any = [];
-
-    refreshtask: any;
+    locatedElements: any = {
+        'roams': true,
+        'needlocations': true
+    };
 
     constructor(
         public navCtrl: NavController,
@@ -51,6 +43,9 @@ export class MapPage {
             elt, coordinate
         );
         this.refresh();
+        /*let watch = Shake.startWatch().subscribe(() => {
+            this.refresh();
+        });*/
     }
 
     findLocation() {
@@ -63,55 +58,35 @@ export class MapPage {
                     resp.coords.longitude,
                     resp.coords.latitude
                 );
+                this.refresh();
             }
         ).catch(
             error => {
                 loading.dismiss();
                 console.error(error);
-            }
-        );
-    }
-
-    openFilter() {
-        this.navCtrl.push(
-            LocatedElementPage, {
-                kind: this.kind,
-                item: this.filter,
-                callback: (kind, item) => this.applyFilter(kind, item),
-                action: ACTION_FILTER,
+                this.refresh();
             }
         );
     }
 
     edit(elt, coordinate) {
-        let item, kind;
+        let item;
         if (elt === undefined) {
             item = {
                 longitude: coordinate[0],
                 latitude: coordinate[1],
                 needs: [],
-                haspwd: false
+                messages: []
             }
-            for(let key in this._filter) {
-                item[key] = this._filter[key];
-            }
-            kind = 'needlocation';
         } else {
             item = elt.item;
-            kind = elt.kind;
         }
-        this.openCRUP(kind, item);
-    }
-
-    openCRUP(kind, item) {
         this.navCtrl.push(
-            LocatedElementPage, {
-                kind: kind,
+            CRUPPage,
+            {
                 item: item,
-                action: ACTION_CRUP,
-                callback: (kind, item) => {
-                    this.save(kind, item);
-                }
+                save: (item) => this.save(item),
+                delete: (item) => this.delete(item)
             }
         );
     }
@@ -119,63 +94,52 @@ export class MapPage {
     refresh() {
         let filter = {'endts__gte': new Date().getTime() / 1000};
         this.http.get('locatedelements/', filter).then(
-            data => {
-                console.log(data);
-                this.mapcomponent.addLocatedElements(data['results']);
+            data => this.mapcomponent.addLocatedElements(data['results'])
+        ).catch(error => console.error(error));
+    }
+
+    save(item) {
+        let kind = item.needs === undefined ? 'roam' : 'needlocation';
+        if (kind === 'needlocation') {
+            for(let pos in item.needs) {
+                let need = item.needs[pos];
+                item.needs[pos] = this.http.root + 'needs/' + need + '/';
             }
+        }
+        let method = (url, options) => item.id === undefined ? this.http.post(url, options) : this.http.put(url + item.id, options);
+        method(kind + 's/', item).then(
+            data => {
+                this.mapcomponent.addLocatedElements([data]);
+                this.refresh();
+            }
+        ).catch(error => this.refresh());
+    }
+
+    delete(item) {
+        let url = item.needs === undefined ? 'roam' : 'needlocation';
+        this.http.delete(url + 's/' + item.id).then(
+            data => this.refresh()
+        ).catch(
+            data => this.refresh()
         );
     }
 
-    getAPIFilter(filter) {
-        let result = {};
-        let applyproperty = (
-            name, suffix: string = '', name2: string = null
-        ) => {
-            if (name2 === null) {
-                name2 = name;
-            }
-            if (filter[name2] != undefined) {
-                result[name + suffix] = filter[name2];
-            }
-        }
-
-        applyproperty('people', '__lte');
-        applyproperty('startts', '__lte', 'endts');
-        applyproperty('endts', '__gte', 'startts');
-        applyproperty('description', '__iregex');
-        applyproperty('name');
-        applyproperty('mood');
-        applyproperty('needs');
-        applyproperty('handicaped');
-        applyproperty('sick');
-        applyproperty('gender');
-        applyproperty('roam');
-
-        return result;
+    searchNeed(need: string) {
+        this.needs[need] = !this.needs[need];
+        this.refresh();
     }
 
-    applyFilter(kind, item) {
-        this.filter = item;
-        this.process(ACTION_FILTER, kind, item);
+    searchLE(le: string) {
+        this.locatedElements[le] = !this.locatedElements[le];
+        this.refresh();
     }
 
-    save(kind, item) {
-        for(let pos in item.needs) {
-            let need = item.needs[pos];
-            item.needs[pos] = this.http.root + 'needs/' + need + '/';
-        }
-        this.process(ACTION_CRUP, kind, item);
+    getNeedColor(need: string) {
+        return this.needs[need] ? 'primary' : 'light';
     }
 
-    process(action, kind, item) {
-        if (action === ACTION_CRUP) {
-            let method = (url, options) => item.id === undefined ? this.http.post(url, options) : this.http.put(url, options);
-            method(kind + 's/', item).then(
-                data => this.mapcomponent.addLocatedElements([data])
-            ).catch(error => this.refresh());
-        } else {
-            this.refresh();
-        }
+    getLEColor(le: string) {
+        return this.locatedElements[le] ? 'primary' : 'light';
     }
 
 }

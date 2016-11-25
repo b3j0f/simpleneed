@@ -7,6 +7,6 @@ import { Component, ViewChild } from '@angular/core';
 })
 export class MenuComponent {
 
-	@ViewChild('menu') menu;
+	//@ViewChild('menu') menu;
 
 }

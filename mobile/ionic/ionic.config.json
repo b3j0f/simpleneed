@@ -11,5 +11,11 @@
     "www/**/*",
     "!www/lib/**/*",
     "!www/**/*.map"
+  ],
+  "proxies": [
+    {
+      "path": "/rest/v1/api/",
+      "proxyUrl": "http://localhost:8100/rest/v1/api/"
+    }
   ]
 }
