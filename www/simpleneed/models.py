@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.db.models import F
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
@@ -288,10 +288,9 @@ def addroamstats(sender, instance, **kwargs):
             Stats.objects.create(roams=1)
 
 
-@receiver(pre_save, sender=NeedLocation)
+@receiver(post_save, sender=NeedLocation)
 def addneedlocationstats(sender, instance, **kwargs):
     """Need location post save hook which add stats."""
-    return
     needscount = len(instance.needs.all())
     answeredneedscount = 0
     people = instance.people

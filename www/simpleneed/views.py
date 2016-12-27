@@ -56,7 +56,7 @@ class LocatedElementFilter(FilterSet):
         model = LocatedElement
         fields = {
             'id': ['exact'],
-            'description': ['iregex'],
+            'description': ['iregex', 'icontains'],
             'longitude': ['iexact', 'icontains', 'gte', 'lte'],
             'latitude': ['iexact', 'icontains', 'gte', 'lte'],
             'startts': ['iexact', 'icontains', 'gte', 'lte'],
@@ -75,7 +75,7 @@ class LocatedElementViewSet(ModelViewSet):
     serializer_class = LocatedElementSerializer
     filter_fields = {
         'id': ['iexact', 'icontains'],
-        'description': ['iregex'],
+        'description': ['iregex', 'icontains'],
         'longitude': ['iexact', 'icontains', 'gte', 'lte'],
         'latitude': ['iexact', 'icontains', 'gte', 'lte'],
         'startts': ['iexact', 'icontains', 'gte', 'lte'],
@@ -154,10 +154,11 @@ class StatsViewSet(ModelViewSet):
     queryset = Stats.objects.all()
     serializer_class = StatsSerializer
     filter_fields = {
-        'ts': ['iexact', 'icontains', 'gte', 'lte'],
-        'needs': ['iexact', 'icontains', 'gte', 'lte'],
-        'answeredneeds': ['iexact', 'icontains', 'gte', 'lte'],
-        'roams': ['iexact', 'icontains', 'gte', 'lte']
+        'ts': ['exact', 'gte', 'lte'],
+        'needs': ['exact', 'gte', 'lte'],
+        'answeredneeds': ['exact', 'gte', 'lte'],
+        'roams': ['exact', 'gte', 'lte'],
+        'supplies': ['exact', 'gte', 'lte']
     }
 
 

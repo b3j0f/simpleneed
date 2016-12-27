@@ -1,11 +1,12 @@
 
 {% load static %}
 
-<form>
+
+<form onsubmit="refresh(); return false;">
 	<div class="input-field">
-		<input id="search" type="search" required>
-		<label for="search"><i class="material-icons">search</i></label>
-		<i class="material-icons">close</i>
+		<input id="search" type="search" />
+		<label for="search">Description</label>
+		<i class="material-icons" onclick="$('#search').val('');">close</i>
 	</div>
 </form>
 
@@ -295,12 +296,11 @@
 		var bottomLeft = [extent[0], extent[1]];
 		var topRight = [extent[2], extent[3]];
 		var endts = new Date().getTime() / 1000;
-		var fneeds = filterneeds.length > 0 ? filterneeds[0] : '';
-		if (fneeds !== '') {
-			filterneeds.forEach(function(need) {
-				fneeds += need + ',';
-			});
-		}
+		var fneeds = '';
+		var search = $('#search').val();
+		filterneeds.forEach(function(need) {
+			fneeds += need + ',';
+		});
 		$.ajax({
 			type: 'GET',
 			url: '{{ api }}/locatedelements/',
@@ -310,7 +310,8 @@
 				latitude__lte: topRight[1],
 				latitude__gte: bottomLeft[1],
 				endts__gte: endts,
-				needs__in: fneeds
+				needs__in: fneeds,
+				description__icontains: search
 			},
 			success: function(data) {
 				var eltfeatures = toFeatures(data.results);

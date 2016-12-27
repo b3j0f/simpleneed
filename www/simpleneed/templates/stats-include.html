@@ -1,11 +1,12 @@
-<div id="todaychart"></div>
+
+<div id="totalchart"></div>
 
 <div id="historychart"></div>
 
 <script type="text/javascript" charset="utf-8">
 
-  var todaychart = c3.generate({
-    bindto: '#todaychart',
+  var totalchart = c3.generate({
+    bindto: '#totalchart',
     data: {
       columns: [],
       type: 'pie'
@@ -37,10 +38,10 @@
       {order_by: 'ts'},
       function(data) {
         var results = data.results;
-        var todaycolumns = [];
+        var totalcolumns = [];
         var historycolumns = [];
         if (results.length === 0) {
-          todaycolumns = [
+          totalcolumns = [
           ['galères', 0],
           ['galères résolues', 0],
           ['maraudes', 0],
@@ -54,35 +55,40 @@
           ['aides', 0]
           ];
         } else {
-          var todaystat = results[results.length - 1];
-          todaycolumns = [
-          ['galères', todaystat.needs],
-          ['galères résolues', todaystat.answeredneeds],
-          ['maraudes', todaystat.roams],
-          ['aides', todaystat.supplies]
-          ];
+          var totalcolumns = {
+            'galères': 0,
+            'galères résolues' : 0,
+            'maraudes': 0,
+            'aides': 0
+          };
           var translate = {needs: 'galères', answeredneeds: 'galères résolues', roams: 'maraudes', supplies: 'aides'};
           var namedcolumns = ['x'];
           results.forEach(function(stat) {
-            namedcolumns.push(stat.ts);
+            namedcolumns.push(stat.ts * 1000);
           });
           historycolumns.push(namedcolumns);
           for (var name in translate) {
-            var value = translate[name];
-            namedcolumns = [value];
+            var translation = translate[name];
+            namedcolumns = [translation];
             results.forEach(function(stat) {
-              namedcolumns.push([stat.ts * 1000, stat[name]]);
+              var value = stat[name];
+              namedcolumns.push(value);
+              totalcolumns[translation] += value;
             });
             historycolumns.push(namedcolumns);
           }
         }
-        todaychart.load({
-          columns: todaycolumns
+        var ftotalcolumns = [];
+        for (var name in totalcolumns) {
+          ftotalcolumns.push([name, totalcolumns[name]]);
+        }
+        totalchart.load({
+          columns: ftotalcolumns
         });
         historychart.load({
           columns: historycolumns
         });
-        setTimeout(refresh, 5000);
+        setTimeout(refresh, 10000);
       },
       'json'
       );
