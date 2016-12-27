@@ -42,7 +42,6 @@ export class MapComponent {
 
         return new ol.style.Style({
             image: new ol.style.Icon({
-                //anchor: [0.5, 1],
                 src: 'https://openlayers.org/en/v3.19.1/examples/data/icon.png'
             })
         });
@@ -135,13 +134,13 @@ export class MapComponent {
         );*/
 
         // select interaction working on "pointermove"
-        let selectPointerMove = new ol.interaction.Select({
+        /*let selectPointerMove = new ol.interaction.Select({
             condition: ol.events.condition.pointerMove
         });
         this.map.addInteraction(selectPointerMove);
         selectPointerMove.on('select', event => {
             //console.log(event);
-        });
+        });*/
 
     }
 

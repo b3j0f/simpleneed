@@ -1,0 +1,93 @@
+<div id="todaychart"></div>
+
+<div id="historychart"></div>
+
+<script type="text/javascript" charset="utf-8">
+
+  var todaychart = c3.generate({
+    bindto: '#todaychart',
+    data: {
+      columns: [],
+      type: 'pie'
+    }
+  });
+
+  var historychart = c3.generate({
+    bindto: '#historychart',
+    data: {
+      x: 'x',
+      columns: [
+      ['x', 0]
+      ],
+      type: 'line'
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+        tick: {
+          format: '%d/%m/%Y'
+        }
+      }
+    }
+  });
+
+  function refresh() {
+    $.get(
+      '{{ api }}/stats/',
+      {order_by: 'ts'},
+      function(data) {
+        var results = data.results;
+        var todaycolumns = [];
+        var historycolumns = [];
+        if (results.length === 0) {
+          todaycolumns = [
+          ['galères', 0],
+          ['galères résolues', 0],
+          ['maraudes', 0],
+          ['aides', 0]
+          ];
+          historycolumns = [
+          ['x', 0],
+          ['galères', 0],
+          ['galères résolues', 0],
+          ['maraudes', 0],
+          ['aides', 0]
+          ];
+        } else {
+          var todaystat = results[results.length - 1];
+          todaycolumns = [
+          ['galères', todaystat.needs],
+          ['galères résolues', todaystat.answeredneeds],
+          ['maraudes', todaystat.roams],
+          ['aides', todaystat.supplies]
+          ];
+          var translate = {needs: 'galères', answeredneeds: 'galères résolues', roams: 'maraudes', supplies: 'aides'};
+          var namedcolumns = ['x'];
+          results.forEach(function(stat) {
+            namedcolumns.push(stat.ts);
+          });
+          historycolumns.push(namedcolumns);
+          for (var name in translate) {
+            var value = translate[name];
+            namedcolumns = [value];
+            results.forEach(function(stat) {
+              namedcolumns.push([stat.ts * 1000, stat[name]]);
+            });
+            historycolumns.push(namedcolumns);
+          }
+        }
+        todaychart.load({
+          columns: todaycolumns
+        });
+        historychart.load({
+          columns: historycolumns
+        });
+        setTimeout(refresh, 5000);
+      },
+      'json'
+      );
+  }
+
+  refresh();
+
+</script>

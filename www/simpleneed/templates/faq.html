@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+	<h2>Foire aux questions</h2>
+
+	<ul class="collapsible popout" data-collapsible="accordion">
+		<li id="goal">
+			<div class="collapsible-header"><i class="material-icons">settings</i>Quel est le but de l’application ?</div>
+			<div class="collapsible-body">
+				<p>L’application Homeless Plus permet à toute personne de pouvoir géolocaliser une personne sans-domicile, d’identifier ses besoins afin que d’autres personnes des environs puissent lui venir en aide gratuitement.</p>
+				<p>Que ce soit en lui apportant de la nourriture, un café bien chaud, des vêtements ou juste une parole, le but est de créer un élan de solidarité tout en luttant contre le gaspillage.</p>
+				<p>Pour cela, 3 clics suffisent pour renseigner sa localité, son sexe, son état d’esprit et vos actions éventuelles. D’autres personnes et les associations des alentours auront alors accès à ces informations et pourront également lui venir en aide.</p>
+				<p>Nous sommes soutenus par des anonymes et par des associations qui utilisent l’application comme un réflexe à adopter au quotidien.</p>
+			</div>
+		</li>
+		<li id="idea">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">lightbulb_outline</i>D’où vous est venu l’idée de créer une application pour aider les SDF ?
+			</div>
+			<div class="collapsible-body">
+				<p>
+					<em>
+						«&nbsp;Enfants d’immigrés restaurateur, mes parents avaient pour habitude de distribuer tous leurs invendus à des sans abris. L’idée d’utiliser les nouvelles technologies me paraissait logique de la mettre au profit des personnes isolées, ceci afin de lutter contre l’exclusion sociale et le gaspillage. Aujourd’hui nous vivons tous dans une société connectée, hors les personnes qui ont le plus besoin d’être connectées et aidées sont les personnes isolées (SDF). J’ai donc décidé de lancer la première application gratuite et altruiste&nbsp;: Homeless Plus «on me laisse plus». Le but de notre association est de connecter les déconnectés de notre société&nbsp;: les sans abris.&nbsp;» &nbsp;
+					</em>
+				</p>
+				<p>
+					Aïda Demdoum – Fondatrice de l’Association Homeless Plus &amp; Sonilog Interactive.
+				</p>
+			</div>
+		</li>
+		<li id="status">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">line_style</i>Quel est votre statut ?
+			</div>
+			<div class="collapsible-body">
+				<p>
+					Homeless Plus est une association à but non lucratif créée en janvier 2016. Quant à l’application, elle a été développée gratuitement et sans aide par la société Sonilog Interactive en juin 2015.
+				</p>
+			</div>
+		</li>
+		<li id="money">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">attach_money</i>Comment gagnez-vous de l’argent ?
+			</div>
+			<div class="collapsible-body">
+				<p>Nous n’en gagnons pas. Nous nous refusons à nous rémunérer sur le dos des sans-abris&nbsp;!</p>
+				<p>C’est pourquoi cette application est et restera gratuite et sans publicité&nbsp;! Pour l’instant nous ne disposons pas d’aide, mais nous espérons que les collectivités et que des donateurs nous aideront.</p>
+			</div>
+		</li>
+		<li id="track">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">track_changes</i>N’avez-vous pas le sentiment de « ficher » les sans-abris ?
+			</div>
+			<div class="collapsible-body">
+				<p>En effet, nous ne pouvons pas empêcher une personne de juste localiser sans demander l’avis au sans-abri et sans avoir pris le temps d’échanger avec celui ci sur ses besoins. Cette application n’a aucunement vocation de «&nbsp;fliquer&nbsp;» une personne&nbsp; (dite SDF) mais simplement prévenir sa présence auprès des travailleurs sociaux&nbsp;et des personnes des alentours pour l’aider.</p>
+				<p>De plus, aucune information personnelle concernant le sans-abri et l’utilisateur n’est enregistrée. L’action reste anonyme. Les localisations sont temporaires et disparaissent au bout de 8 heures si aucune action n’a pu être effectué. De plus les sans abris nous soutiennent et nous encouragent à continuer.</p>
+			</div>
+		</li>
+		<li id="locate">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">account_circle</i>Je n’arrive pas à localiser 2 personnes à la suite ?
+			</div>
+			<div class="collapsible-body">
+				<p>Vous devez patienter 2 minutes entre chaque localisation. Cette contrainte a été mise en place afin d’éviter les abus concernant l’ajout des pointeurs. En effet, la carte étant publique, des personnes mal intentionnées seraient susceptibles d’inscrire des messages ou des dessins obscènes.</p>
+			</div>
+		</li>
+		<li id="geoloc">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">location_city</i>J’habite sur Lyon et je n’arrive pas géolocaliser à Marseille ?
+			</div>
+			<div class="collapsible-body">
+				<p>L’application permet de localiser et d’aider des personnes des alentours. Afin d’éviter les abus et les erreurs, celle-ci n’autorise que les géolocalisations dans un rayon de 5 kilomètres.</p>
+			</div>
+		</li>
+		<li id="needlocation">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">cancel</i>Pourquoi mon point a-t-il disparu ?
+			</div>
+			<div class="collapsible-body">
+				<p>Les localisations disparaissent automatiquement au bout de 8 heures. Si le sans-abri a été aidé par une autre personne et que celle-ci l’a spécifié dans l’application, la localisation est prolongée de 8 heures.</p>
+			</div>
+		</li>
+		<li id="count">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">face</i>Comment puis je voir, si une personne a aidé un SDF suite à ma géolocalisation ?
+			</div>
+			<div class="collapsible-body">
+				<p>Lorsque vous cliquez sur votre géolocalisation, un chiffre vous informe du nombre de personne ayant aidé ce sans abris.&nbsp; Celui est placé en bas à droite de l’info bulle.</p>
+			</div>
+		</li>
+		<li id="cancel">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">error_outline</i>Je fais une erreur lors de la localisation, puis-je annuler ?
+			</div>
+			<div class="collapsible-body">
+				<p>Actuellement, l’application ne permet pas d’annuler une localisation mal renseignée. En cas de réel problème, vous pouvez nous contacter par mail à <a href="mailto:contact@homelessplus.com">contact@homelessplus.com</a>. Nous serons en mesure de supprimer ou modifier la mauvaise localisation.</p>
+			</div>
+		</li>
+		<li id="platform">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">smartphone</i>Je possède un smartphone tournant sur Windows Phone, puis-je utiliser l’application ?
+			</div>
+			<div class="collapsible-body">
+				<p>L’application est disponible sur Google Play et Apple Store, nous n’avons pas encore développé de version pour Windows Phone, toutefois cela fait partie de nos prochaines évolutions. N’hésitez à suivre nos pages Facebook et Twitter afin de rester informé.</p>
+			</div>
+		</li>
+		<li id="connection">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">signal_wifi_off</i>Pourquoi ai-je un message d’erreur m’indiquant que je ne suis pas connecté à internet, alors que j’ai du réseau ?
+			</div>
+			<div class="collapsible-body">
+				<p>
+					L’application fonctionne via la Wifi et le réseau internet mobile. Si cela ne fonctionne pas vous devez vérifier que les paramètres de votre téléphone permettent la connexion à internet. Pour cela, ouvrez simplement une page internet et vérifiez qu’elle s’affiche correctement. Si c’est le cas, essayez d’activer la wifi et recommencez. Si cela ne fonctionne toujours pas, vérifiez que vous avez bien activé vos services de localisation dans les paramètres de votre téléphone.
+					<br/>
+					En cas de besoin vous pouvez nous écrire à <a href="mailto:contact@homelessplus.com">contact@homelessplus.com</a> et nous tenterons de comprendre d’où vient le problème.
+				</p>
+			</div>
+		</li>
+		<li id="foreign">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">map</i>Puis je utiliser Homeless Plus à l’étranger ?
+			</div>
+			<div class="collapsible-body">
+				<p>Oui, vous pouvez tout à fait utiliser Homeless Plus à l’étranger. Cependant, l’application est pour l’instant disponible en téléchargement que dans les pays francophones.</p>
+			</div>
+		</li>
+		<li id="notif">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">sms_failed</i>Pourquoi n’y a t il pas de notifications ou de messages d’alerte ?
+			</div>
+			<div class="collapsible-body">
+				<p>Cette fonctionnalité n’a pas encore été développée, mais cela fait partie des priorités pour nos prochaines évolutions. N’hésitez à suivre nos pages Facebook et Twitter afin de rester informé.</p>
+
+			</div>
+		</li>
+		<li id="health">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">healing</i>Comment faire si je rencontre un sans-abri en détresse ?
+			</div>
+			<div class="collapsible-body">
+				<p>Cela dépend de la situation dans laquelle il se trouve. S’il celui est malade ou blessé, vous devez appeler les pompiers (18) ou la SAMU (15). Si le sans-abri a besoin d’une prise en charge urgente afin de lui offrir un hébergement pour la nuit, nous vous invitons à contacter le SAMU social (115).</p>
+			</div>
+		</li>
+		<li id="help">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">help_outline</i>Comment faire pour vous aider ?
+			</div>
+			<div class="collapsible-body">
+				<p>Déjà en utilisant l’application afin d’aider les sans abris, nous sommes très fiers de participer à votre élan de solidarité. En partageant nos actualités et en parlant de Homeless Plus. Vous pouvez également nous faire une donation depuis notre site internet en cliquant sur «&nbsp;faire un don&nbsp;» présent dans le menu, ceci afin de faire évoluer l’application et nos actions sur le terrain.</p>
+			</div>
+		</li>
+		<li id="update">
+			<div class="collapsible-header" data-collapsible="accordion">
+				<i class="material-icons">system_update</i>Prévoyez-vous de nouvelles mise à jour ou nouvelles fonctionnalités ?
+			</div>
+			<div class="collapsible-body">
+				<p>Nous prévoyons en effet de nombreuses améliorations, au-delà de ce que pouvez imaginer&nbsp;! Ces améliorations se feront au fur et à mesure, nous prévoyons la sortie d’une v2 très prochainement. N’hésitez pas à suivre nos pages Facebook et Twitter afin de rester informé.</p>
+			</div>
+		</li>
+	</ul>
+</div>
+
+{% endblock %}

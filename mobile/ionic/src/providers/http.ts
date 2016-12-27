@@ -11,7 +11,7 @@ import { Http, Request, RequestMethod, RequestOptions, Response, Headers } from 
 @Injectable()
 export class HTTP {
 
-    root: string = 'http://localhost:8000/api/v1/';
+    root: string = 'http://localhost:8000/api/rest/v1/';
 
     constructor(
         public http: Http,

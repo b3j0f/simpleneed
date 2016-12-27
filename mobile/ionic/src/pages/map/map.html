@@ -12,7 +12,8 @@
 				<ion-icon name="contacts"></ion-icon>
 			</button>
 			<button ion-fab icon-only (click)="searchLE('needlocations')" [color]="getLEColor('needlocations')">
-				<ion-icon name="pin"></ion-icon>
+				<!--ion-icon name="pin"></ion-icon-->
+				<ion-icon name="compass"></ion-icon>
 			</button>
 		</ion-fab-list>
 		<ion-fab-list side="bottom">
@@ -43,9 +44,14 @@
 		</ion-fab-list>
 	</ion-fab>
 	<ion-fab bottom left>
-		<button ion-fab icon-only (click)="findLocation()">
+		<button ion-fab icon-only (click)="findLocation()" opened>
 			<ion-icon name="pin"></ion-icon>
 		</button>
+		<ion-fab-list side="right">
+			<button ion-fab icon-only (click)="refresh()" color="primary" large big>
+				<ion-icon name="sync"></ion-icon>
+			</button>
+		</ion-fab-list>
 	</ion-fab>
 	<map-component #map></map-component>
 </ion-content>

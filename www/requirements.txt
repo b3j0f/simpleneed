@@ -1,6 +1,4 @@
 django
-# psycopg2
-# postgis
 djangorestframework
 pyyaml
 coreapi
@@ -8,3 +6,4 @@ markdown
 django-crispy-forms
 django-guardian
 django-cors-headers
+django-filter

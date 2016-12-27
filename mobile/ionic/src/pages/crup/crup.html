@@ -8,19 +8,14 @@
 			<ion-icon name="arrow-up" large></ion-icon>
 		</button>
 	</ion-fab>
-	<ion-fab top right>
+	<ion-fab bottom right>
 		<button ion-fab icon-only (click)="save()" color="secondary" [disabled]="!edited()">
 			<ion-icon name="checkmark" large></ion-icon>
 		</button>
 	</ion-fab>
-	<ion-fab top left>
+	<ion-fab bottom right>
 		<button ion-fab icon-only (click)="delete()" [disabled]="item.id !== undefined" color="danger">
 			<ion-icon name="trash" large></ion-icon>
-		</button>
-	</ion-fab>
-	<ion-fab bottom right>
-		<button ion-fab icon-only (click)="copy()">
-			<ion-icon name="copy" large></ion-icon>
 		</button>
 	</ion-fab>
 	<ion-fab bottom left #sharefab>
@@ -46,6 +41,11 @@
 			<button ion-fab (click)="share('mail')">
 				<ion-icon name="mail"></ion-icon>
 			</button>
+		</ion-fab-list>
+		<ion-fab-list side="right">
+		<button ion-fab icon-only (click)="copy()">
+			<ion-icon name="copy" large></ion-icon>
+		</button>
 		</ion-fab-list>
 	</ion-fab>
 	<ion-segment [(ngModel)]="kind">

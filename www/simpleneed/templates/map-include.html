@@ -1,0 +1,370 @@
+
+{% load static %}
+
+<form>
+	<div class="input-field">
+		<input id="search" type="search" required>
+		<label for="search"><i class="material-icons">search</i></label>
+		<i class="material-icons">close</i>
+	</div>
+</form>
+
+<div class="row valign-wrapper">
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="money" onclick="filter(this)"><i class="text-red material-icons">attach_money</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="snack" onclick="filter(this)"><i class="material-icons">free_breakfast</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="food" onclick="filter(this)"><i class="material-icons">local_pizza</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="clothes" onclick="filter(this)"><img class="svg icons responsive-img" src="{% static 'img/shirt.svg' %}" /></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="company" onclick="filter(this)"><i class="material-icons">group</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="hygiene" onclick="filter(this)"><img class="svg responsive-img" src="{% static 'img/shower.svg' %}" /></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="accomodation" onclick="filter(this)"><i class="material-icons">local_hotel</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="health" onclick="filter(this)"><img class="svg responsive-img" src="{% static 'img/heartbeat.svg' %}" /></a></div>
+</div>
+
+<div id="map" class="map"></div>
+
+<div class="center">
+	<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons">location_searching</i></button>
+</div>
+
+<div class="modal center" id="load">
+	<div class="modal-content">
+		<h2><i class="material-icons medium">location_on</i>Géolocalisation en cours...</h2>
+		<div class="preloader-wrapper active" id="loader">
+			<div class="spinner-layer spinner-green-only">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="gap-patch">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="modal-close btn-flat" id="status"></button>
+	</div>
+</div>
+
+<div class="modal" id="edit">
+	<form method="post" action="edit">
+		<div class="modal-content">
+			<h2 class="header update">Mise à jour de <p id="update-type"></p></h2>
+			<h4 class="header new center">Je <a class='dropdown-button' href='#' id="atype" data-activates='type'></a></h4>
+			<ul id='type' class='dropdown-content'>
+				<li><a href="#!" id="needlocation" onclick="onchangetype(this.id);">suis en galère</a></li>
+				<li><a href="#!" id="roam" onclick="onchangetype(this.id);">crée une maraude</a></li>
+				<li><a href="#!" id="supplylocation" onclick="onchangetype(this.id);">propose mon aide</a></li>
+			</ul>
+			<div class="input-field col s12 roam">
+				<i class="material-icons prefix">mode_edit</i>
+				<input name="name" id="name" type="text" />
+				<label for="name">Nom</label>
+			</div>
+			<div class="input-field col s12 needlocation roam supplylocation">
+				<select multiple name="needs" id="needs">
+					<option value="" disabled selected>Choisis les besoins</option>
+					<option value="money">Argent</option>
+					<option value="snack">Collation</option>
+					<option value="food">Nourriture</option>
+					<option value="clothes">Vêtements</option>
+					<option value="company">Compagnie</option>
+					<option value="hygiene">Hygiène</option>
+					<option value="accomodation">Logement</option>
+					<option value="health">Soins</option>
+				</select>
+				<label>Besoins</label>
+			</div>
+			<div class="input-field needlocation supplylocation roam col 12">
+				<i class="material-icons prefix">assignment</i>
+				<textarea id="description" class="materialize-textarea"></textarea>
+				<label for="description">Description</label>
+			</div>
+			<div class="needlocation col s12">
+				<p>
+					<input type="checkbox" id="emergency" name="mergency" />
+					<label for="emergency">Urgent</label>
+				</p>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<input type="hidden" name="id" id="id" />
+			<input type="hidden" name="longitude" id="longitude" />
+			<input type="hidden" name="latitude" id="latitude" />
+			<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="save();">Valider</a>
+			<button id="delete" onclick="del(this)" class="update modal-action modal-close waves-effect waves-green btn-flat">Supprimer</button>
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+	var needs = ['money', 'snack', 'food', 'clothes', 'company', 'hygiene', 'accomodation', 'health'];
+	var filterneeds = [];
+	needs.forEach(
+		function(need) {filterneeds.push(need);}
+		);
+	function filter(elt) {
+		var index = filterneeds.indexOf(elt.id);
+		if (index >= 0) {
+			filterneeds.splice(index, 1);
+			$(elt).addClass('black');
+		} else {
+			filterneeds.push(elt.id);
+			$(elt).removeClass('black');
+		}
+	}
+
+	function save() {
+		var type = $('#type').attr('value');
+		var name = $('#name').val();
+		var description = $('#description').val();
+		var emergency = $('#emergency').val() === 'on';
+		var needs = $('#needs').val();
+		var id = $('#id').val();
+		var latitude = $('#latitude').val();
+		var longitude = $('#longitude').val();
+		$.ajax({
+			type: (id === '' ? 'POST' : 'PUT'),
+			url: '{{ api }}/'+type+'s/'+id,
+			data: {
+				type: type,
+				name: name,
+				description: description,
+				emergency: emergency,
+				needs: needs,
+				latitude: latitude,
+				longitude: longitude
+			},
+			success: function(){
+				Materialize.toast(translate[type] + (id === '' ? ' créé ' : ' mis à jour ') + '!', 4000);
+			},
+			failure: function(error) {
+				Materialize.toast(typeof error == 'string' ? error : "failed", 4000);
+			}
+		});
+	};
+
+	$('#load').modal({
+		dismissible: false
+	});
+
+	function geoloc() {
+		$('#load').modal('open');
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				function(pos) {
+					map.getView().setCenter(
+						[
+						pos.coords.longitude,
+						pos.coords.latitude
+						]
+						);
+					$('#load').modal('close');
+				},
+				function() {
+					$('#status')[0].innerHTML = typeof msg == 'string' ? msg : "failed";
+				}
+				);
+		} else {
+			$('#status')[0].innerHTML = 'Geolocalisation non supportée';
+		}
+	}
+
+	var types = ['needlocation', 'roam', 'supplylocation'];
+	var translate = {
+		needlocation: 'suis en galère',
+		roam: 'crée une maraude',
+		supplylocation: 'propose mon aide'
+	};
+
+	function onchangetype(type) {
+		types.forEach(function(type) {
+			$('.'+type).hide();
+		});
+		$('.'+type).show();
+		$('#atype')[0].innerText = translate[type];
+		$('#type').attr('value', type);
+	};
+
+	function del(elt) {
+		$('#load').modal('open');
+		$.ajax({
+			type: 'DELETE',
+			url: elt.href,
+			success: function(){
+				$('#load').modal('close');
+			},
+			failure: function(error) {
+				$('#status')[0].innerHTML = typeof error == 'string' ? error : "failed";;
+			}
+		});
+	};
+
+	function edit(elt, coordinate) {
+		$('#longitude').val(coordinate[0]);
+		$('#latitude').val(coordinate[1]);
+		if (elt === undefined) {
+			$('.update').hide();
+			$('.new').show();
+			$('#type').attr('disabled', false);
+			onchangetype('needlocation');
+		} else {
+			$('.update').show();
+			$('.new').hide();
+			var type = elt.rroam ? 'roam' : elt.rneedlocation ? 'needlocation' : 'supplylocation';
+			$('#'+type).attr('selected', true);
+			$('#type').attr('disable', true);
+			onchangetype(type);
+			$('#delete').attr('href', '{{ api }}/'+type+'s/'+elt.id);
+		}
+		$('#edit').modal('open');
+	};
+
+	var features = new ol.source.Vector();
+
+	function getClusterStyle(size) {
+		return new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 10 + 1.5 * size,
+				stroke: new ol.style.Stroke({
+					color: '#fff'
+				}),
+				fill: new ol.style.Fill({
+					color: '#3399CC'
+				})
+			}),
+			text: new ol.style.Text({
+				text: size.toString(),
+				fill: new ol.style.Fill({
+					color: '#fff'
+				})
+			})
+		});
+	}
+
+	function getLocatedElementStyle(feature) {
+		return new ol.style.Style({
+			image: new ol.style.Icon({
+				src: 'https://openlayers.org/en/v3.19.1/examples/data/icon.png'
+			})
+		});
+	}
+
+	function addLocatedElements(elts) {
+		if (elts !== undefined) {
+			var result = [];
+			for(var elt of elts) {
+				var feature = new ol.Feature({
+					geometry: new ol.geom.Point([elt.longitude, elt.latitude]),
+					id: elt.id,
+					elt: elt
+				});
+				result.push(feature);
+			}
+			features.addFeatures(result);
+		}
+	}
+
+	function refresh() {
+		var extent = map.getView().calculateExtent(map.getSize());
+		var bottomLeft = [extent[0], extent[1]];
+		var topRight = [extent[2], extent[3]];
+		$.get(
+			'{{ api }}/locatedelements/',
+			{
+				longitude__gte: bottomLeft[0],
+				longitude__lte: topRight[0],
+				latitude__lte: topRight[1],
+				latitude__gte: bottomLeft[1],
+				needs: filterneeds
+			},
+			function(data) {
+				addLocatedElements(data.results);
+			}, 'json');
+		setTimeout(refresh, 5000);
+	}
+
+	var clusterSource = new ol.source.Cluster({
+		distance: parseInt('40', 10),
+		source: features
+	});
+
+	var styleClusterCache = {};
+
+	var clusters = new ol.layer.Vector({
+		source: clusterSource,
+		style: function(feature) {
+			var features = feature.get('features');
+			var size = features.length;
+			var style = styleClusterCache[size];
+			if (!style) {
+				if (size == 1) {
+					style = getLocatedElementStyle(features[0]);
+				} else {
+					style = getClusterStyle(size);
+					styleClusterCache[size] = style;
+				}
+			}
+			return style;
+		}
+	});
+
+	var map = new ol.Map({
+		target: 'map',
+		layers: [
+		new ol.layer.Tile({source: new ol.source.OSM()}),
+		clusters
+		],
+		view: new ol.View({
+			projection: 'EPSG:4326',
+			center: ol.proj.fromLonLat([0, 0]),
+			zoom: 6,
+			minZoom: 3
+		}),
+		controls: ol.control.defaults({
+			rotate: false,
+		}),
+	});
+
+	function onMoveEnd(evt) {
+		var map = evt.map;
+		var extent = map.getView().calculateExtent(map.getSize());
+		var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
+			'EPSG:3857', 'EPSG:4326');
+		var topRight = ol.proj.transform(ol.extent.getTopRight(extent),
+			'EPSG:3857', 'EPSG:4326');
+	}
+
+	map.on('moveend', onMoveEnd);
+
+	map.on('singleclick', function(event, layer) {
+		var coordinate = event.coordinate;
+		var feature = map.forEachFeatureAtPixel(
+			event.pixel,
+			function(feature) { return feature; }
+			) || {'elt': undefined};
+		edit(feature.elt, coordinate);
+	});
+
+	function setCenter(longitude, latitude) {
+		console.log(longitude, latitude);
+		map.getView().setCenter([longitude, latitude]);
+	}
+
+	var selectSingleClick = new ol.interaction.Select({
+		condition: ol.events.condition.singleClick,
+		style: function(feature, q) {
+			features.toString();
+			var features = feature.get('features');
+			return null;
+		},
+		layers: [clusterSource]
+	});
+	map.addInteraction(selectSingleClick);
+
+	refresh();
+
+</script>

@@ -1,0 +1,30 @@
+<ion-view view-title="{{ 'HOME' | translate }}">
+	<ion-content>
+		<div class="home-hello">
+			<img src="http://lorempixel.com/1024/768/"/>
+			<div class="item item-text-wrap">
+				<h1>i18n</h1>
+				<div>{{ 'YOUR_LOCALE' | translate }}: <b>{{vm.lang}}</b></div>
+			</div>
+		</div>
+
+		<div ng-repeat="e in vm.entries" ng-if="$index%2==0" class="row">
+
+			<div class="card col home">
+				<a class="item item-text-wrap" href="#/app/{{vm.entries[$index].path}}">
+					<h1><i class="icon {{vm.entries[$index].icon}}"></i></h1>
+					<h2>{{vm.entries[$index].title | translate}}</h2>
+				</a>
+			</div>
+
+			<div class="card col home" ng-if="!!vm.entries[$index + 1]">
+				<a class="item item-text-wrap" href="#/app/{{vm.entries[$index + 1].path}}">
+					<h1><i class="icon {{vm.entries[$index + 1].icon}}"></i></h1>
+					<h2>{{vm.entries[$index + 1].title | translate}}</h2>
+				</a>
+			</div>
+
+		</div>
+
+	</ion-content>
+</ion-view>

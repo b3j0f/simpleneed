@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+  {% if lost_key %}
+
+  <h1>Changer de mot de passe</h1>
+
+  <form id="resetpwd" method="post" action="/resetpwd" class="row">
+    {% csrf_token %}
+      <div class="input-field col s6">
+        <i class="material-icons prefix">email</i>
+        <input disabled id="email" type="email" name="email" value="{{ email }}"/>
+        <label for="email" data-error="non conforme">Email</label>
+      </div>
+      <div class="input-field col s6">
+        <i class="material-icons prefix">lock</i>
+        <input id="password" type="password" class="validate" name="password"/>
+        <label for="password">Mot de passe</label>
+      </div>
+    <input type="hidden" name="lost_key" value="{{ lost_key }}" />
+    <input type="hidden" name="email" value="{{ email }}" />
+    <div class="center">
+      <input class="btn waves-effect waves-light" type="submit" value="Changer mot de passe et connexion" />
+    </div>
+  </form>
+
+  {% else %}
+
+  <h1>M'envoyer un courrier pour changer de mot de passe</h1>
+
+  <form id="resetpwd" method="post" action="/resetpwd" class="col s12">
+    {% csrf_token %}
+    <div class="row">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">email</i>
+        <input id="email" type="email" class="validate" name="email"/>
+        <label for="email" data-error="non conforme">Email</label>
+      </div>
+    </div>
+    <input type="hidden" name="lost_key" value="{{ lost_key }}" />
+    <div class="center">
+      <input class="btn waves-effect waves-light" type="submit" value="Envoyer le courrier" />
+    </div>
+  </form>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}
