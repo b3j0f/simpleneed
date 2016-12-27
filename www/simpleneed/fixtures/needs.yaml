@@ -1,35 +1,35 @@
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: money
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: snack
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: food
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: clothes
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: company
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: hygiene
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: accomodation
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: accessories
 
-- model: core.Need
+- model: simpleneed.need
   fields:
     name: health
