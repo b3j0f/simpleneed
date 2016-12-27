@@ -1,5 +1,0 @@
-- model: core.Contact
-  fields:
-    name: SAMU
-    phone: 115
-    website: http://www.croix-rouge.fr/Nos-actions/Action-sociale/Lutte-contre-l-exclusion/Samu-social
