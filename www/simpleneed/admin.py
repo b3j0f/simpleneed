@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from .models import (
     Gender, Mood, Need, NeedLocation, Contact, Roam, Stats, Message,
-    LocatedElement
+    LocatedElement, SupplyLocation
 )
 
 # Register your models here.
@@ -17,3 +17,4 @@ admin.site.register(Roam)
 admin.site.register(Stats)
 admin.site.register(Message)
 admin.site.register(LocatedElement)
+admin.site.register(SupplyLocation)

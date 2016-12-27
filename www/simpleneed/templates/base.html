@@ -81,7 +81,12 @@
                 constrain_width: false
             });
             $('.button-collapse').sideNav();
-            $('.tooltipped').tooltip({delay: 50});
+            $('.tooltipped').tooltip(
+                {
+                    delay: 50,
+                    html: true
+                }
+            );
             $('.parallax').parallax();
             $('.scrollspy').scrollSpy();
             $('select').material_select();

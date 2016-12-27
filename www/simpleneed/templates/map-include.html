@@ -49,7 +49,7 @@
 </div>
 
 <div class="modal" id="edit">
-	<form method="post" action="edit">
+	<form method="post" onsubmit="save(); return false;">
 		<div class="modal-content">
 			<h2 class="header update">Mise à jour de <p id="update-type"></p></h2>
 			<h4 class="header new center">Je <a class='dropdown-button' href='#' id="atype" data-activates='type'></a></h4>
@@ -60,11 +60,11 @@
 			</ul>
 			<div class="input-field col s12 roam">
 				<i class="material-icons prefix">mode_edit</i>
-				<input name="name" id="name" type="text" />
+				<input name="name" id="name" class="roam" type="text" required />
 				<label for="name">Nom</label>
 			</div>
 			<div class="input-field col s12 needlocation roam supplylocation">
-				<select multiple name="needs" id="needs">
+				<select multiple name="needs" id="needs" required>
 					<option value="" disabled selected>Choisis les besoins</option>
 					<option value="money">Argent</option>
 					<option value="snack">Collation</option>
@@ -90,10 +90,10 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<input type="hidden" name="id" id="id" />
+			<input type="hidden" name="id" id="id" class="update" />
 			<input type="hidden" name="longitude" id="longitude" />
 			<input type="hidden" name="latitude" id="latitude" />
-			<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="save();">Valider</a>
+			<button type="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
 			<button id="delete" onclick="del(this)" class="update modal-action modal-close waves-effect waves-green btn-flat">Supprimer</button>
 		</div>
 	</form>
@@ -102,10 +102,11 @@
 <script type="text/javascript" charset="utf-8">
 
 	var needs = ['money', 'snack', 'food', 'clothes', 'company', 'hygiene', 'accomodation', 'health'];
-	var filterneeds = [];
+	var filterneeds = new Array();
 	needs.forEach(
 		function(need) {filterneeds.push(need);}
 		);
+
 	function filter(elt) {
 		var index = filterneeds.indexOf(elt.id);
 		if (index >= 0) {
@@ -115,6 +116,7 @@
 			filterneeds.push(elt.id);
 			$(elt).removeClass('black');
 		}
+		refresh();
 	}
 
 	function save() {
@@ -123,26 +125,44 @@
 		var description = $('#description').val();
 		var emergency = $('#emergency').val() === 'on';
 		var needs = $('#needs').val();
+		var fneeds = new Array();
+		needs.forEach(function(need) {
+			fneeds.push('{{ api}}/needs/'+need+'/');
+		});
 		var id = $('#id').val();
 		var latitude = $('#latitude').val();
 		var longitude = $('#longitude').val();
+		$('#load').modal('open');
 		$.ajax({
 			type: (id === '' ? 'POST' : 'PUT'),
-			url: '{{ api }}/'+type+'s/'+id,
-			data: {
+			url: '{{ api }}/' + type + 's/' + id,
+			data: JSON.stringify({
 				type: type,
 				name: name,
 				description: description,
 				emergency: emergency,
-				needs: needs,
+				needs: fneeds,
 				latitude: latitude,
-				longitude: longitude
+				longitude: longitude,
+				messages: []
+			}),
+			dataType: 'json',
+			contentType: 'application/json',
+			success: function() {
+				$('#load').modal('close');
+				$('#edit').modal('close');
+				var translate = type === 'needlocation' ? 'galère' : type === 'roam' ? maraude : aide;
+				var msg = translate + (id === '' ? ' créée' : ' mise à jour');
+				var $toastContent = $('<p class="green-text">'+msg+'</p>');
+				Materialize.toast($toastContent, 5000);
+				refresh();
 			},
-			success: function(){
-				Materialize.toast(translate[type] + (id === '' ? ' créé ' : ' mis à jour ') + '!', 4000);
-			},
-			failure: function(error) {
-				Materialize.toast(typeof error == 'string' ? error : "failed", 4000);
+			error: function(error, msg, t) {
+				$('#load').modal('close');
+				console.log(error, msg, t);
+				var msg = 'erreur : ' + error.responseText;
+				var $toastContent = $('<p class="red-text">'+msg+'</p>');
+				Materialize.toast($toastContent, 5000);
 			}
 		});
 	};
@@ -164,12 +184,12 @@
 						);
 					$('#load').modal('close');
 				},
-				function() {
-					$('#status')[0].innerHTML = typeof msg == 'string' ? msg : "failed";
+				function(msg) {
+					$('#status')[0].innerHTML = 'Erreur : ' + (typeof msg == 'string' ? msg : 'failed');
 				}
 				);
 		} else {
-			$('#status')[0].innerHTML = 'Geolocalisation non supportée';
+			$('#status')[0].innerHTML = 'Erreur : Geolocalisation non supportée';
 		}
 	}
 
@@ -183,8 +203,10 @@
 	function onchangetype(type) {
 		types.forEach(function(type) {
 			$('.'+type).hide();
+			$('.'+type).attr('disabled', true);
 		});
 		$('.'+type).show();
+		$('.'+type).attr('disabled', false);
 		$('#atype')[0].innerText = translate[type];
 		$('#type').attr('value', type);
 	};
@@ -253,38 +275,49 @@
 		});
 	}
 
-	function addLocatedElements(elts) {
-		if (elts !== undefined) {
-			var result = [];
-			for(var elt of elts) {
-				var feature = new ol.Feature({
-					geometry: new ol.geom.Point([elt.longitude, elt.latitude]),
-					id: elt.id,
-					elt: elt
-				});
-				result.push(feature);
-			}
-			features.addFeatures(result);
-		}
+	function toFeatures(elts) {
+		var result = [];
+		elts.forEach(function (elt) {
+			var feature = new ol.Feature({
+				geometry: new ol.geom.Point(
+					[elt.longitude, elt.latitude]
+					),
+				id: elt.id,
+				elt: elt
+			});
+			result.push(feature);
+		});
+		return result;
 	}
 
 	function refresh() {
 		var extent = map.getView().calculateExtent(map.getSize());
 		var bottomLeft = [extent[0], extent[1]];
 		var topRight = [extent[2], extent[3]];
-		$.get(
-			'{{ api }}/locatedelements/',
-			{
+		var endts = new Date().getTime() / 1000;
+		var fneeds = filterneeds.length > 0 ? filterneeds[0] : '';
+		if (fneeds !== '') {
+			filterneeds.forEach(function(need) {
+				fneeds += need + ',';
+			});
+		}
+		$.ajax({
+			type: 'GET',
+			url: '{{ api }}/locatedelements/',
+			data: {
 				longitude__gte: bottomLeft[0],
 				longitude__lte: topRight[0],
 				latitude__lte: topRight[1],
 				latitude__gte: bottomLeft[1],
-				needs: filterneeds
+				endts__gte: endts,
+				needs__in: fneeds
 			},
-			function(data) {
-				addLocatedElements(data.results);
-			}, 'json');
-		setTimeout(refresh, 5000);
+			success: function(data) {
+				var eltfeatures = toFeatures(data.results);
+				features.clear();
+				features.addFeatures(eltfeatures);
+			}
+		});
 	}
 
 	var clusterSource = new ol.source.Cluster({
@@ -330,12 +363,7 @@
 	});
 
 	function onMoveEnd(evt) {
-		var map = evt.map;
-		var extent = map.getView().calculateExtent(map.getSize());
-		var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
-			'EPSG:3857', 'EPSG:4326');
-		var topRight = ol.proj.transform(ol.extent.getTopRight(extent),
-			'EPSG:3857', 'EPSG:4326');
+		refresh();
 	}
 
 	map.on('moveend', onMoveEnd);
@@ -365,6 +393,10 @@
 	});
 	map.addInteraction(selectSingleClick);
 
-	refresh();
+	function recrefresh() {
+		refresh();
+		setTimeout(recrefresh, 5000);
+	}
+	recrefresh();
 
 </script>

@@ -4,15 +4,16 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from rest_framework.viewsets import ModelViewSet
+from django_filters.rest_framework import FilterSet, BaseInFilter
 
 from .models import (
     NeedLocation, Contact, Mood, Need, Gender, Roam, Stats, Message,
-    LocatedElement
+    LocatedElement, SupplyLocation
 )
 from .serializers import (
     NeedLocationSerializer, ContactSerializer, RoamSerializer,
     MoodSerializer, NeedSerializer, GenderSerializer, StatsSerializer,
-    MessageSerializer, LocatedElementSerializer
+    MessageSerializer, LocatedElementSerializer, SupplyLocationSerializer
 )
 
 
@@ -21,7 +22,7 @@ class MoodViewSet(ModelViewSet):
 
     queryset = Mood.objects.all()
     serializer_class = MoodSerializer
-    filter_fields = {'name': ['iregex', 'exact']}
+    filter_fields = {'name': ['iregex', 'iexact', 'icontains']}
 
 
 class NeedViewSet(ModelViewSet):
@@ -29,7 +30,7 @@ class NeedViewSet(ModelViewSet):
 
     queryset = Need.objects.all()
     serializer_class = NeedSerializer
-    filter_fields = {'name': ['iregex', 'exact']}
+    filter_fields = {'name': ['iregex', 'iexact', 'icontains']}
 
 
 class GenderViewSet(ModelViewSet):
@@ -37,7 +38,34 @@ class GenderViewSet(ModelViewSet):
 
     queryset = Gender.objects.all()
     serializer_class = GenderSerializer
-    filter_fields = {'name': ['iregex', 'exact']}
+    filter_fields = {'name': ['iregex', 'iexact', 'icontains']}
+
+
+class StringInFilter(BaseInFilter):
+    """String in filter."""
+
+
+class LocatedElementFilter(FilterSet):
+    """Located element filter."""
+
+    needs__in = StringInFilter(name='needs', lookup_expr='in')
+
+    class Meta:
+        """Located element filter meta class."""
+
+        model = LocatedElement
+        fields = {
+            'id': ['exact'],
+            'description': ['iregex'],
+            'longitude': ['iexact', 'icontains', 'gte', 'lte'],
+            'latitude': ['iexact', 'icontains', 'gte', 'lte'],
+            'startts': ['iexact', 'icontains', 'gte', 'lte'],
+            'endts': ['iexact', 'icontains', 'gte', 'lte'],
+            'messages': ['iexact', 'icontains'],
+            'people': ['iexact', 'icontains', 'gte', 'lte'],
+            'needs__in': [''],
+            'needs': ['exact']
+        }
 
 
 class LocatedElementViewSet(ModelViewSet):
@@ -46,17 +74,20 @@ class LocatedElementViewSet(ModelViewSet):
     queryset = LocatedElement.objects.all()
     serializer_class = LocatedElementSerializer
     filter_fields = {
-        'id': ['exact'],
+        'id': ['iexact', 'icontains'],
         'description': ['iregex'],
-        'longitude': ['exact', 'gte', 'lte'],
-        'latitude': ['exact', 'gte', 'lte'],
-        'startts': ['exact', 'gte', 'lte'],
-        'endts': ['exact', 'gte', 'lte'],
-        'messages': ['exact'],
-        'people': ['exact', 'gte', 'lte']
+        'longitude': ['iexact', 'icontains', 'gte', 'lte'],
+        'latitude': ['iexact', 'icontains', 'gte', 'lte'],
+        'startts': ['iexact', 'icontains', 'gte', 'lte'],
+        'endts': ['iexact', 'icontains', 'gte', 'lte'],
+        'messages': ['iexact', 'icontains'],
+        'people': ['iexact', 'icontains', 'gte', 'lte'],
+        'needs': ['in']
     }
     ordering_fields = ['enddatetime']
     ordering = ['enddatetime']
+
+    filter_class = LocatedElementFilter
 
 
 class MessageViewSet(ModelViewSet):
@@ -65,10 +96,10 @@ class MessageViewSet(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     filter_fields = {
-        'id': ['exact'],
+        'id': ['iexact', 'icontains'],
         'content': ['iregex'],
-        'element': ['exact'],
-        'ts': ['exact', 'gte', 'lte']
+        'element': ['iexact', 'icontains'],
+        'ts': ['iexact', 'icontains', 'gte', 'lte']
     }
     ordering_fields = ['datetime']
     ordering = ['datetime']
@@ -80,12 +111,11 @@ class NeedLocationViewSet(LocatedElementViewSet):
     queryset = NeedLocation.objects.all()
     serializer_class = NeedLocationSerializer
     filter_fields = {
-        # 'mood': ['exact'],
-        'needs': ['exact'],
-        # 'handicapped': ['exact'],
-        # 'gender': ['exact'],
-        'roam': ['exact'],
-        'emergency': ['exact']
+        # 'mood': ['iexact', 'icontains'],
+        # 'handicapped': ['iexact', 'icontains'],
+        # 'gender': ['iexact', 'icontains'],
+        'roam': ['iexact', 'icontains'],
+        'emergency': ['iexact', 'icontains']
     }
     filter_fields.update(LocatedElementViewSet.filter_fields)
 
@@ -96,11 +126,18 @@ class RoamViewSet(LocatedElementViewSet):
     queryset = Roam.objects.all()
     serializer_class = RoamSerializer
     filter_fields = {
-        'name': ['iregex', 'exact'],
-        'needlocations': ['exact']
+        'name': ['iregex', 'iexact', 'icontains'],
+        'needlocations': ['iexact', 'icontains']
     }
     filter_fields.update(LocatedElementViewSet.filter_fields)
     ordering_fields = ['name', 'enddatetime']
+
+
+class SupplyLocationViewSet(LocatedElementViewSet):
+    """API endpoint that allows supply locations to be viewed or edited."""
+
+    queryset = SupplyLocation.objects.all()
+    serializer_class = SupplyLocationSerializer
 
 
 class ContactViewSet(ModelViewSet):
@@ -108,7 +145,7 @@ class ContactViewSet(ModelViewSet):
 
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
-    filter_fields = {'name': ['iregex', 'exact']}
+    filter_fields = {'name': ['iregex', 'iexact', 'icontains']}
 
 
 class StatsViewSet(ModelViewSet):
@@ -117,10 +154,10 @@ class StatsViewSet(ModelViewSet):
     queryset = Stats.objects.all()
     serializer_class = StatsSerializer
     filter_fields = {
-        'ts': ['exact', 'gte', 'lte'],
-        'needs': ['exact', 'gte', 'lte'],
-        'answeredneeds': ['exact', 'gte', 'lte'],
-        'roams': ['exact', 'gte', 'lte']
+        'ts': ['iexact', 'icontains', 'gte', 'lte'],
+        'needs': ['iexact', 'icontains', 'gte', 'lte'],
+        'answeredneeds': ['iexact', 'icontains', 'gte', 'lte'],
+        'roams': ['iexact', 'icontains', 'gte', 'lte']
     }
 
 

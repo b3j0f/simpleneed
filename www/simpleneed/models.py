@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.db.models import F
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
@@ -65,7 +65,7 @@ def add8hours():
     return time() + 8 * 3600
 
 
-# @python_2_unicode_compatible
+@python_2_unicode_compatible
 class LocatedElement(models.Model):
     """abstract model for located elements."""
 
@@ -90,13 +90,22 @@ class LocatedElement(models.Model):
 
     @property
     def child(self):
-        """Get child object."""
-        return self.rroam or self.rneedlocation
+        """Get child object. Self if not locatedelement."""
+        return self.rroam or self.rneedlocation or self.rsupplylocation
+
+    @property
+    def type(self):
+        """Get type name."""
+        return type(self.child).__name__
 
     @property
     def haspwd(self):
         """True if this has a password."""
         return bool(self.pwd)
+
+    def __str__(self):
+        """Representation."""
+        return '{0}'.format(self.id)
 
 
 @python_2_unicode_compatible
@@ -141,7 +150,7 @@ class Roam(LocatedElement):
 
     def __str__(self):
         """representation."""
-        return 'Roam({0})/{1}'.format(self.name, super(Roam, self).__str__())
+        return 'Roam({0})'.format(self.name)
 
 
 # @python_2_unicode_compatible
@@ -214,6 +223,9 @@ class Stats(models.Model):
 
 
 @receiver(pre_save, sender=NeedLocation)
+@receiver(pre_save, sender=SupplyLocation)
+@receiver(pre_save, sender=Roam)
+@receiver(pre_save, sender=LocatedElement)
 def cleanneedlocation(sender, instance, **kwargs):
     """If needs are empty, set enddatetime to at most now."""
     now = time()
@@ -256,29 +268,24 @@ def addsuppliesstats(sender, instance, **kwargs):
     if instance.id is None:
         todayts = currentdatets()
 
-        try:
-            stats = Stats.objects.get(pk=todayts)
+        rows = Stats.objects.filter(pk=todayts).update(
+            supplies=F('supplies') + 1
+        )
 
-        except Stats.DoesNotExist:
+        if rows == 0:
             Stats.objects.create(supplies=1)
 
-        else:
-            stats.update(F('supplies') + 1)
 
-
-@receiver(post_save, sender=Roam)
+@receiver(pre_save, sender=Roam)
 def addroamstats(sender, instance, **kwargs):
     """Add roam count in stats."""
-    todayts = currentdatets()
+    if instance.id is None:
+        todayts = currentdatets()
 
-    try:
-        stats = Stats.objects.get(pk=todayts)
+        rows = Stats.objects.filter(pk=todayts).update(roams=F('roams') + 1)
 
-    except Stats.DoesNotExist:
-        Stats.objects.create(roams=1)
-
-    else:
-        stats.update(F('roams') + 1)
+        if rows == 0:
+            Stats.objects.create(roams=1)
 
 
 @receiver(pre_save, sender=NeedLocation)
@@ -304,15 +311,13 @@ def addneedlocationstats(sender, instance, **kwargs):
 
     todayts = currentdatets()
 
-    try:
-        stats = Stats.objects.get(pk=todayts)
+    rows = Stats.objects.filter(pk=todayts).update(
+        needs=F('needs') + needscount + people,
+        answeredneeds=F('answeredneeds') + needscount + people
+    )
 
-    except Stats.DoesNotExist:
+    if rows == 0:
         Stats.objects.create(
             allneeds=needscount * people,
             allansweredneeds=answeredneedscount * people
         )
-
-    else:
-        stats.update(F('needs') + needscount * people)
-        stats.update(F('answeredneedscount') + answeredneedscount * people)

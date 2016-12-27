@@ -4,7 +4,7 @@ from rest_framework.serializers import HyperlinkedModelSerializer
 
 from .models import (
     NeedLocation, Contact, Mood, Need, Gender, Roam, Stats, Message,
-    LocatedElement
+    LocatedElement, SupplyLocation
 )
 
 
@@ -48,9 +48,11 @@ class LocatedElementSerializer(HyperlinkedModelSerializer):
         _fields = [
             'id', 'description', 'longitude', 'latitude', 'messages',
             'people', 'haspwd', 'startts', 'endts',
-            'utcstartdatetime', 'utcenddatetime'
+            'utcstartdatetime', 'utcenddatetime', 'needs'
         ]
-        fields = _fields + ['rroam', 'rneedlocation']
+        fields = _fields + [
+            'rroam', 'rneedlocation', 'rsupplylocation'
+        ]
 
 
 class MessageSerializer(HyperlinkedModelSerializer):
@@ -71,9 +73,19 @@ class NeedLocationSerializer(LocatedElementSerializer):
 
         model = NeedLocation
         fields = [
-            'roam', 'needs', 'emergency'
+            'roam', 'emergency'
             # 'handicapped', 'sick', 'gender', 'mood'
         ] + LocatedElementSerializer.Meta._fields
+
+
+class SupplyLocationSerializer(LocatedElementSerializer):
+    """Supply location serializer."""
+
+    class Meta:
+        """Supply location serializer."""
+
+        model = SupplyLocation
+        fields = list(LocatedElementSerializer.Meta._fields)
 
 
 class ContactSerializer(HyperlinkedModelSerializer):
