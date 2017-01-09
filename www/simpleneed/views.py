@@ -57,7 +57,7 @@ class LocatedElementFilter(FilterSet):
 
         model = LocatedElement
         fields = {
-            'id': ['exact'],
+            'id': ['exact', 'in'],
             'description': ['iregex', 'icontains'],
             'longitude': ['iexact', 'icontains', 'gte', 'lte'],
             'latitude': ['iexact', 'icontains', 'gte', 'lte'],
@@ -76,7 +76,7 @@ class LocatedElementViewSet(ModelViewSet):
     queryset = LocatedElement.objects.all()
     serializer_class = LocatedElementSerializer
     filter_fields = {
-        'id': ['iexact', 'icontains'],
+        'id': ['exact', 'in'],
         'description': ['iregex', 'icontains'],
         'longitude': ['iexact', 'icontains', 'gte', 'lte'],
         'latitude': ['iexact', 'icontains', 'gte', 'lte'],
@@ -98,7 +98,7 @@ class MessageViewSet(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     filter_fields = {
-        'id': ['iexact', 'icontains'],
+        'id': ['exact', 'in'],
         'content': ['iregex'],
         'element': ['iexact', 'icontains'],
         'ts': ['iexact', 'icontains', 'gte', 'lte']

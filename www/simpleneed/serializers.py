@@ -51,7 +51,7 @@ class LocatedElementSerializer(HyperlinkedModelSerializer):
             'utcstartdatetime', 'utcenddatetime', 'needs', 'type'
         ]
         fields = _fields + [
-            'rroam', 'rneedlocation', 'rsupplylocation'
+            'rroam', 'rneedlocation', 'rsupplylocation', 'child'
         ]
 
 

@@ -31,10 +31,6 @@ function filter(elt) {
 	refresh();
 }
 
-function gettype(elt) {
-	return elt.rroam ? 'roam' : elt.rneedlocation ? 'needlocation' : 'supplylocation';
-}
-
 function save() {
 	//var csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 	var type = $('#type').attr('value');
@@ -131,7 +127,7 @@ function onchangetype(type) {
 	});
 	$('.'+type).show();
 	$('.'+type).attr('disabled', false);
-	$('#atype')[0].innerText = translate[type];
+	document.getElementById('atype').innerText = translate[type];
 	$('#type').attr('value', type);
 };
 
@@ -168,17 +164,16 @@ function edit(elt, coordinate) {
 		$('#type').attr('disabled', false);
 		onchangetype('needlocation');
 		document.getElementById('description').innerText = '';
-		document.getElementById('emergency').setAttribute('checked', false);
+		document.getElementById('emergency').removeAttribute('checked');
 		document.getElementById('name').removeAttribute('text');
 		document.getElementById('id').removeAttribute('value');
 	} else {
 		$('.update').show();
 		$('.new').hide();
-		var type = gettype(elt);
-		$('#'+type).attr('selected', true);
+		$('#'+elt.type).attr('selected', true);
 		$('#type').attr('disable', true);
-		onchangetype(type);
-		$('#delete').attr('href', '{{ api }}/' + type + 's/' + elt.id + '/');
+		onchangetype(elt.type);
+		$('#delete').attr('href', '{{ api }}/' + elt.type + 's/' + elt.id + '/');
 		Object.keys(needs).forEach(function (need) {
 			document.getElementById('need' + need).removeAttribute('selected');
 		});
@@ -188,16 +183,19 @@ function edit(elt, coordinate) {
 			document.getElementById('need' + name).setAttribute('selected', true);
 		});
 		$('#needs').material_select();
-		var type = gettype(elt);
 		var shorttranslation = {
 			'needlocation': 'd\'une galère',
 			'roam': 'd\'une maraude',
 			'supplylocation': 'd\'une aide'
 		};
 		document.getElementById('description').innerText = elt.description;
-		document.getElementById('emergency').setAttribute('checked', elt.checked === true);
+		if (elt.emergency) {
+			document.getElementById('emergency').setAttribute('checked', true);
+		} else {
+			document.getElementById('emergency').removeAttribute('checked');
+		}
 		document.getElementById('name').setAttribute('text', elt.name);
-		document.getElementById('update-type').innerText = 'Mise à jour ' + shorttranslation[type];
+		document.getElementById('update-type').innerText = 'Mise à jour ' + shorttranslation[elt.type];
 		document.getElementById('id').setAttribute('value', elt.id);
 	}
 	$('#edit').modal('open');
@@ -279,18 +277,53 @@ function refresh() {
 			longitude__lte: topRight[0],
 			latitude__lte: topRight[1],
 			latitude__gte: bottomLeft[1],
+			startts__lte: endts,
 			endts__gte: endts,
 			needs__in: fneeds,
 			description__icontains: search
 		},
 		success: function(data) {
 			var results = {};
+			var dataidbytypes = {
+				'roam': {},
+				'needlocation': {},
+				'supplylocation': {}
+			};
 			data.results.forEach(function (elt) {
+				if (elt.rroam) {
+					dataidbytypes['roam'][elt.id] = elt;
+				} else if (elt.rneedlocation) {
+					dataidbytypes['needlocation'][elt.id] = elt;
+				} else {
+					dataidbytypes['supplylocation'][elt.id] = elt;
+				}
 				results[elt.id] = elt;
 			});
-			var eltfeatures = toFeatures(results);
 			features.clear();
-			features.addFeatures(Object.values(eltfeatures));
+			Object.keys(dataidbytypes).forEach(function (type) {
+				if (Object.keys(dataidbytypes[type]).length > 0) {
+					var ids = Object.keys(dataidbytypes[type]);
+					var fids = '';
+					ids.forEach(function(id) {
+						fids += id + ',';
+					});
+					$.ajax({
+						type: 'GET',
+						url: '{{ api }}/' + type + 's/',
+						data: {
+							id__in: fids
+						},
+						success: function(data) {
+							data.results.forEach(function (elt) {
+								dataidbytypes[type][elt.id] = elt;
+							});
+							var eltfeatures = toFeatures(dataidbytypes[type]);
+							features.addFeatures(Object.values(eltfeatures));
+							console.log(type, data.results);
+						}
+					});
+				}
+			});
 		}
 	});
 }
@@ -321,9 +354,9 @@ var clusters = new ol.layer.Vector({
 	}
 });
 
-var select = new ol.interaction.Select({
+var selectinteraction = new ol.interaction.Select({
 });
-select.on('select', function (evt) {
+selectinteraction.on('select', function (evt) {
 	evt.selected.forEach(function (selected) {
 		selected.get('features').forEach(function (feature) {
 			var elt = feature.get('elt');
@@ -333,9 +366,9 @@ select.on('select', function (evt) {
 	});
 });
 
-var translate = new ol.interaction.Translate({
+var translateinteraction = new ol.interaction.Translate({
 });
-translate.on('translateend', function(evt) {
+translateinteraction.on('translateend', function(evt) {
 	evt.features.getArray().forEach(function (feature) {
 		feature.get('features').forEach(function (feature) {
 			var elt = feature.get('elt');
@@ -345,7 +378,9 @@ translate.on('translateend', function(evt) {
 });
 
 var map = new ol.Map({
-	interactions: ol.interaction.defaults().extend([select, translate]),
+	interactions: ol.interaction.defaults().extend(
+		[selectinteraction, translateinteraction]
+		),
 	target: 'map',
 	layers: [
 	new ol.layer.Tile({source: new ol.source.OSM()}),
@@ -367,6 +402,16 @@ function onMoveEnd(evt) {
 }
 
 map.on('moveend', onMoveEnd);
+
+map.on('singleclick', function(evt, layer) {
+	var feature = map.forEachFeatureAtPixel(
+		evt.pixel,
+		function(feature) { return feature; }
+		);
+	if (feature === undefined) {
+		edit(feature, evt.coordinate);
+	}
+});
 
 function setCenter(longitude, latitude) {
 	console.log(longitude, latitude);
