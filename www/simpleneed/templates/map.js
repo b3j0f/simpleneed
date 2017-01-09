@@ -198,6 +198,9 @@ function edit(elt, coordinate) {
 		document.getElementById('update-type').innerText = 'Mise à jour ' + shorttranslation[elt.type];
 		document.getElementById('id').setAttribute('value', elt.id);
 	}
+	$('#edit').modal({
+		complete: refresh
+	});
 	$('#edit').modal('open');
 };
 
@@ -354,26 +357,52 @@ var clusters = new ol.layer.Vector({
 	}
 });
 
+function interact(features, coordinates) {
+	if (features.length > 1) {
+		console.log('several features selected', features);
+		refresh();
+		// TODO do something when several features are selected.
+	} else {
+		var feature = features[0];
+		var elt = feature.get('elt');
+		var coordinates = coordinates || feature.getGeometry().getCoordinates();
+		edit(elt, coordinates);
+	}
+}
+
 var selectinteraction = new ol.interaction.Select({
 });
 selectinteraction.on('select', function (evt) {
 	evt.selected.forEach(function (selected) {
-		selected.get('features').forEach(function (feature) {
+		var features = selected.get('features');
+		interact(features);/*
+		if (features.length > 1) {
+			// TODO do something when several features are selected.
+		} else {
+			var feature = features[0];
 			var elt = feature.get('elt');
 			var coordinates = feature.getGeometry().getCoordinates();
 			edit(elt, coordinates);
-		});
+		}*/
 	});
 });
 
 var translateinteraction = new ol.interaction.Translate({
+	handleEvent: function(evt) {
+		console.log(evt);
+	}
 });
 translateinteraction.on('translateend', function(evt) {
 	evt.features.getArray().forEach(function (feature) {
+		var features = feature.get('features');
+		interact(features, evt.coordinate);
+		/*if (features.length > 1) {
+
+		}
 		feature.get('features').forEach(function (feature) {
 			var elt = feature.get('elt');
 			edit(elt, evt.coordinate);
-		});
+		});*/
 	});
 });
 
