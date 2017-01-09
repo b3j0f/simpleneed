@@ -96,7 +96,7 @@ class LocatedElement(models.Model):
     @property
     def type(self):
         """Get type name."""
-        return type(self.child).__name__
+        return type(self).__name__.lower()
 
     @property
     def haspwd(self):
