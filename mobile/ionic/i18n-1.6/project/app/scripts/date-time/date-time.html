@@ -1,0 +1,38 @@
+<ion-view view-title="{{ 'DATE_TIME' | translate }}">
+	<ion-content>
+		<ion-list>
+			<ion-item>
+				{{ vm.dateTime  | date: 'short' }}
+				<span class="item-note">short</span>
+			</ion-item>
+			<ion-item>
+				{{ vm.dateTime  | date: 'medium' }}
+				<span class="item-note">medium</span>
+			</ion-item>
+			<ion-item>
+				{{ vm.dateTime  | date: 'fullDate' }}
+				<span class="item-note">fullDate</span>
+			</ion-item>
+			<ion-item>
+				{{ vm.dateTime  | date: 'shortDate' }}
+				<span class="item-note">shortDate</span>
+			</ion-item>
+			<ion-item>
+				{{ vm.dateTime  | date: 'mediumDate' }}
+				<span class="item-note">mediumDate</span>
+			</ion-item>
+			<ion-item>
+				{{ vm.dateTime  | date: 'longDate' }}
+				<span class="item-note">longDate</span>
+			</ion-item>
+			<ion-item>
+				{{ vm.dateTime  | date: 'shortTime' }}
+				<span class="item-note">shortTime</span>
+			</ion-item>
+			<ion-item>
+				{{ vm.dateTime  | date: 'mediumTime' }}
+				<span class="item-note">mediumTime</span>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>

@@ -7,7 +7,7 @@
 		<ion-list-header>Today</ion-list-header>
 		<ion-item>
 			<button ion-button ion-icon item-left (click)="changetodaytype()">
-				<ion-icon [name]="todaytype === 'pie' ? 'pie' : 'square'"></ion-icon>
+				<ion-icon [name]="todaytype === 'pie' ? 'pie' : 'podium'"></ion-icon>
 			</button>
 			<div id="daystatschart"></div>
 		</ion-item>
@@ -16,7 +16,7 @@
 		<ion-list-header>From the beginning</ion-list-header>
 		<ion-item>
 			<button ion-button ion-icon item-left (click)="changealltype()">
-				<ion-icon [name]="alltype === 'line' ? 'remove' : 'square'"></ion-icon>
+				<ion-icon [name]="alltype === 'pulse' ? 'remove' : 'podium'"></ion-icon>
 			</button>
 			<div id="allstatschart"></div>
 		</ion-item>

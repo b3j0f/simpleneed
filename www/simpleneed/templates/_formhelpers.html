@@ -1,0 +1,23 @@
+
+{% if user.is_authenticated %}
+
+{% for proposal in survey.proposals %}
+
+{% endfor %}
+
+<dt>{{ field.label }}
+<dd>{{ field(**kwargs)|safe }}
+	{% if field.errors %}
+	<ul class=errors>
+		{% for error in field.errors %}
+		<li>{{ error }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+</dd>
+
+{% else %}
+
+<a href="/auth/subscribe">Connectez-vous pour voter !</a>
+
+{% endif %}

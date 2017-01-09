@@ -1,0 +1,35 @@
+- model: simpleneed.need
+  fields:
+    name: money
+
+- model: simpleneed.need
+  fields:
+    name: snack
+
+- model: simpleneed.need
+  fields:
+    name: food
+
+- model: simpleneed.need
+  fields:
+    name: clothes
+
+- model: simpleneed.need
+  fields:
+    name: company
+
+- model: simpleneed.need
+  fields:
+    name: hygiene
+
+- model: simpleneed.need
+  fields:
+    name: accomodation
+
+- model: simpleneed.need
+  fields:
+    name: accessories
+
+- model: simpleneed.need
+  fields:
+    name: health

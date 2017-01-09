@@ -1,0 +1,102 @@
+
+{% load static %}
+
+
+<form onsubmit="refresh(); return false;">
+	<div class="input-field">
+		<input id="search" type="search" />
+		<label for="search">Description</label>
+		<i class="material-icons" onclick="$('#search').val('');">close</i>
+	</div>
+</form>
+
+<div class="row center-align">
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="money" onclick="filter(this)"><i class="text-red material-icons">attach_money</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="snack" onclick="filter(this)"><i class="material-icons">free_breakfast</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="food" onclick="filter(this)"><i class="material-icons">local_pizza</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="clothes" onclick="filter(this)"><img class="svg icons responsive-img" src="{% static 'img/shirt.svg' %}" /></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="company" onclick="filter(this)"><i class="material-icons">group</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="hygiene" onclick="filter(this)"><img class="svg responsive-img" src="{% static 'img/shower.svg' %}" /></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="accomodation" onclick="filter(this)"><i class="material-icons">local_hotel</i></a></div>
+	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="health" onclick="filter(this)"><img class="svg responsive-img" src="{% static 'img/heartbeat.svg' %}" /></a></div>
+</div>
+
+<div id="map" class="map"></div>
+
+<div class="center">
+	<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons">location_searching</i></button>
+</div>
+
+<div class="modal center" id="load">
+	<div class="modal-content">
+		<h2><i class="material-icons medium">location_on</i>Géolocalisation en cours...</h2>
+		<div class="preloader-wrapper active" id="loader">
+			<div class="spinner-layer spinner-green-only">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="gap-patch">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="modal-close btn-flat" id="status"></button>
+	</div>
+</div>
+
+<div class="modal" id="edit">
+	<form method="post" onsubmit="save(); return false;">
+		{% csrf_token %}
+		<div class="modal-content">
+			<h2 class="header update">
+				<p id="update-type"></p>
+			</h2>
+			<h4 class="header new center">Je <a class='dropdown-button' href='#' id="atype" data-activates='type'></a></h4>
+			<ul id='type' class='dropdown-content'>
+				<li><a href="#!" id="needlocation" onclick="onchangetype(this.id);">suis en galère</a></li>
+				<li><a href="#!" id="roam" onclick="onchangetype(this.id);">crée une maraude</a></li>
+				<li><a href="#!" id="supplylocation" onclick="onchangetype(this.id);">propose mon aide</a></li>
+			</ul>
+			<div class="input-field col s12 roam">
+				<i class="material-icons prefix">mode_edit</i>
+				<input name="name" id="name" class="roam" type="text" required />
+				<label for="name">Nom</label>
+			</div>
+			<div class="input-field col s12 needlocation roam supplylocation">
+				<select multiple name="needs" id="needs" required>
+					<option value="" disabled selected>Choisis les besoins</option>
+				</select>
+				<label>Besoins</label>
+			</div>
+			<div class="input-field needlocation supplylocation roam col 12">
+				<i class="material-icons prefix">assignment</i>
+				<textarea id="description" class="materialize-textarea"></textarea>
+				<label for="description">Description</label>
+			</div>
+			<div class="needlocation col s12">
+				<p>
+					<input type="checkbox" id="emergency" name="mergency" />
+					<label for="emergency">Urgent</label>
+				</p>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<input type="hidden" name="id" id="id" class="update" />
+			<input type="hidden" name="longitude" id="longitude" />
+			<input type="hidden" name="latitude" id="latitude" />
+			<button type="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
+			<button id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</button>
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+	{% include 'map.js' %}
+
+</script>

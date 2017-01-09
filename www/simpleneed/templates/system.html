@@ -1,0 +1,78 @@
+{% if system.url %}
+
+<a href="{{ system.url }}" target="_blank">
+  {% endif %}
+
+  <div class="card">
+
+    {% if profile_system %}
+    <form method="post" action="editsystem">
+      {% endif %}
+
+      {% if system.media %}
+      <div class="card-image">
+
+        <div class="video-container">
+          <iframe src="{{ system.video }}" frameborder="0" allowfullscreen>
+          </iframe>
+          {% if profile_system %}
+          <div class="input-field">
+            <input type="url" name="video" value="{{system.video}}" />
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="card-content activator">
+        <div class="card-title activator">
+          {% if profile_system %}
+          <div class="input-field">
+            <input type="text" name="name" value="{{system.name}}" />
+          </div>
+          {% else %}
+          <p class="activator">
+            {{ system.name|capfirst }}
+          </p>
+          {% endif %}
+        </div>
+        <p class="activator">
+          {% if profile_system %}
+          <div class="input-field">
+            <textarea id="description" class="materialize-textarea validate" name="description" required>
+              {{ system.description}}
+            </textarea>
+          </div>
+          {% else %}
+          <p>
+            {{ system.description }}
+          </p>
+          {% endif %}
+          {% endif %}
+        </p>
+      </div>
+
+      <div class="card-action activator">
+        <a href="system.website" class="activator">Mise en place</a>
+      </div>
+
+      <div class="card-reveal">
+        <span class="card-title grey-text text-darken-4">{{ system.name }}<i class="material-icons right">close</i></span>
+        {% if profile_system %}
+        <div class="input-field">
+          <textarea id="implementation" class="materialize-textarea validate" name="implementation" required>{{ system.implementation }}</textarea>
+        </div>
+        {% else %}
+        <p>{{ system.implementation }}</p>
+        {% endif %}
+      </div>
+
+      {% if profile_system %}
+    </form>
+    {% endif %}
+
+  </div>
+  {% if system.url %}
+</a>
+
+{% endif %}

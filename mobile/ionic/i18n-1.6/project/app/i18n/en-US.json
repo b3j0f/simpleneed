@@ -1,0 +1,17 @@
+{
+	"CONTROLS": "Controls",
+	"USERNAME": "Username",
+	"PASSWORD": "Password",
+	"COUNTRY": "Country",
+	"REGISTER": "Register",
+	"USA": "USA",
+	"GREECE": "Greece",
+	"UKRAINE": "Ukraine",
+	"FRANCE": "France",
+	"PLAIN_TEXT": "Plain text",
+	"LOREM_IPSUM": "Lorem ipsum",
+	"LOREM_IPSUM_FULL": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	"DATE_TIME": "Date / Time",
+	"HOME": "Home",
+	"YOUR_LOCALE": "Your locale"
+}

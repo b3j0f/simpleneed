@@ -1,0 +1,26 @@
+<ion-view view-title="{{ 'CONTROLS' | translate}}">
+	<div class="content has-header">
+		<div class="list">
+			<label class="item item-input">
+				<span class="input-label">{{ 'USERNAME' | translate}}</span>
+				<input type="text">
+			</label>
+			<label class="item item-input">
+				<span class="input-label">{{ 'PASSWORD' | translate}}</span>
+				<input type="password">
+			</label>
+			<div class="item item-input item-select">
+				<div class="input-label">{{ 'COUNTRY' | translate}}</div>
+				<select>
+					<option>{{ 'USA' | translate}}</option>
+					<option>{{ 'GREECE' | translate }}</option>
+					<option>{{ 'UKRAINE' | translate }}</option>
+					<option selected="">{{ 'FRANCE' | translate }}</option>
+				</select>
+			</div>
+		</div>
+		<div class="padding">
+			<button class="button button-block button-positive">{{ 'REGISTER' | translate }}</button>
+		</div>
+	</div>
+</ion-view>

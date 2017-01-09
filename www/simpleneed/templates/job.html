@@ -1,0 +1,67 @@
+{% extends "index.html" %}
+{% block body %}
+
+{{ super() }}
+
+<h1>Postuler</h1>
+
+Nous recherchons des personnes qui souhaitent participer bénévolement au bon fonctionnement de la plateforme.
+
+Si vous pensez pouvoir apporter quelque chose, sachez que nous n'acceptons pas de diffusions d'idées politiques ici. Cette plateforme n'a pas pour vocation de faire évoluer les opinions politiques. Elle a pour but d'informer de l'existence de plusieurs systèmes politiques, sans prendre parti.
+
+En fonction de l'affluence des demandes, nous vous répondrons dans les plus brefs délais.
+
+<hr/>
+
+{% if session.logged_in %}
+
+<h2>Quelles sont vos domaines de prédilection ?</h2>
+
+<form action='job.html' method="post">
+
+<checkbox name="communication">Communication</checkbox>
+<checkbox name="dev-frontend">Développeur frontend</checkbox>
+<checkbox name="dev-backend">Développeur backend</checkbox>
+<checkbox name="adminsys">Administrateur système</checkbox>
+
+<textarea name="motivation">Lettre de motivation</textarea>
+
+<div class="g-recaptcha" data-sitekey="6LeAvxsTAAAAANnmUMCLNVYZL4qNpHzbAVcuXmJp"></div>
+
+</form>
+
+{% else %}
+
+{{ logbefore() }}
+
+{% endif %}
+
+{% if getsurveys() %}
+
+{% for survey in getsurveys() %}
+
+{{ survey.html }}
+
+{% endfor %}
+
+No survey registered yet.
+
+{% endif %}
+
+{% if session.logged_in %}
+
+<form action="{{ url_for('add_survey')}}" method="post" class="add-entry">
+<input type="text" name="title" text="titre ..." />
+<textarea name="contente">Description...</textarea>
+<input type="text" name="name" text="website" />
+<input type="submit" value="Valider"/>
+<recatch
+</form>
+
+{% else %}
+
+Log in before !
+
+{% endif %}
+
+{% endblock %}

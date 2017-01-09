@@ -2,16 +2,13 @@ MANAGE:=python manage.py
 
 INSTALL:= pip install -r
 
-all: clean rundev
+all: clean test rundev
 
-test: cleandev settingsdev dependenciesdev migrate loaddata
+test: clean settingsdev dependenciesdev loaddata
 	$(MANAGE) test
 
 clean:
-	rm -rf core/migrations/0*
-
-cleandev: clean
-	rm -rf db.sqlite
+	$(MANAGE) flush
 
 cleanprod: clean
 	$(MANAGE) flush
@@ -34,12 +31,12 @@ migrations:
 migrate: migrations
 	$(MANAGE) migrate
 
-loaddata:
-	$(MANAGE) loaddata core/fixtures/*
+loaddata: migrate
+	$(MANAGE) loaddata simpleneed/fixtures/*
 
-runprod: settingsprod dependenciesprod migrate loaddata
+runprod: settingsprod dependenciesprod loaddata
 	$(MANAGE) collectstatic
 	$(MANAGE) runserver 0.0.0.0:80
 
-rundev: settingsdev dependenciesdev migrate loaddata
-	$(MANAGE) runserver
+rundev: settingsdev dependenciesdev loaddata
+	$(MANAGE) runserver 0.0.0.0:8000

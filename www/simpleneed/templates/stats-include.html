@@ -1,0 +1,126 @@
+
+<div class="row">
+  <div class="col s6">
+    <p>Maraudes</p>
+  </div>
+  <div class="col s6">
+    <p>Aides</p>
+  </div>
+  <div class="row">
+    <div class="col s6">
+      <p id="roams"></p>
+    </div>
+    <div class="col s6">
+      <p id="supplies"></p>
+    </div>
+  </div>
+</div>
+
+
+<div id="totalchart"></div>
+
+<div id="historychart"></div>
+
+<script type="text/javascript" charset="utf-8">
+
+  var totalchart = c3.generate({
+    bindto: '#totalchart',
+    data: {
+      columns: [],
+      type: 'pie'
+    },
+    tooltip: {
+      format: {
+        value: function (value, ratio, id, index) { return value; }
+      }
+    }
+  });
+
+  var historychart = c3.generate({
+    bindto: '#historychart',
+    data: {
+      x: 'x',
+      columns: [
+      ['x', 0]
+      ],
+      type: 'line'
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+        tick: {
+          format: '%d/%m/%Y'
+        }
+      }
+    }
+  });
+
+  function refresh() {
+    $.get(
+      '{{ api }}/stats/',
+      {order_by: 'ts'},
+      function(data) {
+        var results = data.results;
+        var totalcolumns = [];
+        var historycolumns = [];
+        if (results.length === 0) {
+          totalcolumns = [
+          ['galères', 0],
+          ['galères résolues', 0],
+          ['maraudes', 0],
+          ['aides', 0]
+          ];
+          historycolumns = [
+          ['x', 0],
+          ['galères', 0],
+          ['galères résolues', 0],
+          ['maraudes', 0],
+          ['aides', 0]
+          ];
+        } else {
+          var totalcolumns = {
+            'galères': 0,
+            'galères résolues' : 0,
+            'maraudes': 0,
+            'aides': 0
+          };
+          var translate = {needs: 'galères', answeredneeds: 'galères résolues', roams: 'maraudes', supplies: 'aides'};
+          var namedcolumns = ['x'];
+          results.forEach(function(stat) {
+            namedcolumns.push(stat.ts * 1000);
+          });
+          historycolumns.push(namedcolumns);
+          for (var name in translate) {
+            var translation = translate[name];
+            namedcolumns = [translation];
+            results.forEach(function(stat) {
+              var value = stat[name];
+              namedcolumns.push(value);
+              totalcolumns[translation] += value;
+            });
+            historycolumns.push(namedcolumns);
+          }
+        }
+        var ftotalcolumns = [];
+        ['roams', 'supplies'].forEach(function(key) {
+          var value = totalcolumns[translate[key]];
+          document.getElementById(key).innerText = value;
+        });
+        ['galères', 'galères résolues'].forEach(function (type){
+          ftotalcolumns.push([type, totalcolumns[type]]);
+        });
+        totalchart.load({
+          columns: ftotalcolumns
+        });
+        historychart.load({
+          columns: historycolumns
+        });
+        setTimeout(refresh, 10000);
+      },
+      'json'
+      );
+  }
+
+  refresh();
+
+</script>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block body %}
+
+{% if getarticles() %}
+
+{% for article in getarticles() %}
+
+{{ article.title }}
+{{ article.content }}
+
+{% endfor %}
+
+No article registered yet.
+
+{% endif %}
+
+{% if session.logged_in %}
+
+<form action="{{ url_for('add_article')}}" method="post" class="add-entry">
+<input type="text" name="title" text="titre ..." />
+<textarea name="contente">Description...</textarea>
+<input type="text" name="name" text="website" />
+<input type="submit" value="Valider"/>
+<recatch
+</form>
+
+{% else %}
+
+Log in before !
+
+{% endif %}
+
+{% endblock %}
