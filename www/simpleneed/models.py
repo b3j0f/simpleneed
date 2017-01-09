@@ -317,6 +317,6 @@ def addneedlocationstats(sender, instance, **kwargs):
 
     if rows == 0:
         Stats.objects.create(
-            allneeds=needscount * people,
-            allansweredneeds=answeredneedscount * people
+            needs=needscount * people,
+            answeredneeds=answeredneedscount * people
         )

@@ -1,4 +1,22 @@
 
+<div class="row">
+  <div class="col s6">
+    <p>Maraudes</p>
+  </div>
+  <div class="col s6">
+    <p>Aides</p>
+  </div>
+  <div class="row">
+    <div class="col s6">
+      <p id="roams"></p>
+    </div>
+    <div class="col s6">
+      <p id="supplies"></p>
+    </div>
+  </div>
+</div>
+
+
 <div id="totalchart"></div>
 
 <div id="historychart"></div>
@@ -10,6 +28,11 @@
     data: {
       columns: [],
       type: 'pie'
+    },
+    tooltip: {
+      format: {
+        value: function (value, ratio, id, index) { return value; }
+      }
     }
   });
 
@@ -79,9 +102,13 @@
           }
         }
         var ftotalcolumns = [];
-        for (var name in totalcolumns) {
-          ftotalcolumns.push([name, totalcolumns[name]]);
-        }
+        ['roams', 'supplies'].forEach(function(key) {
+          var value = totalcolumns[translate[key]];
+          document.getElementById(key).innerText = value;
+        });
+        ['galères', 'galères résolues'].forEach(function (type){
+          ftotalcolumns.push([type, totalcolumns[type]]);
+        });
         totalchart.load({
           columns: ftotalcolumns
         });

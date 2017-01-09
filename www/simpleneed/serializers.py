@@ -48,7 +48,7 @@ class LocatedElementSerializer(HyperlinkedModelSerializer):
         _fields = [
             'id', 'description', 'longitude', 'latitude', 'messages',
             'people', 'haspwd', 'startts', 'endts',
-            'utcstartdatetime', 'utcenddatetime', 'needs'
+            'utcstartdatetime', 'utcenddatetime', 'needs', 'type'
         ]
         fields = _fields + [
             'rroam', 'rneedlocation', 'rsupplylocation'

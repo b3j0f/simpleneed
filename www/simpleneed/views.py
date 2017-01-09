@@ -15,6 +15,7 @@ from .serializers import (
     MoodSerializer, NeedSerializer, GenderSerializer, StatsSerializer,
     MessageSerializer, LocatedElementSerializer, SupplyLocationSerializer
 )
+from .permissions import LocatedElementPermission
 
 
 class MoodViewSet(ModelViewSet):
@@ -48,6 +49,7 @@ class StringInFilter(BaseInFilter):
 class LocatedElementFilter(FilterSet):
     """Located element filter."""
 
+    permission_classes = (LocatedElementPermission,)
     needs__in = StringInFilter(name='needs', lookup_expr='in')
 
     class Meta:
