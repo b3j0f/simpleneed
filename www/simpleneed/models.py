@@ -1,5 +1,6 @@
 """Model module."""
 
+from django.core import serializers
 from django.db import models
 from django.db.models import F
 from django.db.models.signals import pre_save, post_save
@@ -12,6 +13,8 @@ from datetime import datetime as datetime, date
 from time import time, mktime
 
 from md5 import md5
+
+from json import loads
 
 from .utils import obj2str
 
@@ -91,12 +94,30 @@ class LocatedElement(models.Model):
     @property
     def child(self):
         """Get child object. Self if not locatedelement."""
-        return self.rroam or self.rneedlocation or self.rsupplylocation
+        result = None
+
+        for cname in ['rroam', 'rneedlocation', 'rsupplylocation']:
+            try:
+                result = getattr(self, cname)
+
+            except LocatedElement.DoesNotExist:
+                pass
+
+            else:
+                if result is not None:
+                    break
+
+        return result
+
+    @property
+    def schild(self):
+        """Get serialized child."""
+        return loads(serializers.serialize('json', [self.child]))[0]
 
     @property
     def type(self):
         """Get type name."""
-        return type(self).__name__.lower()
+        return type(self.child).__name__.lower()
 
     @property
     def haspwd(self):

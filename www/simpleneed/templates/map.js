@@ -10,6 +10,20 @@ var needs = {
 };
 var filterneeds = new Array();
 
+$('#keywords').on('chip.add', function (e, chip) {
+	refresh();
+});
+$('#keywords').on('chip.delete', function (e, chip) {
+	refresh();
+});
+$('#keywords').on('chip.select', function(e, chip) {
+	refresh();
+});
+$('#keywords').material_chip({
+	placeholder: '+Mot clef',
+	secondaryPlaceholder: '+Mots clefs',
+});
+
 Object.keys(needs).forEach(function (need) {
 	var child = document.createElement('option');
 	child.setAttribute('id', 'need'+need);
@@ -18,18 +32,6 @@ Object.keys(needs).forEach(function (need) {
 	document.getElementById('needs').appendChild(child);
 	filterneeds.push(need);
 });
-
-function filter(elt) {
-	var index = filterneeds.indexOf(elt.id);
-	if (index >= 0) {
-		filterneeds.splice(index, 1);
-		$(elt).addClass('black');
-	} else {
-		filterneeds.push(elt.id);
-		$(elt).removeClass('black');
-	}
-	refresh();
-}
 
 function save() {
 	//var csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
@@ -120,6 +122,18 @@ var translate = {
 	supplylocation: 'propose mon aide'
 };
 
+function updatelocatedelementfilter(elt) {
+	var markup = $(elt);
+	if (markup.hasClass('filter')) {
+		markup.removeClass('filter');
+		markup.addClass('black');
+	} else {
+		markup.addClass('filter');
+		markup.removeClass('black');
+	}
+	refresh();
+}
+
 function onchangetype(type) {
 	types.forEach(function(type) {
 		$('.'+type).hide();
@@ -135,13 +149,12 @@ function del() {
 	$('#load').modal('open');
 	$.ajax({
 		type: 'DELETE',
-		url: document.getElementById('delete').getAttribute('href'),
+		url: document.getElementById('delete').getAttribute('command'),
 		success: function(){
 			$('#load').modal('close');
 			$('#edit').modal('close');
-			var msg = 'élément supprimée';
+			var msg = 'Élément supprimée';
 			var $toastContent = $('<p class="green-text">' + msg + '</p>');
-			Materialize.toast($toastContent, 5000);
 			refresh();
 		},
 		failure: function(error) {
@@ -167,20 +180,22 @@ function edit(elt, coordinate) {
 		document.getElementById('emergency').removeAttribute('checked');
 		document.getElementById('name').removeAttribute('text');
 		document.getElementById('id').removeAttribute('value');
+		Object.keys(needs).forEach(function (need) {
+			document.getElementById('need' + need).removeAttribute('selected');
+		});
+		$('#needs').material_select();
 	} else {
 		$('.update').show();
 		$('.new').hide();
 		$('#'+elt.type).attr('selected', true);
 		$('#type').attr('disable', true);
 		onchangetype(elt.type);
-		$('#delete').attr('href', '{{ api }}/' + elt.type + 's/' + elt.id + '/');
+		$('#delete').attr('command', '{{ api }}/' + elt.type + 's/' + elt.id + '/');
 		Object.keys(needs).forEach(function (need) {
 			document.getElementById('need' + need).removeAttribute('selected');
 		});
 		elt.needs.forEach(function (need) {
-			var prefix = need.substring(0, need.length - 1);
-			var name = prefix.substring(prefix.lastIndexOf('/') + 1);
-			document.getElementById('need' + name).setAttribute('selected', true);
+			document.getElementById('need' + need).setAttribute('selected', true);
 		});
 		$('#needs').material_select();
 		var shorttranslation = {
@@ -194,9 +209,10 @@ function edit(elt, coordinate) {
 		} else {
 			document.getElementById('emergency').removeAttribute('checked');
 		}
-		document.getElementById('name').setAttribute('text', elt.name);
+		document.getElementById('name').setAttribute('value', elt.name);
 		document.getElementById('update-type').innerText = 'Mise à jour ' + shorttranslation[elt.type];
 		document.getElementById('id').setAttribute('value', elt.id);
+		Materialize.updateTextFields();
 	}
 	$('#edit').modal({
 		complete: refresh
@@ -206,24 +222,31 @@ function edit(elt, coordinate) {
 
 var features = new ol.source.Vector();
 
+var styleClusterCache = {};
+
 function getClusterStyle(size) {
-	return new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 10 + 1.5 * size,
-			stroke: new ol.style.Stroke({
-				color: '#fff'
+	var result = styleClusterCache[size];
+	if (result === undefined) {
+		result = new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 10 + 1.5 * size,
+				stroke: new ol.style.Stroke({
+					color: '#fff'
+				}),
+				fill: new ol.style.Fill({
+					color: '#3399CC'
+				})
 			}),
-			fill: new ol.style.Fill({
-				color: '#3399CC'
+			text: new ol.style.Text({
+				text: size.toString(),
+				fill: new ol.style.Fill({
+					color: '#fff'
+				})
 			})
-		}),
-		text: new ol.style.Text({
-			text: size.toString(),
-			fill: new ol.style.Fill({
-				color: '#fff'
-			})
-		})
-	});
+		});
+		styleClusterCache[size] = result;
+	}
+	return result;
 }
 
 function getLocatedElementStyle(elt) {
@@ -267,68 +290,79 @@ function refresh() {
 	var bottomLeft = [extent[0], extent[1]];
 	var topRight = [extent[2], extent[3]];
 	var endts = new Date().getTime() / 1000;
-	var fneeds = '';
-	var search = $('#search').val();
-	filterneeds.forEach(function(need) {
-		fneeds += need + ',';
-	});
-	$.ajax({
-		type: 'GET',
-		url: '{{ api }}/locatedelements/',
-		data: {
-			longitude__gte: bottomLeft[0],
-			longitude__lte: topRight[0],
-			latitude__lte: topRight[1],
-			latitude__gte: bottomLeft[1],
-			startts__lte: endts,
-			endts__gte: endts,
-			needs__in: fneeds,
-			description__icontains: search
-		},
-		success: function(data) {
+	var filterneeds = $('#filterneeds').val();
+	if (filterneeds) {
+		filterneeds	= filterneeds.join();
+	} else {
+		filterneeds = Object.keys(needs).join();
+	}
+	var chips = $('#keywords').data().chips;
+	var types = $('.type.filter');
+	if (types.length > 0) {
+		var _types = [];
+		for (var index = 0; index < types.length; index++) {
+			var type = types[index];
+			_types.push(type.getAttribute('name'));
+		}
+		types = _types;
+	} else {
+		types = ['locatedelement'];
+	}
+	function getlocatedelements(word) {
+		function success(data) {
 			var results = {};
-			var dataidbytypes = {
-				'roam': {},
-				'needlocation': {},
-				'supplylocation': {}
-			};
 			data.results.forEach(function (elt) {
-				if (elt.rroam) {
-					dataidbytypes['roam'][elt.id] = elt;
-				} else if (elt.rneedlocation) {
-					dataidbytypes['needlocation'][elt.id] = elt;
+				var type = elt.type;
+				if (elt.schild !== undefined) {
+					Object.keys(elt.schild.fields).forEach(function(field) {
+						elt[field] = elt.schild.fields[field];
+					});
 				} else {
-					dataidbytypes['supplylocation'][elt.id] = elt;
+					for(var index=0; index<elt.needs.length; index++) {
+						var need = elt.needs[index].substring(0, elt.needs[index].length - 1);
+						elt.needs[index] = need.substring(need.lastIndexOf('/') + 1);
+					}
 				}
 				results[elt.id] = elt;
 			});
-			features.clear();
-			Object.keys(dataidbytypes).forEach(function (type) {
-				if (Object.keys(dataidbytypes[type]).length > 0) {
-					var ids = Object.keys(dataidbytypes[type]);
-					var fids = '';
-					ids.forEach(function(id) {
-						fids += id + ',';
-					});
-					$.ajax({
-						type: 'GET',
-						url: '{{ api }}/' + type + 's/',
-						data: {
-							id__in: fids
-						},
-						success: function(data) {
-							data.results.forEach(function (elt) {
-								dataidbytypes[type][elt.id] = elt;
-							});
-							var eltfeatures = toFeatures(dataidbytypes[type]);
-							features.addFeatures(Object.values(eltfeatures));
-							console.log(type, data.results);
-						}
-					});
-				}
+			var eltfeatures = toFeatures(results);
+			features.addFeatures(Object.values(eltfeatures));
+		}
+		function ajax(type, fname) {
+			var data = {
+				longitude__gte: bottomLeft[0],
+				longitude__lte: topRight[0],
+				latitude__lte: topRight[1],
+				latitude__gte: bottomLeft[1],
+				startts__lte: endts,
+				endts__gte: endts,
+				needs__in: filterneeds
+			};
+			data[fname] = word;
+			$.ajax({
+				type: 'GET',
+				url: '{{ api }}/' + type + 's/',
+				data: data,
+				success: success
 			});
 		}
-	});
+		for (var index = 0; index < types.length; index++) {
+			var type = types[index];
+			ajax(type, 'description__icontains');
+			if (type === 'roam') {
+				ajax(type, 'name__icontains');
+			}
+		}
+	}
+	features.clear();
+	if (chips.length > 0) {
+		chips.forEach(function(chip) {
+			var word = chip.tag;
+			getlocatedelements(word);
+		});
+	} else {
+		getlocatedelements();
+	}
 }
 
 var clusterSource = new ol.source.Cluster({
@@ -336,30 +370,27 @@ var clusterSource = new ol.source.Cluster({
 	source: features
 });
 
-var styleClusterCache = {};
+function getStyle(feature) {
+	var result;
+	var features = feature.get('features');
+	if (features.length == 1) {
+		result = getLocatedElementStyle(features[0].get('elt'));
+	} else {
+		result = getClusterStyle(features.length);
+	}
+	return result;
+}
 
 var clusters = new ol.layer.Vector({
 	id: 'clusters',
 	source: clusterSource,
 	style: function(feature) {
-		var features = feature.get('features');
-		var size = features.length;
-		var style = styleClusterCache[size];
-		if (!style) {
-			if (size == 1) {
-				style = getLocatedElementStyle(features[0].get('elt'));
-			} else {
-				style = getClusterStyle(size);
-				styleClusterCache[size] = style;
-			}
-		}
-		return style;
+		return getStyle(feature);
 	}
 });
 
 function interact(features, coordinates) {
 	if (features.length > 1) {
-		console.log('several features selected', features);
 		refresh();
 		// TODO do something when several features are selected.
 	} else {
@@ -371,6 +402,9 @@ function interact(features, coordinates) {
 }
 
 var selectinteraction = new ol.interaction.Select({
+	style: function(feature) {
+		return getStyle(feature);
+	}
 });
 selectinteraction.on('select', function (evt) {
 	evt.selected.forEach(function (selected) {
@@ -390,19 +424,18 @@ selectinteraction.on('select', function (evt) {
 var translateinteraction = new ol.interaction.Translate({
 	handleEvent: function(evt) {
 		console.log(evt);
+	},
+});
+translateinteraction.on('translatestart', function(evt) {
+	var length = evt.features.getLength();
+	if (length > 1 || evt.features.getArray()[0].get('features').length > 1) {
+		evt.preventDefault();
 	}
 });
 translateinteraction.on('translateend', function(evt) {
 	evt.features.getArray().forEach(function (feature) {
 		var features = feature.get('features');
 		interact(features, evt.coordinate);
-		/*if (features.length > 1) {
-
-		}
-		feature.get('features').forEach(function (feature) {
-			var elt = feature.get('elt');
-			edit(elt, evt.coordinate);
-		});*/
 	});
 });
 
@@ -449,6 +482,6 @@ function setCenter(longitude, latitude) {
 
 function recrefresh() {
 	refresh();
-	setTimeout(recrefresh, 10000);
+	setTimeout(recrefresh, 30000);
 }
-recrefresh();
+setTimeout(recrefresh, 30000);

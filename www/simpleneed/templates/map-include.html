@@ -1,27 +1,47 @@
 
 {% load static %}
 
+<div id="map" class="map"></div>
 
-<form onsubmit="refresh(); return false;">
-	<div class="input-field">
-		<input id="search" type="search" />
-		<label for="search">Description</label>
-		<i class="material-icons" onclick="$('#search').val('');">close</i>
+<div class="row center">
+
+	<div class="row">
+		<div class="col s4">
+			<a class="btn type filter blue btn-block" name="needlocation" id="needlocationfilter" onclick="updatelocatedelementfilter(this);">Galères</a>
+		</div>
+		<div class="col s4">
+			<a class="btn type filter yellow btn-block" name="roam" id="supplylocationfilter" onclick="updatelocatedelementfilter(this);">Maraudes</a>
+		</div>
+		<div class="col s4">
+			<a class="btn type filter green btn-block" name="supplylocation" id="supplylocationfilter" onclick="updatelocatedelementfilter(this);" active>Aides</a>
+		</div>
 	</div>
-</form>
 
-<div class="row center-align">
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="money" onclick="filter(this)"><i class="text-red material-icons">attach_money</i></a></div>
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="snack" onclick="filter(this)"><i class="material-icons">free_breakfast</i></a></div>
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="food" onclick="filter(this)"><i class="material-icons">local_pizza</i></a></div>
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="clothes" onclick="filter(this)"><img class="svg icons responsive-img" src="{% static 'img/shirt.svg' %}" /></a></div>
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="company" onclick="filter(this)"><i class="material-icons">group</i></a></div>
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="hygiene" onclick="filter(this)"><img class="svg responsive-img" src="{% static 'img/shower.svg' %}" /></a></div>
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="accomodation" onclick="filter(this)"><i class="material-icons">local_hotel</i></a></div>
-	<div class="col s1"><a class="btn-floating waves-effect waves-light" id="health" onclick="filter(this)"><img class="svg responsive-img" src="{% static 'img/heartbeat.svg' %}" /></a></div>
 </div>
 
-<div id="map" class="map"></div>
+<div class="row valign-wrapper">
+
+	<div class="col l6 s12 input-field">
+		<select id="filterneeds" onchange="refresh()" multiple>
+			<option value="" disabled>Tous les besoins</option>
+			<option value="money" data-icon="{% static 'img/logo.png' %}">Argent</option>
+			<option value="food" class="circle" data-icon="{% static 'img/logo.png' %}">Nourriture</option>
+			<option value="clothes" class="left" data-icon="{% static 'img/logo.png' %}">Vêtement</option>
+			<option value="company" class="left circle" data-icon="{% static 'img/logo.png' %}">Compagnie</option>
+			<option value="hygiene">Hygiène</option>
+			<option value="accomodation">Logement</option>
+			<option value="health">Soins</option>
+		</select>
+		<label>Filtre</label>
+	</div>
+
+	<div class="col s12">
+
+		<div id="keywords" class="col s12 chips chips-placeholder"></div>
+
+	</div>
+
+</div>
 
 <div class="center">
 	<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons">location_searching</i></button>
@@ -29,7 +49,14 @@
 
 <div class="modal center" id="load">
 	<div class="modal-content">
-		<h2><i class="material-icons medium">location_on</i>Géolocalisation en cours...</h2>
+		<h2>
+			<p>
+				<i class="material-icons medium">location_on
+				</i>
+			</p>
+			<p>Géolocalisation en cours...
+			</p>
+		</h2>
 		<div class="preloader-wrapper active" id="loader">
 			<div class="spinner-layer spinner-green-only">
 				<div class="circle-clipper left">
@@ -64,8 +91,8 @@
 			</ul>
 			<div class="input-field col s12 roam">
 				<i class="material-icons prefix">mode_edit</i>
-				<input name="name" id="name" class="roam" type="text" required />
-				<label for="name">Nom</label>
+				<input name="name" id="name" class="roam validate" type="text" required />
+				<label for="name" class="active">Nom</label>
 			</div>
 			<div class="input-field col s12 needlocation roam supplylocation">
 				<select multiple name="needs" id="needs" required>
@@ -75,8 +102,8 @@
 			</div>
 			<div class="input-field needlocation supplylocation roam col 12">
 				<i class="material-icons prefix">assignment</i>
-				<textarea id="description" class="materialize-textarea"></textarea>
-				<label for="description">Description</label>
+				<textarea id="description" class="materialize-textarea active"></textarea>
+				<label for="description" class="active">Description</label>
 			</div>
 			<div class="needlocation col s12">
 				<p>
@@ -90,7 +117,7 @@
 			<input type="hidden" name="longitude" id="longitude" />
 			<input type="hidden" name="latitude" id="latitude" />
 			<button type="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
-			<a id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
+			<a href="#" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
 		</div>
 	</form>
 </div>
