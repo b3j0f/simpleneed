@@ -56,6 +56,7 @@ class CORS(object):
 
         response = self.get_response(request)
         response['Access-Control-Allow-Credentials'] = True
+        print('tedt')
         # Code to be executed for each request/response after
         # the view is called.
 
