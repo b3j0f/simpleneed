@@ -150,14 +150,11 @@ function geoloc() {
 function updatelocatedelementfilter(elt) {
 	var markup = $(elt);
 	if (markup.hasClass('filter')) {
-		markup.removeClass('filter');
-		markup.addClass('transparent');
-		markup.addClass('black-text');
-	} else {
-		markup.addClass('filter');
-		markup.removeClass('transparent');
-		markup.removeClass('black-text');
+		$('.type').removeClass('filter').addClass('transparent').addClass('black-text');
 	}
+	markup.addClass('filter');
+	markup.removeClass('transparent');
+	markup.removeClass('black-text');
 	refresh();
 }
 
