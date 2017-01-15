@@ -16,7 +16,7 @@
 			<a class="btn type filter blue btn-block" name="needlocation" id="needlocationfilter" onclick="updatelocatedelementfilter(this);">Galères</a>
 		</div>
 		<div class="col s4">
-			<a class="btn type filter yellow btn-block" name="roam" id="supplylocationfilter" onclick="updatelocatedelementfilter(this);">Maraudes</a>
+			<a class="btn type filter orange btn-block" name="roam" id="roamfilter" onclick="updatelocatedelementfilter(this);">Maraudes</a>
 		</div>
 		<div class="col s4">
 			<a class="btn type filter green btn-block" name="supplylocation" id="supplylocationfilter" onclick="updatelocatedelementfilter(this);" active>Aides</a>
@@ -30,13 +30,13 @@
 	<div class="col l6 s12 input-field">
 		<select id="filterneeds" onchange="refresh()" multiple>
 			<option value="" disabled>Tous les besoins</option>
-			<option value="money" data-icon="{% static 'img/logo.png' %}">Argent</option>
-			<option value="food" class="circle" data-icon="{% static 'img/logo.png' %}">Nourriture</option>
-			<option value="clothes" class="left" data-icon="{% static 'img/logo.png' %}">Vêtement</option>
-			<option value="company" class="left circle" data-icon="{% static 'img/logo.png' %}">Compagnie</option>
-			<option value="hygiene">Hygiène</option>
-			<option value="accomodation">Logement</option>
-			<option value="health">Soins</option>
+			<option id="moneyfilter" value="money" data-icon="{% static 'img/logo.png' %}">Argent</option>
+			<option id="foodfilter" value="food" class="circle" data-icon="{% static 'img/logo.png' %}">Nourriture</option>
+			<option id="clothesfilter" value="clothes" class="left" data-icon="{% static 'img/logo.png' %}">Vêtement</option>
+			<option id="companyfilter" value="company" class="left circle" data-icon="{% static 'img/logo.png' %}">Compagnie</option>
+			<option id="hygienefilter" value="hygiene">Hygiène</option>
+			<option id="accomodationfilter" value="accomodation">Logement</option>
+			<option id="healthfilter" value="health">Soins</option>
 		</select>
 		<label>Filtre</label>
 	</div>
@@ -93,11 +93,11 @@
 			</ul>
 			<div class="input-field col s12 roam">
 				<i class="material-icons prefix">mode_edit</i>
-				<input name="name" id="name" class="roam validate" type="text" required />
+				<input name="name" id="name" class="roam validate" type="text" required onchange="enablesubmit()" />
 				<label for="name" class="active">Nom</label>
 			</div>
 			<div class="input-field col s12 needlocation roam supplylocation">
-				<select multiple name="needs" id="needs" required>
+				<select multiple name="needs" id="needs" required onchange="enablesubmit()" >
 					<option value="" disabled selected>Choisis les besoins</option>
 				</select>
 				<label>Besoins</label>
@@ -118,7 +118,7 @@
 			<input type="hidden" name="id" id="id" class="update" />
 			<input type="hidden" name="longitude" id="longitude" />
 			<input type="hidden" name="latitude" id="latitude" />
-			<button type="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
+			<button type="submit" id="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
 			<a href="#" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
 		</div>
 	</form>

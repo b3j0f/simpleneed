@@ -1,6 +1,5 @@
 var needs = {
 	'money': 'argent',
-	'snack': 'collation',
 	'food': 'nourriture',
 	'clothes': 'vêtements',
 	'company': 'compagnie',
@@ -8,7 +7,35 @@ var needs = {
 	'accomodation': 'logement',
 	'health': 'soins'
 };
-var filterneeds = new Array();
+
+var types = ['needlocation', 'roam', 'supplylocation'];
+var translate = {
+	needlocation: 'suis en galère',
+	roam: 'crée une maraude',
+	supplylocation: 'propose mon aide'
+};
+
+function getCookie(name, def) {
+	var result = $.cookie(name);
+	if (result === undefined) {
+		result = def;
+	} else {
+		result = result.split(',');
+	}
+	return result;
+}
+
+var ftypes = getCookie('ftypes', types);
+
+$('.type.filter').removeClass('filter').addClass('transparent').addClass('black-text');
+ftypes.forEach(function(type) {
+	$('#' + type + 'filter').addClass('filter').removeClass('transparent').removeClass('black-text');
+});
+
+var fneeds = getCookie('fneeds', []);
+fneeds.forEach(function(need) {
+	document.getElementById(need + 'filter').setAttribute('selected', true);
+});
 
 $('#keywords').on('chip.add', function (e, chip) {
 	refresh();
@@ -19,9 +46,15 @@ $('#keywords').on('chip.delete', function (e, chip) {
 $('#keywords').on('chip.select', function(e, chip) {
 	refresh();
 });
+var keywords = getCookie('keywords', []);
+var data = [];
+keywords.forEach(function(keyword) {
+	data.push({tag: keyword});
+});
 $('#keywords').material_chip({
 	placeholder: '+Mot clef',
 	secondaryPlaceholder: '+Mots clefs',
+	data: data
 });
 
 Object.keys(needs).forEach(function (need) {
@@ -30,7 +63,6 @@ Object.keys(needs).forEach(function (need) {
 	child.setAttribute('value', need);
 	child.innerText = needs[need];
 	document.getElementById('needs').appendChild(child);
-	filterneeds.push(need);
 });
 
 function save() {
@@ -115,24 +147,21 @@ function geoloc() {
 	}
 }
 
-var types = ['needlocation', 'roam', 'supplylocation'];
-var translate = {
-	needlocation: 'suis en galère',
-	roam: 'crée une maraude',
-	supplylocation: 'propose mon aide'
-};
-
 function updatelocatedelementfilter(elt) {
 	var markup = $(elt);
 	if (markup.hasClass('filter')) {
 		markup.removeClass('filter');
-		markup.addClass('black');
+		markup.addClass('transparent');
+		markup.addClass('black-text');
 	} else {
 		markup.addClass('filter');
-		markup.removeClass('black');
+		markup.removeClass('transparent');
+		markup.removeClass('black-text');
 	}
 	refresh();
 }
+
+var gtype;
 
 function onchangetype(type) {
 	types.forEach(function(type) {
@@ -143,6 +172,8 @@ function onchangetype(type) {
 	$('.'+type).attr('disabled', false);
 	document.getElementById('atype').innerText = translate[type];
 	$('#type').attr('value', type);
+	gtype = type;
+	enablesubmit();
 };
 
 function del() {
@@ -168,10 +199,29 @@ function del() {
 	});
 };
 
+function enablesubmit() {
+	var enable = true;
+	if (gtype === 'roam') {
+		enable = $('#name').val() && true;
+	}
+	if (enable && gstate === 'new') {
+		enable = $('#needs').val().length > 0;
+	}
+	var submit = document.getElementById('submit');
+	if (enable) {
+		submit.removeAttribute('disabled');
+	} else {
+		submit.setAttribute('disabled', undefined);
+	}
+}
+
+var gstate;
+
 function edit(elt, coordinate) {
 	$('#longitude').val(coordinate[0]);
 	$('#latitude').val(coordinate[1]);
 	if (elt === undefined) {
+		gstate = 'new';
 		$('.update').hide();
 		$('.new').show();
 		$('#type').attr('disabled', false);
@@ -185,6 +235,7 @@ function edit(elt, coordinate) {
 		});
 		$('#needs').material_select();
 	} else {
+		gstate = 'update';
 		$('.update').show();
 		$('.new').hide();
 		$('#'+elt.type).attr('selected', true);
@@ -214,6 +265,7 @@ function edit(elt, coordinate) {
 		document.getElementById('id').setAttribute('value', elt.id);
 		Materialize.updateTextFields();
 	}
+	enablesubmit();
 	$('#edit').modal({
 		complete: refresh
 	});
@@ -249,15 +301,15 @@ function getClusterStyle(size) {
 	return result;
 }
 
-function getLocatedElementStyle(elt) {
-	return new ol.style.Style({
+var styles = {
+	needlocation: {
 		image: new ol.style.Circle({
 			radius: 10 + 1.5 * 1,
 			stroke: new ol.style.Stroke({
 				color: '#fff'
 			}),
 			fill: new ol.style.Fill({
-				color: '#3399CC'
+				color: 'blue'//'#3399CC'
 			})
 		}),
 		text: new ol.style.Text({
@@ -265,9 +317,46 @@ function getLocatedElementStyle(elt) {
 			fill: new ol.style.Fill({
 				color: '#fff'
 			})
+		})
+	},
+	roam: {
+		image: new ol.style.Circle({
+			radius: 10 + 1.5 * 1,
+			stroke: new ol.style.Stroke({
+				color: '#fff'
+			}),
+			fill: new ol.style.Fill({
+				color: 'orange'//'#3399CC'
+			})
 		}),
-		elt: elt
-	});
+		text: new ol.style.Text({
+			text: '1',
+			fill: new ol.style.Fill({
+				color: '#fff'
+			})
+		})
+	},
+	supplylocation: {
+		image: new ol.style.Circle({
+			radius: 10 + 1.5 * 1,
+			stroke: new ol.style.Stroke({
+				color: '#fff'
+			}),
+			fill: new ol.style.Fill({
+				color: 'green'//'#3399CC'
+			})
+		}),
+		text: new ol.style.Text({
+			text: '1',
+			fill: new ol.style.Fill({
+				color: '#fff'
+			})
+		})
+	}
+}
+
+function getLocatedElementStyle(elt) {
+	return new ol.style.Style(styles[elt.type]);
 }
 
 function toFeatures(elts) {
@@ -289,13 +378,17 @@ function refresh() {
 	var extent = map.getView().calculateExtent(map.getSize());
 	var bottomLeft = [extent[0], extent[1]];
 	var topRight = [extent[2], extent[3]];
+	$.cookie('zoom', map.getView().getZoom());
+	$.cookie('center', map.getView().getCenter());
 	var endts = new Date().getTime() / 1000;
 	var filterneeds = $('#filterneeds').val();
-	if (filterneeds) {
-		filterneeds	= filterneeds.join();
+	if (filterneeds === null) {
+		filterneeds = Object.keys(needs);
+		$.removeCookie('fneeds');
 	} else {
-		filterneeds = Object.keys(needs).join();
+		$.cookie('fneeds', filterneeds);
 	}
+	filterneeds = filterneeds.join();
 	var chips = $('#keywords').data().chips;
 	var types = $('.type.filter');
 	if (types.length > 0) {
@@ -305,25 +398,30 @@ function refresh() {
 			_types.push(type.getAttribute('name'));
 		}
 		types = _types;
+		$.cookie('ftypes', types);
 	} else {
 		types = ['locatedelement'];
+		$.removeCookie('ftypes');
 	}
+	var oldfeatures = {};
 	function getlocatedelements(word) {
 		function success(data) {
 			var results = {};
 			data.results.forEach(function (elt) {
-				var type = elt.type;
-				if (elt.schild !== undefined) {
-					Object.keys(elt.schild.fields).forEach(function(field) {
-						elt[field] = elt.schild.fields[field];
-					});
-				} else {
-					for(var index=0; index<elt.needs.length; index++) {
-						var need = elt.needs[index].substring(0, elt.needs[index].length - 1);
-						elt.needs[index] = need.substring(need.lastIndexOf('/') + 1);
+				if (oldfeatures[elt.id] === undefined) {
+					var type = elt.type;
+					if (elt.schild !== undefined) {
+						Object.keys(elt.schild.fields).forEach(function(field) {
+							elt[field] = elt.schild.fields[field];
+						});
+					} else {
+						for(var index=0; index<elt.needs.length; index++) {
+							var need = elt.needs[index].substring(0, elt.needs[index].length - 1);
+							elt.needs[index] = need.substring(need.lastIndexOf('/') + 1);
+						}
 					}
+					oldfeatures[elt.id] = results[elt.id] = elt;
 				}
-				results[elt.id] = elt;
 			});
 			var eltfeatures = toFeatures(results);
 			features.addFeatures(Object.values(eltfeatures));
@@ -356,12 +454,16 @@ function refresh() {
 	}
 	features.clear();
 	if (chips.length > 0) {
+		var keywords = [];
 		chips.forEach(function(chip) {
 			var word = chip.tag;
+			keywords.push(word);
 			getlocatedelements(word);
 		});
+		$.cookie('keywords', keywords);
 	} else {
 		getlocatedelements();
+		$.removeCookie('keywords');
 	}
 }
 
@@ -439,6 +541,11 @@ translateinteraction.on('translateend', function(evt) {
 	});
 });
 
+var center = getCookie('center', ol.proj.fromLonLat([0, 0]));
+for(var index in center) {
+	center[index] = parseFloat(center[index]);
+}
+
 var map = new ol.Map({
 	interactions: ol.interaction.defaults().extend(
 		[selectinteraction, translateinteraction]
@@ -450,12 +557,12 @@ var map = new ol.Map({
 	],
 	view: new ol.View({
 		projection: 'EPSG:4326',
-		center: ol.proj.fromLonLat([0, 0]),
-		zoom: 6,
+		center: center,
+		zoom: $.cookie('zoom') || 6,
 		minZoom: 3
 	}),
 	controls: ol.control.defaults({
-		rotate: false,
+		//rotate: false,
 	}),
 });
 
