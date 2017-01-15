@@ -88,6 +88,9 @@ function save() {
 	$.ajax({
 		type: ajaxtype,
 		url: url,
+		xhrFields: {
+			withCredentials: true
+		},
 		data: JSON.stringify({
 			type: type,
 			name: name,
@@ -178,6 +181,9 @@ function del() {
 	$.ajax({
 		type: 'DELETE',
 		url: document.getElementById('delete').getAttribute('command'),
+		xhrFields: {
+			withCredentials: true
+		},
 		success: function(){
 			$('#load').modal('close');
 			$('#edit').modal('close');
@@ -437,6 +443,9 @@ function refresh() {
 			$.ajax({
 				type: 'GET',
 				url: '{{ api }}/' + type + 's/',
+				xhrFields: {
+					withCredentials: true
+				},
 				data: data,
 				success: success
 			});
