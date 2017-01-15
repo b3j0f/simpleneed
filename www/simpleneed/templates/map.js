@@ -400,7 +400,7 @@ function refresh() {
 		types = _types;
 		$.cookie('ftypes', types);
 	} else {
-		types = ['locatedelement'];
+		types = [];
 		$.removeCookie('ftypes');
 	}
 	var oldfeatures = {};

@@ -3,7 +3,7 @@
 from django.core import serializers
 from django.db import models
 from django.db.models import F
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, m2m_changed
 from django.dispatch import receiver
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
@@ -243,15 +243,15 @@ class Stats(models.Model):
         )
 
 
-@receiver(pre_save, sender=NeedLocation)
-@receiver(pre_save, sender=SupplyLocation)
-@receiver(pre_save, sender=Roam)
-@receiver(pre_save, sender=LocatedElement)
-def cleanneedlocation(sender, instance, **kwargs):
+@receiver(post_save, sender=NeedLocation)
+@receiver(post_save, sender=SupplyLocation)
+@receiver(post_save, sender=Roam)
+@receiver(post_save, sender=LocatedElement)
+def cleanneedlocation(sender, instance, created, **kwargs):
     """If needs are empty, set enddatetime to at most now."""
     now = time()
 
-    if instance.id is not None:
+    if not created:
 
         if not instance.needs.all():
             instance.endts = now
@@ -283,10 +283,10 @@ def checkkey(sender, instance, **kwargs):
             instance.pwd = md5(instance.pwd).digest()
 
 
-@receiver(pre_save, sender=SupplyLocation)
-def addsuppliesstats(sender, instance, **kwargs):
+@receiver(post_save, sender=SupplyLocation)
+def addsuppliesstats(sender, instance, created, **kwargs):
     """Add roam count in stats."""
-    if instance.id is None:
+    if created:
         todayts = currentdatets()
 
         rows = Stats.objects.filter(pk=todayts).update(
@@ -297,10 +297,10 @@ def addsuppliesstats(sender, instance, **kwargs):
             Stats.objects.create(supplies=1)
 
 
-@receiver(pre_save, sender=Roam)
-def addroamstats(sender, instance, **kwargs):
+@receiver(post_save, sender=Roam)
+def addroamstats(sender, instance, created, **kwargs):
     """Add roam count in stats."""
-    if instance.id is None:
+    if created:
         todayts = currentdatets()
 
         rows = Stats.objects.filter(pk=todayts).update(roams=F('roams') + 1)
@@ -309,35 +309,41 @@ def addroamstats(sender, instance, **kwargs):
             Stats.objects.create(roams=1)
 
 
-@receiver(post_save, sender=NeedLocation)
-def addneedlocationstats(sender, instance, **kwargs):
-    """Need location post save hook which add stats."""
-    needscount = len(instance.needs.all())
-    answeredneedscount = 0
-    people = instance.people
+@receiver(m2m_changed, sender=LocatedElement.needs.through)
+def printthrough(action, instance, pk_set, **kwargs):
+    """Blabla."""
+    print(action, instance, pk_set, kwargs)
+    if action == 'post_add':
+        needscount = len(pk_set)
+        todayts = currentdatets()
 
-    try:
-        oldinstance = sender.objects.get(pk=instance.id)
-
-    except NeedLocation.DoesNotExist:
-        instanceneeds = set(need.name for need in instance.needs.all())
-        oldneeds = set(need.name for need in oldinstance.needs.all())
-
-        newneeds = instanceneeds - oldneeds
-        answeredneeds = oldneeds - instanceneeds
-
-        needscount = len(newneeds)
-        answeredneedscount = len(answeredneeds)
-
-    todayts = currentdatets()
-
-    rows = Stats.objects.filter(pk=todayts).update(
-        needs=F('needs') + needscount + people,
-        answeredneeds=F('answeredneeds') + needscount + people
-    )
-
-    if rows == 0:
-        Stats.objects.create(
-            needs=needscount * people,
-            answeredneeds=answeredneedscount * people
+        rows = Stats.objects.filter(pk=todayts).update(
+            needs=F('needs') + needscount
         )
+
+        if rows == 0:
+            Stats.objects.create(needs=needscount)
+
+    elif action == 'post_remove':
+        needscount = len(pk_set)
+        todayts = currentdatets()
+
+        rows = Stats.objects.filter(pk=todayts).update(
+            answeredneeds=F('answeredneeds') + needscount
+        )
+
+        if rows == 0:
+            Stats.objects.create(answeredneeds=needscount)
+
+    elif action == 'pre_clear':
+        old = LocatedElement.objects.get(pk=instance.id)
+
+        needscount = old.needs.count()
+        todayts = currentdatets()
+
+        rows = Stats.objects.filter(pk=todayts).update(
+            needs=F('answeredneeds') + needscount
+        )
+
+        if rows == 0:
+            Stats.objects.create(answeredneeds=needscount)

@@ -41,7 +41,7 @@ def supplylocationsview(request):
 
 def statsview(request):
     """Need locations view."""
-    context = basecontext(request, 'stats')
+    context = basecontext(request, 'stats', True)
     context['stats'] = Stats.objects.order_by('-endts')
     return render(request, 'stats.html', context=context)
 
