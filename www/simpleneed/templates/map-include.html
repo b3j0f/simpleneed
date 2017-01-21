@@ -2,7 +2,7 @@
 {% load static %}
 
 <div class="center">
-	<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons left">location_searching</i>Me géolocaliser</button>
+	<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons left">location_searching</i>Me localiser</button>
 </div>
 
 <br/>
@@ -30,10 +30,10 @@
 	<div class="col l6 s12 input-field">
 		<select id="filterneeds" onchange="refresh()" multiple>
 			<option value="" disabled>Tous les besoins</option>
-			<option id="moneyfilter" value="money" data-icon="{% static 'img/logo.png' %}">Argent</option>
-			<option id="foodfilter" value="food" class="circle" data-icon="{% static 'img/logo.png' %}">Nourriture</option>
-			<option id="clothesfilter" value="clothes" class="left" data-icon="{% static 'img/logo.png' %}">Vêtement</option>
-			<option id="companyfilter" value="company" class="left circle" data-icon="{% static 'img/logo.png' %}">Compagnie</option>
+			<option id="moneyfilter" value="money">Argent</option>
+			<option id="foodfilter" value="food">Nourriture</option>
+			<option id="clothesfilter" value="clothes">Vêtement</option>
+			<option id="companyfilter" value="company">Compagnie</option>
 			<option id="hygienefilter" value="hygiene">Hygiène</option>
 			<option id="accomodationfilter" value="accomodation">Logement</option>
 			<option id="healthfilter" value="health">Soins</option>

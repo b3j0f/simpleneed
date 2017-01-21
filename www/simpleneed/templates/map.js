@@ -253,9 +253,9 @@ function edit(elt, coordinate) {
 		});
 		$('#needs').material_select();
 		var shorttranslation = {
-			'needlocation': 'd\'une galère',
-			'roam': 'd\'une maraude',
-			'supplylocation': 'd\'une aide'
+			'needlocation': 'Galère',
+			'roam': 'Maraude',
+			'supplylocation': 'Lieu d\'aide'
 		};
 		document.getElementById('description').innerText = elt.description;
 		if (elt.emergency) {
@@ -264,7 +264,7 @@ function edit(elt, coordinate) {
 			document.getElementById('emergency').removeAttribute('checked');
 		}
 		document.getElementById('name').setAttribute('value', elt.name);
-		document.getElementById('update-type').innerText = 'Mise à jour ' + shorttranslation[elt.type];
+		document.getElementById('update-type').innerText = shorttranslation[elt.type];
 		document.getElementById('id').setAttribute('value', elt.id);
 		Materialize.updateTextFields();
 	}
@@ -517,6 +517,10 @@ var selectinteraction = new ol.interaction.Select({
 selectinteraction.on('select', function (evt) {
 	evt.selected.forEach(function (selected) {
 		var features = selected.get('features');
+		if (features.length > 1) {
+			map.getView().setCenter(selected.getGeometry().getCoordinates());
+			map.getView().setZoom(map.getView().getZoom() + 1);
+		}
 		interact(features);/*
 		if (features.length > 1) {
 			// TODO do something when several features are selected.

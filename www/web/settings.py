@@ -42,26 +42,6 @@ INSTALLED_APPS = [
     'corsheaders'
 ]
 
-
-class CORS(object):
-    """CORS middleware."""
-
-    def __init__(self, get_response):
-        self.get_response = get_response
-        # One-time configuration and initialization.
-
-    def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
-
-        response = self.get_response(request)
-        response['Access-Control-Allow-Credentials'] = True
-        print('tedt')
-        # Code to be executed for each request/response after
-        # the view is called.
-
-        return response
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -71,8 +51,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsPostCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'web.settings.CORS'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'web.urls'

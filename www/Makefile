@@ -40,3 +40,8 @@ runprod: settingsprod dependenciesprod loaddata
 
 rundev: settingsdev dependenciesdev loaddata
 	$(MANAGE) runserver 0.0.0.0:8000
+
+commit:
+	git add ..
+	git commit
+	git push origin master
