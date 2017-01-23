@@ -283,67 +283,45 @@ def checkkey(sender, instance, **kwargs):
             instance.pwd = md5(instance.pwd).digest()
 
 
+def getorcreatestats(field, count=1):
+    """Get or create stats with input field and count."""
+    todayts = currentdatets()
+
+    rows = Stats.objects.filter(pk=todayts).update(**{field: F(field) + count})
+
+    if rows == 0:
+        Stats.objects.create(**{field: count})
+
+
 @receiver(post_save, sender=SupplyLocation)
 def addsuppliesstats(sender, instance, created, **kwargs):
     """Add roam count in stats."""
     if created:
-        todayts = currentdatets()
-
-        rows = Stats.objects.filter(pk=todayts).update(
-            supplies=F('supplies') + 1
-        )
-
-        if rows == 0:
-            Stats.objects.create(supplies=1)
+        getorcreatestats('supplies')
 
 
 @receiver(post_save, sender=Roam)
 def addroamstats(sender, instance, created, **kwargs):
     """Add roam count in stats."""
     if created:
-        todayts = currentdatets()
-
-        rows = Stats.objects.filter(pk=todayts).update(roams=F('roams') + 1)
-
-        if rows == 0:
-            Stats.objects.create(roams=1)
+        getorcreatestats('roams')
 
 
 @receiver(m2m_changed, sender=LocatedElement.needs.through)
 def printthrough(action, instance, pk_set, **kwargs):
-    """Blabla."""
-    print(action, instance, pk_set, kwargs)
+    """Calculate stats related to need relationship."""
     if action == 'post_add':
         needscount = len(pk_set)
-        todayts = currentdatets()
 
-        rows = Stats.objects.filter(pk=todayts).update(
-            needs=F('needs') + needscount
-        )
-
-        if rows == 0:
-            Stats.objects.create(needs=needscount)
+        getorcreatestats('needs', needscount)
 
     elif action == 'post_remove':
         needscount = len(pk_set)
-        todayts = currentdatets()
 
-        rows = Stats.objects.filter(pk=todayts).update(
-            answeredneeds=F('answeredneeds') + needscount
-        )
-
-        if rows == 0:
-            Stats.objects.create(answeredneeds=needscount)
+        getorcreatestats('answeredneeds', needscount)
 
     elif action == 'pre_clear':
         old = LocatedElement.objects.get(pk=instance.id)
 
         needscount = old.needs.count()
-        todayts = currentdatets()
-
-        rows = Stats.objects.filter(pk=todayts).update(
-            needs=F('answeredneeds') + needscount
-        )
-
-        if rows == 0:
-            Stats.objects.create(answeredneeds=needscount)
+        getorcreatestats('answeredneeds', needscount)

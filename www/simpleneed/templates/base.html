@@ -85,10 +85,10 @@
             });
             $('.button-collapse').sideNav();
             $('.tooltipped').tooltip(
-                {
-                    delay: 50,
-                    html: true
-                }
+            {
+                delay: 50,
+                html: true
+            }
             );
             $('.parallax').parallax();
             $('.scrollspy').scrollSpy();
@@ -132,7 +132,7 @@
         <li><a class="waves-effect waves-light {% if page == 'account' %} active{% endif %}" href="/account">{{ user.email }}</a></li>
         <li><a class="waves-effect waves-light btn" href="/logout?next={{ next }}">Déconnexion</a></li>
         {% else %}
-        <li><a class="waves-effect waves-light btn" href="/login?next={{ next }}">Connexion</a></li>
+        <!--li><a class="waves-effect waves-light btn" href="/login?next={{ next }}">Connexion</a></li-->
         {% endif %}
         <li class="divider"></li>
         <li><a href="/map" class="waves-effect{% if page == 'map' %} active{% endif %}">Carte</a></li>
@@ -155,7 +155,7 @@
                     <!-- Dropdown Trigger -->
                     <li class="{% if page == 'account' %}active{% endif %}"><a class="dropdown-button" href="#!" data-activates="usermenu">{{ user.email }}<i class="material-icons right">arrow_drop_down</i></a></li>
                     {% else %}
-                    <li><a class="waves-effect waves-light btn" href="/login?next={{ next }}">Connexion</a></li>
+                    <!--li><a class="waves-effect waves-light btn" href="/login?next={{ next }}">Connexion</a></li-->
                     {% endif %}
                 </ul>
                 <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
@@ -191,51 +191,53 @@
 
     {% endif %}
 
-    {% if tableofcontents %}
-    <div class="row">
-        <div class="col l10 m9 s12">
-            {% endif %}
-
-            {% block content %}
-            {% endblock %}
+    <div class="container">
+        <div class="row">
 
             {% if tableofcontents %}
-        </div>
-        {% endif %}
+            <div class="col s12 m9 l10">
+                {% else %}
+                <div class="col s12">
+                    {% endif %}
 
-        {% if tableofcontents %}
-
-        {% block rightmenu %}
-        <div class="col l2 m3 hide-on-small-only container">
-            <div class="rightmenu">
-                <script src="https://liberapay.com/simpleneed/widgets/receiving.js"></script>
-                <ul class="section table-of-contents">
-                    {% block tableofcontents %}
+                    {% block content %}
                     {% endblock %}
-                </ul>
-                {% block action %}
+
+                    {% if tableofcontents %}
+                </div>
+
+                {% block rightmenu %}
+                <div class="col hide-on-small-only m3 l2">
+                    <div class="rightmenu container">
+                        <script src="https://liberapay.com/simpleneed/widgets/receiving.js"></script>
+                        <ul class="section table-of-contents">
+                            {% block tableofcontents %}
+                            {% endblock %}
+                        </ul>
+                        {% block action %}
+                        {% endblock %}
+                    </div>
+                </div>
                 {% endblock %}
+                <script type="text/javascript">
+                    var tableofcontents = $('.table-of-contents')[0];
+                    var scrollspies = $('.scrollspy');
+                    for (var i = 0; i < scrollspies.length; i++) {
+                        var scrollspy = scrollspies[i];
+                        var scrollspyChild = document.createElement('li');
+                        var scrollspylink = document.createElement('a');
+                        scrollspyChild.appendChild(scrollspylink);
+                        var scrollspytxt = document.createTextNode(scrollspy.getAttribute('name'));
+                        scrollspylink.setAttribute('href', '#'+scrollspy.id);
+                        scrollspylink.appendChild(scrollspytxt);
+                        tableofcontents.appendChild(scrollspyChild);
+                    }
+                </script>
+                {% else %}
             </div>
+            {% endif %}
         </div>
-        {% endblock %}
     </div>
-
-    <script type="text/javascript">
-        var tableofcontents = $('.table-of-contents')[0];
-        var scrollspies = $('.scrollspy');
-        for (var i = 0; i < scrollspies.length; i++) {
-            var scrollspy = scrollspies[i];
-            var scrollspyChild = document.createElement('li');
-            var scrollspylink = document.createElement('a');
-            scrollspyChild.appendChild(scrollspylink);
-            var scrollspytxt = document.createTextNode(scrollspy.getAttribute('name'));
-            scrollspylink.setAttribute('href', '#'+scrollspy.id);
-            scrollspylink.appendChild(scrollspytxt);
-            tableofcontents.appendChild(scrollspyChild);
-        }
-    </script>
-
-    {% endif %}
 
     {% endblock %}
 
@@ -244,53 +246,55 @@
         <div class="container">
             <div class="row">
                 <div class="col l6 s12">
-                    <h5 class="header">
-                        Qui sommes-nous ?
-                    </h5>
-                    <a href="https://github.com/b3j0f" target="_blank">
-                        <div class="chip">
-                            <img src="{% static "img/apt-get-install-freedom.jpg" %}" alt="Contact Person">
-                            b3j0f
-                        </div>
-                    </a>
-                    <p class="grey-text text-lighten-4">
-                        {% if user.is_authenticated %} vous {% endif %}et {{ profilecount }} citoyen{% if profilecount > 1 %}s{% endif %} !
-                    </p>
-                    Nous soutenir
-                    <script src="https://liberapay.com/simpleneed/widgets/receiving.js"></script>
-                    <form name="newsletter" id="newsletter" action="/newsletter" method="post">
-                        <div class="input-field col s8">
-                            <i class="material-icons prefix">email</i>
-                            <input id="email" type="email" class="validate" name="email" />
-                            <label for="email" class="white-text">Newsletter</label>
-                        </div>
-                        <div class="col s2">
-                            <input type="submit" class="btn waves-effect waves-light hide-on-small-only" value="Me tenir informé" />
-                        </div>
-                    </form>
+                    <ul>
+                        <li>
+                            <h5 class="header">
+                                Qui sommes-nous ?
+                            </h5>
+                            <a href="https://github.com/b3j0f" target="_blank">
+                                <div class="chip">
+                                    <img src="{% static "img/apt-get-install-freedom.jpg" %}" alt="Contact Person">
+                                    b3j0f
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <h5 class="header">Nous soutenir</h5>
+                            Dons : <script src="https://liberapay.com/simpleneed/widgets/receiving.js"></script>
+                        </li>
+                        <li>
+                            <h5 class="header">Contribuer</h5>
+                            Bugs/Fonctionalités : <a href="https://github.com/b3j0f/simpleneed/issues" target="_blank"><img src="{% static 'img/github-logo.svg' %}" height="30px" /></a>
+                        </li>
+                        <li>
+                            <form name="newsletter" id="newsletter" action="/newsletter" method="post">
+                                <div class="input-field col s8">
+                                    <i class="material-icons prefix">email</i>
+                                    <input id="email" type="email" class="validate" name="email" />
+                                    <label for="email" class="white-text">Newsletter</label>
+                                </div>
+                                <div class="col s2">
+                                    <input type="submit" class="btn waves-effect waves-light hide-on-small-only" value="Me tenir informé" />
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
                 <div class="col l5 offset-l1 s12">
                     <h5 class="white-text">Liens</h5>
                     <ul>
                         <li>
                             <!-- Place this tag where you want the button to render. -->
-                            <a class="github-button" href="https://github.com/b3j0f/simpleneed/subscription" data-style="mega" data-count-href="/b3j0f/simpleneed/watchers" data-count-api="/repos/b3j0f/simpleneed#subscribers_count" data-count-aria-label="# watchers on GitHub" aria-label="Watch b3j0f/simpleneed on GitHub">Sources</a>
+                            <a href="https://www.facebook.com/simpleneed-658632400984467" target="_blank"><img src="{% static 'img/facebook-logo-button.svg' %}" height="30px"></a>
                         </li>
                         <li>
-                            <div class="fb-follow" data-href="https://www.facebook.com/simpleneed-658632400984467" data-layout="standard" data-size="small" data-show-faces="true"></div>
+                            Photos : <a href="https://pixabay.com/">https://pixabay.com/</a>
                         </li>
                         <li>
-                            <a class="twitter-follow-button"
-                            href="https://twitter.com/simpleneed"></a>
+                            Icônes <a href="http://www.flaticon.com/">http://www.flaticon.com/</a>
                         </li>
                         <li>
-                            <g:follow href="https://plus.google.com/communities/114161877128649492848"></g:follow>
-                        </li>
-                        <li>
-                            Les photos viennent de <a href="https://pixabay.com/">https://pixabay.com/</a>
-                        </li>
-                        <li>
-                            Des icônes viennent de <a href="http://www.flaticon.com/">http://www.flaticon.com/</a>
+                            Logo : <a href="https://logomakr.com">https://logomakr.com</a>
                         </li>
                     </ul>
                 </div>

@@ -179,11 +179,15 @@ function onchangetype(type) {
 function del() {
 	$('#load').modal('open');
 	$.ajax({
-		type: 'DELETE',
+		type: 'PUT',
 		url: document.getElementById('delete').getAttribute('command'),
 		xhrFields: {
 			withCredentials: true
 		},
+		data: JSON.stringify({
+			endts: new Date().getTime() / 1000,
+			needs: []
+		}),
 		success: function(){
 			$('#load').modal('close');
 			$('#edit').modal('close');
@@ -304,62 +308,37 @@ function getClusterStyle(size) {
 	return result;
 }
 
-var styles = {
-	needlocation: {
-		image: new ol.style.Circle({
-			radius: 10 + 1.5 * 1,
-			stroke: new ol.style.Stroke({
-				color: '#fff'
-			}),
-			fill: new ol.style.Fill({
-				color: 'blue'//'#3399CC'
-			})
-		}),
-		text: new ol.style.Text({
-			text: '1',
-			fill: new ol.style.Fill({
-				color: '#fff'
-			})
-		})
-	},
-	roam: {
-		image: new ol.style.Circle({
-			radius: 10 + 1.5 * 1,
-			stroke: new ol.style.Stroke({
-				color: '#fff'
-			}),
-			fill: new ol.style.Fill({
-				color: 'orange'//'#3399CC'
-			})
-		}),
-		text: new ol.style.Text({
-			text: '1',
-			fill: new ol.style.Fill({
-				color: '#fff'
-			})
-		})
-	},
-	supplylocation: {
-		image: new ol.style.Circle({
-			radius: 10 + 1.5 * 1,
-			stroke: new ol.style.Stroke({
-				color: '#fff'
-			}),
-			fill: new ol.style.Fill({
-				color: 'green'//'#3399CC'
-			})
-		}),
-		text: new ol.style.Text({
-			text: '1',
-			fill: new ol.style.Fill({
-				color: '#fff'
-			})
-		})
-	}
-}
+var styles = {};
 
 function getLocatedElementStyle(elt) {
-	return new ol.style.Style(styles[elt.type]);
+	var key = elt.type + elt.needs.join() + elt.emergency;
+	if (styles[key] === undefined) {
+		var color = {
+			needlocation: 'blue',
+			roam: 'orange',
+			supplylocation: 'green'
+		};
+		var style = new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 10 + 1.5,
+				stroke: new ol.style.Stroke({
+					color: ('#ff0000' ? elt.emergency : '#fff')
+				}),
+				fill: new ol.style.Fill({
+					color: color[elt.type]
+				})
+			}),
+			text: new ol.style.Text({
+				text: elt.needs.length.toString(),
+				fill: new ol.style.Fill({
+					color: ('#FF0000' ? elt.emergency : '#fff')
+				})
+			})
+		});
+		styles[key] = style;
+	}
+	result = styles[key];
+	return result;
 }
 
 function toFeatures(elts) {
