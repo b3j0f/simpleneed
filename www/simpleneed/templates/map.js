@@ -313,25 +313,28 @@ var styles = {};
 function getLocatedElementStyle(elt) {
 	var key = elt.type + elt.needs.join() + elt.emergency;
 	if (styles[key] === undefined) {
-		var color = {
+		var colors = {
 			needlocation: 'blue',
 			roam: 'orange',
 			supplylocation: 'green'
 		};
+		var strokecolor = (elt.emergency ? '#ff0000' : '#fff');
+		var fillcolor = colors[elt.type];
+		var text = elt.needs.length.toString();
 		var style = new ol.style.Style({
 			image: new ol.style.Circle({
-				radius: 10 + 1.5,
+				radius: 10,
 				stroke: new ol.style.Stroke({
-					color: ('#ff0000' ? elt.emergency : '#fff')
+					color: strokecolor
 				}),
 				fill: new ol.style.Fill({
-					color: color[elt.type]
+					color: fillcolor
 				})
 			}),
 			text: new ol.style.Text({
-				text: elt.needs.length.toString(),
+				text: text,
 				fill: new ol.style.Fill({
-					color: ('#FF0000' ? elt.emergency : '#fff')
+					color: strokecolor
 				})
 			})
 		});
