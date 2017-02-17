@@ -52,19 +52,18 @@
 
 <div class="divider"></div>
 
-<div class="section scrollspy" id="solution" name="Solution">
+<div class="section scrollspy center" id="solution" name="Solution">
 	<h2 class="header">La solution en trois fonctionnalités et deux clics</h2>
-	<a href="#mapsection">
+	<a href="/map">
 		<div class="row center">
 			<ul id="solution1">
 				<li style="opacity: 0">
 					<div class="col l4 s12">
 						<div class="card hoverable">
 							<div class="card-content">
-								<img src="{% static 'img/needlocation.svg' %}" height="64" class="center" />
-								<p class="card-title grey-text text-darken-4">
+								<span class="card-title grey-text text-darken-4">
 									Je suis ou je rencontre quelqu'un en galère
-								</p>
+								</span>
 								<p>
 									Je clique sur la carte l'endroit où il y a une galère, puis je sélectionne les besoins (nourriture, logement, soins, etc.).
 								</p>
@@ -78,10 +77,9 @@
 					<div class="col l4 s12">
 						<div class="card hoverable">
 							<div class="card-content">
-								<img src="{% static 'img/roam.svg' %}" height="64" />
-								<p class="card-title grey-text text-darken-4">
-									J'ai envie d'aider seul ou en groupe alors...
-								</p>
+								<span class="card-title grey-text text-darken-4">
+									J'ai envie d'aider seul ou en groupe
+								</span>
 								<p>
 									Je cherche ou j'indique les endroits où il y a besoin d'aide. Seul ou en rejoignant une maraude.
 								</p>
@@ -95,10 +93,9 @@
 					<div class="col l4 s12">
 						<div class="card hoverable">
 							<div class="card-content">
-								<img src="{% static 'img/supplylocation.svg' %}" height="64" />
-								<p class="card-title grey-text text-darken-4">
-									Je veux aider sans me déplacer alors...
-								</p>
+								<span class="card-title grey-text text-darken-4">
+									Je veux aider sans me déplacer
+								</span>
 								<p>
 									J'indique l'endroit où j'ai des ressources à donner pour dépanner.
 								</p>
@@ -118,37 +115,6 @@
 	{% include 'map-include.html' %}
 </div>
 
-<div class="divider"></div>
-
-<div class="parallax-container">
-	<div class="parallax"><img src="{% static "img/white-male-1871375_640.jpg" %}"></div>
-</div>
-
-<div class="section white scrollspy" id="changement" name="Qui sommes-nous ?">
-	<div class="">
-		<h2>
-			Qui se cache derrière ce projet ?
-		</h2>
-
-		<div class="row">
-			<div class="col s2">
-				<img src="{% static "img/apt-get-install-freedom.jpg" %}" class="circle left small responsive-img" />
-			</div>
-			<div class="col s10">
-				<div class="row">
-					<div class="col s12">
-						<h5><a target="_blank" href="https://github.com/b3j0f">b3j0f</a></h5>
-					</div>
-					<div class="col s12">
-						<p>
-							Développeur en informatique, passionné par le partage de resources et de connaissances.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</diV>
 
 <script type="text/javascript" charset="utf-8" async defer>
 	var options = [

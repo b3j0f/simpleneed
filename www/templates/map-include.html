@@ -1,125 +1,129 @@
 
 {% load static %}
 
-<div class="center">
-	<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons left">location_searching</i>Me localiser</button>
-</div>
+<div class="">
 
-<br/>
-
-<div id="map" class="map"></div>
-
-<div class="row center">
-
-	<div class="col s4">
-		<a class="btn type filter blue btn-block" name="needlocation" id="needlocationfilter" onclick="updatelocatedelementfilter(this);">Galères</a>
-	</div>
-	<div class="col s4">
-		<a class="btn type filter orange btn-block" name="roam" id="roamfilter" onclick="updatelocatedelementfilter(this);">Maraudes</a>
-	</div>
-	<div class="col s4">
-		<a class="btn type filter green btn-block" name="supplylocation" id="supplylocationfilter" onclick="updatelocatedelementfilter(this);" active>Aides</a>
+	<div class="center">
+		<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons left">location_searching</i>Me localiser</button>
 	</div>
 
-</div>
+	<br/>
 
-<div class="row valign-wrapper">
+	<div id="map" class="map"></div>
 
-	<div class="col l6 s12 input-field">
-		<select id="filterneeds" onchange="refresh()" multiple>
-			<option value="" disabled>Tous les besoins</option>
-			<option id="moneyfilter" value="money">Argent</option>
-			<option id="foodfilter" value="food">Nourriture</option>
-			<option id="clothesfilter" value="clothes">Vêtement</option>
-			<option id="companyfilter" value="company">Compagnie</option>
-			<option id="hygienefilter" value="hygiene">Hygiène</option>
-			<option id="accomodationfilter" value="accomodation">Logement</option>
-			<option id="healthfilter" value="health">Soins</option>
-		</select>
-		<label>Filtre</label>
-	</div>
+	<div class="row center">
 
-	<div class="col s12">
-
-		<div id="keywords" class="col s12 chips chips-placeholder"></div>
-
-	</div>
-
-</div>
-
-<div class="modal center" id="load">
-	<div class="modal-content">
-		<h2>
-			<p>
-				<i class="material-icons medium">location_on
-				</i>
-			</p>
-			<p>Géolocalisation en cours...
-			</p>
-		</h2>
-		<div class="preloader-wrapper active" id="loader">
-			<div class="spinner-layer spinner-green-only">
-				<div class="circle-clipper left">
-					<div class="circle"></div>
-				</div>
-				<div class="gap-patch">
-					<div class="circle"></div>
-				</div>
-				<div class="circle-clipper right">
-					<div class="circle"></div>
-				</div>
-			</div>
+		<div class="col s4">
+			<a class="btn type filter blue btn-block" name="needlocation" id="needlocationfilter" onclick="updatelocatedelementfilter(this);">Galères</a>
 		</div>
-	</div>
-	<div class="modal-footer">
-		<button class="modal-close btn-flat" id="status"></button>
-	</div>
-</div>
+		<div class="col s4">
+			<a class="btn type filter orange btn-block" name="roam" id="roamfilter" onclick="updatelocatedelementfilter(this);">Maraudes</a>
+		</div>
+		<div class="col s4">
+			<a class="btn type filter green btn-block" name="supplylocation" id="supplylocationfilter" onclick="updatelocatedelementfilter(this);" active>Aides</a>
+		</div>
 
-<div class="modal" id="edit">
-	<form method="post" onsubmit="save(); return false;">
-		{% csrf_token %}
+	</div>
+
+	<div class="row valign-wrapper">
+
+		<div class="col l6 s12 input-field">
+			<select id="filterneeds" onchange="refresh()" multiple>
+				<option value="" disabled>Tous les besoins</option>
+				<option id="moneyfilter" value="money">Argent</option>
+				<option id="foodfilter" value="food">Nourriture</option>
+				<option id="clothesfilter" value="clothes">Vêtement</option>
+				<option id="companyfilter" value="company">Compagnie</option>
+				<option id="hygienefilter" value="hygiene">Hygiène</option>
+				<option id="accomodationfilter" value="accomodation">Logement</option>
+				<option id="healthfilter" value="health">Soins</option>
+			</select>
+			<label>Filtre</label>
+		</div>
+
+		<div class="col s12">
+
+			<div id="keywords" class="col s12 chips chips-placeholder"></div>
+
+		</div>
+
+	</div>
+
+	<div class="modal center" id="load">
 		<div class="modal-content">
-			<h2 class="header update">
-				<p id="update-type"></p>
-			</h2>
-			<h4 class="header new center">Je <a class='dropdown-button' href='#' id="atype" data-activates='type'></a></h4>
-			<ul id="type" class='dropdown-content'>
-				<li><a href="#!" id="needlocation" onclick="onchangetype(this.id);">suis en galère</a></li>
-				<li><a href="#!" id="roam" onclick="onchangetype(this.id);">crée une maraude</a></li>
-				<li><a href="#!" id="supplylocation" onclick="onchangetype(this.id);">propose mon aide</a></li>
-			</ul>
-			<div class="input-field col s12 roam">
-				<i class="material-icons prefix">mode_edit</i>
-				<input name="name" id="name" class="roam validate" type="text" required onchange="enablesubmit()" />
-				<label for="name" class="active">Nom</label>
-			</div>
-			<div class="input-field col s12 needlocation roam supplylocation">
-				<select multiple name="needs" id="needs" required onchange="enablesubmit()" >
-					<option value="" disabled selected>Choisis les besoins</option>
-				</select>
-				<label>Besoins</label>
-			</div>
-			<div class="input-field needlocation supplylocation roam col 12">
-				<i class="material-icons prefix">assignment</i>
-				<textarea id="description" class="materialize-textarea active"></textarea>
-				<label for="description" class="active">Description</label>
-			</div>
-			<div class="needlocation col s12">
+			<h2>
 				<p>
-					<input type="checkbox" id="emergency" name="mergency" />
-					<label for="emergency">Urgent</label>
+					<i class="material-icons medium">location_on
+					</i>
 				</p>
+				<p>Géolocalisation en cours...
+				</p>
+			</h2>
+			<div class="preloader-wrapper active" id="loader">
+				<div class="spinner-layer spinner-green-only">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
-			<input type="hidden" name="id" id="id" class="update" />
-			<input type="hidden" name="longitude" id="longitude" />
-			<input type="hidden" name="latitude" id="latitude" />
-			<button type="submit" id="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
-			<a href="#" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
+			<button class="modal-close btn-flat" id="status"></button>
 		</div>
-	</form>
+	</div>
+
+	<div class="modal" id="edit">
+		<form method="post" onsubmit="save(); return false;">
+			{% csrf_token %}
+			<div class="modal-content">
+				<h2 class="header update">
+					<p id="update-type"></p>
+				</h2>
+				<h4 class="header new center">Je <a class='dropdown-button' href='#' id="atype" data-activates='type'></a></h4>
+				<ul id="type" class='dropdown-content'>
+					<li><a href="#!" id="needlocation" onclick="onchangetype(this.id);">suis en galère</a></li>
+					<li><a href="#!" id="roam" onclick="onchangetype(this.id);">crée une maraude</a></li>
+					<li><a href="#!" id="supplylocation" onclick="onchangetype(this.id);">propose mon aide</a></li>
+				</ul>
+				<div class="input-field col s12 roam">
+					<i class="material-icons prefix">mode_edit</i>
+					<input name="name" id="name" class="roam validate" type="text" required onchange="enablesubmit()" />
+					<label for="name" class="active">Nom</label>
+				</div>
+				<div class="input-field col s12 needlocation roam supplylocation">
+					<select multiple name="needs" id="needs" required onchange="enablesubmit()" >
+						<option value="" disabled selected>Choisis les besoins</option>
+					</select>
+					<label>Besoins</label>
+				</div>
+				<div class="input-field needlocation supplylocation roam col 12">
+					<i class="material-icons prefix">assignment</i>
+					<textarea id="description" class="materialize-textarea active"></textarea>
+					<label for="description" class="active">Description</label>
+				</div>
+				<div class="needlocation col s12">
+					<p>
+						<input type="checkbox" id="emergency" name="mergency" />
+						<label for="emergency">Urgent</label>
+					</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" name="id" id="id" class="update" />
+				<input type="hidden" name="longitude" id="longitude" />
+				<input type="hidden" name="latitude" id="latitude" />
+				<button type="submit" id="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
+				<a href="#" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
+			</div>
+		</form>
+	</div>
+
 </div>
 
 <script type="text/javascript" charset="utf-8">

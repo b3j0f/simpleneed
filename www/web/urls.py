@@ -18,7 +18,7 @@ from django.conf import settings
 from django.contrib import admin
 
 from .views import (
-    homeview, mapview, statsview, roamsview, needlocationsview, whyview,
+    homeview, mapview, statsview, roamsview, needlocationsview, aboutview,
     faqview, supplylocationsview
 )
 
@@ -36,6 +36,6 @@ urlpatterns = [
     url(r'^roams', roamsview),
     url(r'^stats', statsview),
     url(r'^faq', faqview),
-    url(r'^why', whyview),
+    url(r'^about', aboutview),
     url(r'^', homeview),
 ]

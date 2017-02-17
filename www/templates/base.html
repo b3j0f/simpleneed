@@ -139,7 +139,7 @@
         <li class="divider"></li>
         <li><a href="/stats" class="waves-effect{% if page == 'stats' %} active{% endif %}">Statistiques</a></li>
         <li><a href="/faq" class="waves-effect{% if page == 'faq' %} active{% endif %}">FAQ</a></li>
-        <li><a href="/why" class="waves-effect{% if page == 'why' %} active{% endif %}">À propos</a></li>
+        <li><a href="/about" class="waves-effect{% if page == 'about' %} active{% endif %}">À propos</a></li>
     </ul>
 
     <div class="navbar-fixed">
@@ -150,7 +150,7 @@
                     <li class="{% if page == 'map' %}active{% endif %}"><a href="/map">Carte</a></li>
                     <li class="{% if page == 'stats' %}active{% endif %}"><a href="/stats">Statistiques</a></li>
                     <li class="{% if page == 'faq' %}active{% endif %}"><a href="/faq">FAQ</a></li>
-                    <li class="{% if page == 'why' %}active{% endif %}"><a href="/why">À propos</a></li>
+                    <li class="{% if page == 'about' %}active{% endif %}"><a href="/about">À propos</a></li>
                     {% if user.is_authenticated %}
                     <!-- Dropdown Trigger -->
                     <li class="{% if page == 'account' %}active{% endif %}"><a class="dropdown-button" href="#!" data-activates="usermenu">{{ user.email }}<i class="material-icons right">arrow_drop_down</i></a></li>
@@ -191,7 +191,7 @@
 
     {% endif %}
 
-    <div class="">
+    <div class="container">
         <div class="row">
 
             {% if tableofcontents %}
@@ -208,7 +208,7 @@
 
                 {% block rightmenu %}
                 <div class="col hide-on-small-only m3 l2">
-                    <div class="rightmenu container">
+                    <div class="rightmenu">
                         <script src="https://liberapay.com/simpleneed/widgets/receiving.js"></script>
                         <ul class="section table-of-contents">
                             {% block tableofcontents %}
