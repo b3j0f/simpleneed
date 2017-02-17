@@ -3,10 +3,9 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from django.conf import settings
 
 from simpleneed.models import Roam, NeedLocation, Stats, SupplyLocation
-
-from .settings import API, HOST
 
 from time import time
 
@@ -65,7 +64,7 @@ def basecontext(request, page='home', tableofcontents=False):
         'page': page,
         'tableofcontents': tableofcontents,
         'next': request.GET.get('next', page),
-        'host': HOST, 'api': API
+        'host': settings.HOST, 'api': settings.API
     }
 
     return result

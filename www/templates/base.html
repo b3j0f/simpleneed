@@ -1,0 +1,317 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    {% block header %}
+
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css", media="screen,projection">
+
+    <!-- c3 -->
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.0/ol.css">
+
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
+    <script src="https://buttons.github.io/buttons.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.0/ol.js"></script>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <!-- d3 -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <!-- c3 -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-75657337-1', 'auto');
+        ga('send', 'pageview');
+
+        window.twttr = (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0],
+          t = window.twttr || {};
+          if (d.getElementById(id)) return t;
+          js = d.createElement(s);
+          js.id = id;
+          js.src = "https://platform.twitter.com/widgets.js";
+          fjs.parentNode.insertBefore(js, fjs);
+
+          t._e = [];
+          t.ready = function(f) {
+            t._e.push(f);
+        };
+
+        return t;
+    }(document, "script", "twitter-wjs"));
+
+        (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8";
+          fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+
+        (function() {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/platform.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+
+        $( document ).ready(function(){
+            $('.dropdown-button').dropdown({
+                constrain_width: false
+            });
+            $('.button-collapse').sideNav();
+            $('.tooltipped').tooltip(
+            {
+                delay: 50,
+                html: true
+            }
+            );
+            $('.parallax').parallax();
+            $('.scrollspy').scrollSpy();
+            $('select').material_select();
+            $('.modal').modal();
+            $('.collapsible').collapsible();
+            $('.datepicker').pickadate({
+                selectMonths: true, // Creates a dropdown to control month
+                selectYears: 2 // Creates a dropdown of 15 years to control year
+            });
+            $('.rightmenu').pushpin({
+                top: $('nav')[0].clientHeight + 10,
+                bottom: $('footer')[0].offsetTop,
+                offset: $('nav')[0].clientHeight + 10
+            });
+            Materialize.updateTextFields();
+        });
+
+    </script>
+
+    {% endblock %}
+
+    <div id="fb-root"></div>
+
+</head>
+
+<body>
+
+    {% block body %}
+
+    {% block navbar %}
+
+    <ul id="usermenu" class="dropdown-content">
+        <li><a href="/account" {% if page == 'account' %}class="active"{% endif %}>Mon compte</a></li>
+        <li class="divider"></li>
+        <li><a href="/logout?next={{ next }}">déconnexion</a></li>
+    </ul>
+
+    <ul class="side-nav" id="mobile-menu">
+        {% if user.is_authenticated %}
+        <li><a class="waves-effect waves-light {% if page == 'account' %} active{% endif %}" href="/account">{{ user.email }}</a></li>
+        <li><a class="waves-effect waves-light btn" href="/logout?next={{ next }}">Déconnexion</a></li>
+        {% else %}
+        <!--li><a class="waves-effect waves-light btn" href="/login?next={{ next }}">Connexion</a></li-->
+        {% endif %}
+        <li class="divider"></li>
+        <li><a href="/map" class="waves-effect{% if page == 'map' %} active{% endif %}">Carte</a></li>
+        <li class="divider"></li>
+        <li><a href="/stats" class="waves-effect{% if page == 'stats' %} active{% endif %}">Statistiques</a></li>
+        <li><a href="/faq" class="waves-effect{% if page == 'faq' %} active{% endif %}">FAQ</a></li>
+        <li><a href="/why" class="waves-effect{% if page == 'why' %} active{% endif %}">À propos</a></li>
+    </ul>
+
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper">
+                <a href="/" class="brand-logo{% if page == 'home' or not page %} active{% endif %}"><i class="large material-icons"></i>Simpleneed</a>
+                <ul id="nav-simpleneed" class="right hide-on-med-and-down">
+                    <li class="{% if page == 'map' %}active{% endif %}"><a href="/map">Carte</a></li>
+                    <li class="{% if page == 'stats' %}active{% endif %}"><a href="/stats">Statistiques</a></li>
+                    <li class="{% if page == 'faq' %}active{% endif %}"><a href="/faq">FAQ</a></li>
+                    <li class="{% if page == 'why' %}active{% endif %}"><a href="/why">À propos</a></li>
+                    {% if user.is_authenticated %}
+                    <!-- Dropdown Trigger -->
+                    <li class="{% if page == 'account' %}active{% endif %}"><a class="dropdown-button" href="#!" data-activates="usermenu">{{ user.email }}<i class="material-icons right">arrow_drop_down</i></a></li>
+                    {% else %}
+                    <!--li><a class="waves-effect waves-light btn" href="/login?next={{ next }}">Connexion</a></li-->
+                    {% endif %}
+                </ul>
+                <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+            </div>
+        </nav>
+    </div>
+
+    {% endblock %}
+
+    {% if errors %}
+
+    {% for error in errors %}
+
+    <script type="text/javascript">
+        var $toastContent = $('<p class="red-text">{{ error }}</p>');
+        Materialize.toast($toastContent, 5000, 'rounded');
+    </script>
+
+    {% endfor %}
+
+    {% endif %}
+
+    {% if successes %}
+
+    {% for success in successes %}
+
+    <script type="text/javascript">
+        var $toastContent = $('<p class="green-text">{{ success }}</p>');
+        Materialize.toast($toastContent, 5000, 'rounded');
+    </script>
+
+    {% endfor %}
+
+    {% endif %}
+
+    <div class="">
+        <div class="row">
+
+            {% if tableofcontents %}
+            <div class="col s12 m9 l10">
+                {% else %}
+                <div class="col s12">
+                    {% endif %}
+
+                    {% block content %}
+                    {% endblock %}
+
+                    {% if tableofcontents %}
+                </div>
+
+                {% block rightmenu %}
+                <div class="col hide-on-small-only m3 l2">
+                    <div class="rightmenu container">
+                        <script src="https://liberapay.com/simpleneed/widgets/receiving.js"></script>
+                        <ul class="section table-of-contents">
+                            {% block tableofcontents %}
+                            {% endblock %}
+                        </ul>
+                        {% block action %}
+                        {% endblock %}
+                    </div>
+                </div>
+                {% endblock %}
+                <script type="text/javascript">
+                    var tableofcontents = $('.table-of-contents')[0];
+                    var scrollspies = $('.scrollspy');
+                    for (var i = 0; i < scrollspies.length; i++) {
+                        var scrollspy = scrollspies[i];
+                        var scrollspyChild = document.createElement('li');
+                        var scrollspylink = document.createElement('a');
+                        scrollspyChild.appendChild(scrollspylink);
+                        var scrollspytxt = document.createTextNode(scrollspy.getAttribute('name'));
+                        scrollspylink.setAttribute('href', '#'+scrollspy.id);
+                        scrollspylink.appendChild(scrollspytxt);
+                        tableofcontents.appendChild(scrollspyChild);
+                    }
+                </script>
+                {% else %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% endblock %}
+
+    {% block footer %}
+    <footer class="page-footer white-text">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <ul>
+                        <li>
+                            <h5 class="header">
+                                Qui sommes-nous ?
+                            </h5>
+                            <a href="https://github.com/b3j0f" target="_blank">
+                                <div class="chip">
+                                    <img src="{% static "img/apt-get-install-freedom.jpg" %}" alt="Contact Person">
+                                    b3j0f
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <h5 class="header">Nous soutenir</h5>
+                            Dons : <script src="https://liberapay.com/simpleneed/widgets/receiving.js"></script>
+                        </li>
+                        <li>
+                            <h5 class="header">Contribuer</h5>
+                            Bugs/Fonctionalités : <a href="https://github.com/b3j0f/simpleneed/issues" target="_blank"><img src="{% static 'img/github-logo.svg' %}" height="30px" /></a>
+                        </li>
+                        <li>
+                            <form name="newsletter" id="newsletter" action="/newsletter" method="post">
+                                <div class="input-field col s8">
+                                    <i class="material-icons prefix">email</i>
+                                    <input id="email" type="email" class="validate" name="email" />
+                                    <label for="email" class="white-text">Newsletter</label>
+                                </div>
+                                <div class="col s2">
+                                    <input type="submit" class="btn waves-effect waves-light hide-on-small-only" value="Me tenir informé" />
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col l5 offset-l1 s12">
+                    <h5 class="white-text">Liens</h5>
+                    <ul>
+                        <li>
+                            <!-- Place this tag where you want the button to render. -->
+                            <a href="https://www.facebook.com/simpleneed-658632400984467" target="_blank"><img src="{% static 'img/facebook-logo-button.svg' %}" height="30px"></a>
+                        </li>
+                        <li>
+                            Photos : <a href="https://pixabay.com/" target="_blank">https://pixabay.com/</a>
+                        </li>
+                        <li>
+                            Icônes : <a href="http://www.flaticon.com/" target="_blank">http://www.flaticon.com/</a>
+                        </li>
+                        <li>
+                            Logo : <a href="https://logomakr.com" target="_blank">https://logomakr.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="row container">
+                <div class="col s6">
+                    <p><a rel="license" class="left" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
+                </div>
+                <div class="col s6">
+                    <p class="hide-on-small-only">Ce site est sous licence <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a></p>
+                </div>
+            </div>
+        </footer>
+
+        {% endblock %}
+
+    </body>
+    </html>

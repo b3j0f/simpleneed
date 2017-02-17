@@ -1,47 +1,50 @@
-MANAGE:=python manage.py
+PLATFORM := dev
+BIND := 127.0.0.1:8000
+DJANGO_SETTINGS_MODULE := "web.settings.$(PLATFORM)"
 
-INSTALL:= pip install -r
 
-all: clean test rundev
+.PHONY: all
+all: migrations migrate fixtures
 
-test: clean settingsdev dependenciesdev loaddata
-	$(MANAGE) test
-
-clean:
-	$(MANAGE) flush
-
-cleanprod: clean
-	$(MANAGE) flush
-
-settingsdev:
-	export DJANGO_SETTINGS_MODULE="simpleneed/settings-dev.py"
-
-settingsprod:
-	export DJANGO_SETTINGS_MODULE="simpleneed/settings-prod.py"
-
-dependenciesdev:
-	$(INSTALL) requirements-dev.txt
-
-dependenciesprod:
-	$(INSTALL) requirements-prod.txt
-
+.PHONY: migrations
 migrations:
-	$(MANAGE) makemigrations
+	python manage.py makemigrations marketing roles
 
-migrate: migrations
-	$(MANAGE) migrate
+.PHONY: migrate
+migrate:
+	python manage.py migrate
 
-loaddata: migrate
-	$(MANAGE) loaddata simpleneed/fixtures/*
+.PHONY: fixtures
+fixtures:
+	python manage.py needs
 
-runprod: settingsprod dependenciesprod loaddata
-	$(MANAGE) collectstatic
-	$(MANAGE) runserver 0.0.0.0:80
+.PHONY: superuser
+superuser:
+	python manage.py loaddata users
 
-rundev: settingsdev dependenciesdev loaddata
-	$(MANAGE) runserver 0.0.0.0:8000
+.PHONY: static
+static:
+	python manage.py collectstatic
 
-commit:
-	git add ..
-	git commit
-	git push origin master
+.PHONY: run
+run: static
+	python manage.py runserver $(BIND)
+
+.PHONY: runcelery
+runcelery:
+	celery --app=simpleneed.celery:app worker --loglevel=DEBUG
+
+.PHONY: runshell
+shell:
+	python manage.py shell
+
+.PHONY: install_deps
+install_deps:
+	pip install -r requirements/$(PLATFORM).txt
+
+.PHONY: clean
+clean:
+	rm -rf static/*
+	python manage.py dump > dump
+	python manage.py flush
+	rm db.sql3

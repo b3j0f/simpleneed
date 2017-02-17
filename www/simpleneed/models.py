@@ -244,7 +244,6 @@ class Stats(models.Model):
 
 
 @receiver(post_save, sender=NeedLocation)
-@receiver(post_save, sender=SupplyLocation)
 @receiver(post_save, sender=Roam)
 @receiver(post_save, sender=LocatedElement)
 def cleanneedlocation(sender, instance, created, **kwargs):
