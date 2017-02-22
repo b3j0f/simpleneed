@@ -4,21 +4,27 @@
 
 <ion-content>
 	<ion-list>
-		<ion-list-header>Today</ion-list-header>
+		<ion-list-header>
+			Total
+		</ion-list-header>
 		<ion-item>
-			<button ion-button ion-icon item-left (click)="changetodaytype()">
-				<ion-icon [name]="todaytype === 'pie' ? 'pie' : 'podium'"></ion-icon>
-			</button>
-			<div id="daystatschart"></div>
+			<ion-grid>
+				<ion-row>
+					<ion-col width-50>
+						Roams: {{ roams }}
+					</ion-col>
+					<ion-col width-50>
+						Supplies: {{ supplies }}
+					</ion-col>
+				</ion-row>
+			</ion-grid>
 		</ion-item>
-	</ion-list>
-	<ion-list>
-		<ion-list-header>From the beginning</ion-list-header>
 		<ion-item>
-			<button ion-button ion-icon item-left (click)="changealltype()">
-				<ion-icon [name]="alltype === 'pulse' ? 'remove' : 'podium'"></ion-icon>
-			</button>
-			<div id="allstatschart"></div>
+			<div id="totalchart" #totalchart></div>
+		</ion-item>
+		<ion-list-header><ion-icon name="clock" isActive="false"></ion-icon> History</ion-list-header>
+		<ion-item>
+			<div id="historychart" #historychart></div>
 		</ion-item>
 	</ion-list>
 </ion-content>

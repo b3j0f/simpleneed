@@ -14,6 +14,7 @@ import { NavBarComponent } from '../components/navbar/navbar';
 import { HTTP } from '../providers/http';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { Storage } from '@ionic/storage';
 
 //config('https://7ca3f181c11f40aea28d05fe60acd978@sentry.io/114226')
 //  .install();
@@ -53,6 +54,6 @@ import { BrowserModule } from '@angular/platform-browser';
     NavBarComponent,
     EmergencyPage
   ],
-  providers: [ HTTP, /*{ provide: ErrorHandler, useClass: RavenErrorHandler }*/]
+  providers: [ HTTP, Storage, /*{ provide: ErrorHandler, useClass: RavenErrorHandler }*/]
 })
 export class AppModule {}

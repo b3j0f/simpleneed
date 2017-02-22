@@ -14,8 +14,8 @@
   ],
   "proxies": [
     {
-      "path": "/rest/v1/api/",
-      "proxyUrl": "http://localhost:8100/rest/v1/api/"
+      "path": "/api/rest/v1/",
+      "proxyUrl": "http://localhost:8100/api/rest/v1/"
     }
   ]
 }

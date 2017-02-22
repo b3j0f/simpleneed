@@ -76,6 +76,7 @@
         var results = data.results;
         var totalcolumns = [];
         var historycolumns = [];
+        var translate = {needs: 'galères', answeredneeds: 'galères résolues', roams: 'maraudes', supplies: 'aides'};
         if (results.length === 0) {
           totalcolumns = [
           ['galères', 0],
@@ -91,13 +92,12 @@
           ['aides', 0]
           ];
         } else {
-          var totalcolumns = {
+          var _totalcolumns = {
             'galères': 0,
             'galères résolues' : 0,
             'maraudes': 0,
             'aides': 0
           };
-          var translate = {needs: 'galères', answeredneeds: 'galères résolues', roams: 'maraudes', supplies: 'aides'};
           var namedcolumns = ['x'];
           results.forEach(function(stat) {
             namedcolumns.push(stat.ts * 1000);
@@ -109,21 +109,20 @@
             results.forEach(function(stat) {
               var value = stat[name];
               namedcolumns.push(value);
-              totalcolumns[translation] += value;
+              _totalcolumns[translation] += value;
             });
             historycolumns.push(namedcolumns);
           }
+          ['roams', 'supplies'].forEach(function(key) {
+            var value = _totalcolumns[translate[key]];
+            document.getElementById(key).innerText = value;
+          });
+          ['galères', 'galères résolues'].forEach(function (type){
+            totalcolumns.push([type, _totalcolumns[type]]);
+          });
         }
-        var ftotalcolumns = [];
-        ['roams', 'supplies'].forEach(function(key) {
-          var value = totalcolumns[translate[key]];
-          document.getElementById(key).innerText = value;
-        });
-        ['galères', 'galères résolues'].forEach(function (type){
-          ftotalcolumns.push([type, totalcolumns[type]]);
-        });
         totalchart.load({
-          columns: ftotalcolumns
+          columns: totalcolumns
         });
         historychart.load({
           columns: historycolumns

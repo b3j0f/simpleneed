@@ -5,11 +5,12 @@ import { NavController, LoadingController } from 'ionic-angular';
 import { CRUPPage } from '../crup/crup';
 //import { Geolocation, DeviceOrientation, CompassHeading, Network, Diagnostic, CallNumber, AppRate } from 'ionic-native';
 import { Geolocation, /*Shake*/ } from 'ionic-native';
+import { Storage } from '@ionic/storage';
 
 @Component({
     selector: 'page-map',
     templateUrl: 'map.html',
-    providers: [ HTTP ]
+    providers: [ HTTP, Storage ]
 })
 export class MapPage {
 
@@ -23,17 +24,20 @@ export class MapPage {
         'food': true,
         'snack': true,
         'clothes': true,
-        'stuffs': true
+        'stuffs': true,
+        'company': true
     };
-    locatedElements: any = {
+    types: any = {
         'roams': true,
-        'needlocations': true
+        'needlocations': true,
+        'supplylocations': true
     };
 
     constructor(
         public navCtrl: NavController,
         public http: HTTP,
-        public loadingCtrl: LoadingController
+        public loadingCtrl: LoadingController,
+        public storage: Storage
     ) {
 
     }
@@ -42,10 +46,35 @@ export class MapPage {
         this.mapcomponent.edit = (elt, coordinate) => this.edit(
             elt, coordinate
         );
-        this.refresh();
+        this.mapcomponent.getelts = (extent, callback) => this.getLocatedElements(extent, callback);
         /*let watch = Shake.startWatch().subscribe(() => {
             this.refresh();
         });*/
+    }
+
+    getLocatedElements(extent, callback) {
+        let endts = new Date().getTime() / 1000;
+        this.http.get(
+            'locatedelements/',
+            {
+                startts__lte: endts,
+                endts__gte: endts,
+                needs: this.needs,
+                longitude__gte: extent[0],
+                longitude__lte: extent[2],
+                latitude__lte: extent[3],
+                latitude__gte: extent[1],
+            }, undefined, true
+        ).then(data => {
+            let result = data['results'];
+            let elts = {};
+            result.forEach((elt) => {
+                if (this.types[elt.type]) {
+                    elts[elt.id] = elt;
+                }
+            });
+            callback(elts);
+        });
     }
 
     findLocation() {
@@ -73,10 +102,13 @@ export class MapPage {
         let item;
         if (elt === undefined) {
             item = {
+                type: 'needlocation',
                 longitude: coordinate[0],
                 latitude: coordinate[1],
                 needs: [],
-                messages: []
+                messages: [],
+                needlocations: [],
+                name: ''
             }
         } else {
             item = elt.item;
@@ -91,33 +123,20 @@ export class MapPage {
         );
     }
 
-    refresh() {
-        let filter = {'endts__gte': new Date().getTime() / 1000};
-        this.http.get('locatedelements/', filter).then(
-            data => this.mapcomponent.addLocatedElements(data['results'])
-        ).catch(error => console.error(error));
-    }
-
     save(item) {
-        let kind = item.needs === undefined ? 'roam' : 'needlocation';
-        if (kind === 'needlocation') {
-            for(let pos in item.needs) {
-                let need = item.needs[pos];
-                item.needs[pos] = this.http.root + 'needs/' + need + '/';
-            }
+        for(let pos in item.needs) {
+            let need = item.needs[pos];
+            item.needs[pos] = this.http.root + 'needs/' + need + '/';
         }
         let method = (url, options) => item.id === undefined ? this.http.post(url, options) : this.http.put(url + item.id, options);
-        method(kind + 's/', item).then(
-            data => {
-                this.mapcomponent.addLocatedElements([data]);
-                this.refresh();
-            }
+        method(item.type + 's/', item
+            ).then(
+            data => this.refresh()
         ).catch(error => this.refresh());
     }
 
     delete(item) {
-        let url = item.needs === undefined ? 'roam' : 'needlocation';
-        this.http.delete(url + 's/' + item.id).then(
+        this.http.delete(item.type + 's/' + item.id).then(
             data => this.refresh()
         ).catch(
             data => this.refresh()
@@ -125,12 +144,26 @@ export class MapPage {
     }
 
     searchNeed(need: string) {
-        this.needs[need] = !this.needs[need];
+        if (this.needs[need]) {
+            for(let key in this.needs) {
+                this.needs[key] = false;
+            }
+            this.needs[need] = true;
+        } else {
+            this.needs[need] = true;
+        }
         this.refresh();
     }
 
     searchLE(le: string) {
-        this.locatedElements[le] = !this.locatedElements[le];
+        if (this.types[le]) {
+            for(let key in this.types) {
+                this.types[key] = false;
+            }
+            this.types[le] = true;
+        } else {
+            this.types[le] = true;
+        }
         this.refresh();
     }
 
@@ -139,7 +172,13 @@ export class MapPage {
     }
 
     getLEColor(le: string) {
-        return this.locatedElements[le] ? 'primary' : 'light';
+        return this.types[le] ? le : 'light';
+    }
+
+    refresh() {
+        this.storage.set('needs', this.needs);
+        this.storage.set('types', this.types);
+        this.mapcomponent.refresh();
     }
 
 }

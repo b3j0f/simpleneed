@@ -3,18 +3,13 @@
 </ion-header>
 
 <ion-content id="crup" #crup class="crup">
-	<ion-fab edge top center>
-		<button ion-fab icon-only mini (click)="crup">
-			<ion-icon name="arrow-up" large></ion-icon>
-		</button>
-	</ion-fab>
 	<ion-fab bottom right>
-		<button ion-fab icon-only (click)="save()" color="secondary" [disabled]="!edited()">
+		<button ion-fab icon-only (click)="save()" color="secondary" [disabled]="!modified()">
 			<ion-icon name="checkmark" large></ion-icon>
 		</button>
 	</ion-fab>
-	<ion-fab bottom right>
-		<button ion-fab icon-only (click)="delete()" [disabled]="item.id !== undefined" color="danger">
+	<ion-fab bottom center *ngIf="item.id">
+		<button ion-fab icon-only (click)="delete()" color="danger">
 			<ion-icon name="trash" large></ion-icon>
 		</button>
 	</ion-fab>
@@ -43,125 +38,94 @@
 			</button>
 		</ion-fab-list>
 		<ion-fab-list side="right">
-		<button ion-fab icon-only (click)="copy()">
-			<ion-icon name="copy" large></ion-icon>
-		</button>
+			<button ion-fab icon-only (click)="copy()">
+				<ion-icon name="copy" large></ion-icon>
+			</button>
 		</ion-fab-list>
 	</ion-fab>
-	<ion-segment [(ngModel)]="kind">
+	<ion-segment *ngIf="! item.id" [(ngModel)]="item.type">
 		<ion-segment-button value="needlocation">
-			location
+			need
 			<ion-icon name="pin"></ion-icon>
 		</ion-segment-button>
+		<ion-segment-button value="supplylocation">
+			<label>help
+				<ion-icon name="help_boay"></ion-icon>
+			</label>
+		</ion-segment-button>
 		<ion-segment-button value="roam">
-			<label>group
+			<label>roam
 				<ion-icon name="contacts"></ion-icon>
 			</label>
 		</ion-segment-button>
 	</ion-segment>
-	<div [ngSwitch]="kind">
-		<ion-list *ngSwitchCase="'roam'">
-			<ion-item>
+	<div [ngSwitch]="item.type">
+		<ion-list>
+
+			<ion-list-header *ngIf="item.id">
+				{{ item.type }}
+			</ion-list-header>
+
+			<ion-item *ngSwitchCase="'roam'">
 				<ion-icon name="clipboard" item-left large></ion-icon>
 				<ion-label floating>Name</ion-label>
 				<ion-input [(ngModel)]="item.name" type="search"></ion-input>
-				<button ion-button icon-only>
-					<ion-icon *ngIf="hasPwd()" name="lock"></ion-icon>
-					<ion-icon *ngIf="!hasPwd()" name="unlock"></ion-icon>
-				</button>
 			</ion-item>
-		</ion-list>
-		<ion-list *ngSwitchCase="'needlocation'">
 			<ion-item>
 				<ion-label>
-					<button ion-button round [color]="hasNeed('snack') ? 'danger' : 'primary'" icon-right block small (click)="clickNeed('snack')">
-						snack
-						<ion-icon name="cafe"></ion-icon>
-					</button>
-				</ion-label>
-				<ion-label>
-					<button ion-button round [color]="hasNeed('food') ? 'danger' : 'primary'" icon-right block small (click)="clickNeed('food')">
-						meal
+					<button ion-button round [color]="getColor('food')" icon-right block small (click)="clickNeed('food')">
+						food
 						<ion-icon name="pizza"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="hasNeed('money') ? 'danger' : 'primary'" icon-right block round small (click)="clickNeed('money')">money
+					<button ion-button [color]="getColor('money')" icon-right block round small (click)="clickNeed('money')">money
 						<ion-icon name="cash"></ion-icon>
 					</button>
 				</ion-label>
 			</ion-item>
 			<ion-item>
 				<ion-label>
-					<button ion-button [color]="hasNeed('clothes') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('clothes')">
+					<button ion-button [color]="getColor('clothes')" round icon-right block small (click)="clickNeed('clothes')">
 						clothes
 						<ion-icon name="shirt"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="hasNeed('company') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('company')">
+					<button ion-button [color]="getColor('company')" round icon-right block small (click)="clickNeed('company')">
 						company
-						<ion-icon name="chatbubbles"></ion-icon>
+						<ion-icon name="contacts"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="hasNeed('hygiene') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('hygiene')">hygiene
-						<ion-icon name="water"></ion-icon>
+					<button ion-button [color]="getColor('hygiene')" round icon-right block small (click)="clickNeed('hygiene')">hygiene
+						<ion-icon name="cube"></ion-icon>
 					</button>
 				</ion-label>
 			</ion-item>
 			<ion-item>
 				<ion-label>
-					<button ion-button [color]="hasNeed('accomodation') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('accomodation')">
+					<button ion-button [color]="getColor('accomodation')" round icon-right block small (click)="clickNeed('accomodation')">
 						home
 						<ion-icon name="home"></ion-icon>
 					</button>
 				</ion-label>
 				<ion-label>
-					<button ion-button [color]="hasNeed('stuffs') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('stuffs')">
-						stuffs
-						<ion-icon name="help"></ion-icon>
-					</button>
-				</ion-label>
-				<ion-label>
-					<button ion-button [color]="hasNeed('health') ? 'danger' : 'primary'" round icon-right block small (click)="clickNeed('health')">health
+					<button ion-button [color]="getColor('health')" round icon-right block small (click)="clickNeed('health')">health
 						<ion-icon name="medkit"></ion-icon>
 					</button>
 				</ion-label>
 			</ion-item>
-			<ion-item>
+			<ion-item *ngSwitchCase="'needlocation'">
 				<ion-icon item-left name="warning" (click)="item.emergency=!item.emergency"></ion-icon>
 				<ion-label (click)="item.emergency=!item.emergency">Emergency</ion-label>
-  				<ion-toggle [checked]="item.emergency"></ion-toggle>
+				<ion-toggle [checked]="item.emergency" (click)="item.emergency=!item.emergency" color="danger"></ion-toggle>
+			</ion-item>
+			<ion-item>
+				<ion-icon name="quote" item-left large></ion-icon>
+				<ion-label floating>Description</ion-label>
+				<ion-textarea [(ngModel)]="item.description"></ion-textarea>
 			</ion-item>
 		</ion-list>
 	</div>
-	<ion-list>
-		<ion-item>
-			<ion-icon name="quote" item-left large></ion-icon>
-			<ion-label floating>Description</ion-label>
-			<ion-textarea [(ngModel)]="item.description"></ion-textarea>
-		</ion-item>
-		<!--ion-item>
-			<ion-icon name="timer" item-left large></ion-icon>
-			<ion-range min=0 max=24 [(ngModel)]="durations" snaps pin step=2 dualKnobs>
-				<ion-label range-left>{{durations.lower}}:00</ion-label>
-				<ion-label range-right>{{durations.upper}}:00</ion-label>
-			</ion-range>
-		</ion-item>
-		<ion-item>
-			<ion-icon *ngIf="hasPwd()" name="lock" item-left></ion-icon>
-			<ion-icon *ngIf="!hasPwd()" name="unlock" item-left></ion-icon>
-			<ion-input type="password" [(ngModel)]="item.pwd"></ion-input>
-		</ion-item-->
-	</ion-list>
-	<!--ion-list *ngIf="item.messages.length > 0">
-		<ion-list-header>
-			<ion-icon name="text" item-left></ion-icon>
-			<ion-label item-right>Messages</ion-label>
-		</ion-list-header>
-		<ion-item *ngFor="let message of item.messages">
-			{{message}}
-		</ion-item>
-	</ion-list-->
 </ion-content>

@@ -8,8 +8,12 @@
 			<ion-icon name="search"></ion-icon>
 		</button>
 		<ion-fab-list side="left">
+			<button ion-fab icon-only (click)="searchLE('supplylocations')" [color]="getLEColor('supplylocations')">
+				<!--ion-icon name="pin"></ion-icon-->
+				<ion-icon name="compass"></ion-icon>
+			</button>
 			<button ion-fab icon-only (click)="searchLE('roams')" [color]="getLEColor('roams')">
-				<ion-icon name="contacts"></ion-icon>
+				<ion-icon name="people"></ion-icon>
 			</button>
 			<button ion-fab icon-only (click)="searchLE('needlocations')" [color]="getLEColor('needlocations')">
 				<!--ion-icon name="pin"></ion-icon-->
@@ -17,9 +21,6 @@
 			</button>
 		</ion-fab-list>
 		<ion-fab-list side="bottom">
-			<button ion-fab icon-only (click)="searchNeed('snack')" [color]="getNeedColor('snack')">
-				<ion-icon name="cafe"></ion-icon>
-			</button>
 			<button ion-fab (click)="searchNeed('food')" [color]="getNeedColor('food')" icon-only>
 				<ion-icon name="pizza"></ion-icon>
 			</button>
@@ -30,26 +31,29 @@
 				<ion-icon name="shirt"></ion-icon>
 			</button>
 			<button ion-fab (click)="searchNeed('hygiene')" [color]="getNeedColor('hygiene')" icon-only>
-				<ion-icon name="water"></ion-icon>
+				<ion-icon name="cube"></ion-icon>
 			</button>
 			<button ion-fab (click)="searchNeed('accomodation')" icon-only [color]="getNeedColor('accomodation')">
 				<ion-icon name="home"></ion-icon>
 			</button>
+			<button ion-fab (click)="searchNeed('company')" icon-only [color]="getNeedColor('company')">
+				<ion-icon name="contacts"></ion-icon>
+			</button>
 			<button ion-fab (click)="searchNeed('health')" icon-only [color]="getNeedColor('health')">
 				<ion-icon name="medkit"></ion-icon>
-			</button>
-			<button ion-fab (click)="searchNeed('stuffs')" icon-only [color]="getNeedColor('stuffs')">
-				<ion-icon name="help"></ion-icon>
 			</button>
 		</ion-fab-list>
 	</ion-fab>
 	<ion-fab bottom left>
-		<button ion-fab icon-only (click)="findLocation()" opened>
-			<ion-icon name="pin"></ion-icon>
+		<button ion-fab>
+			<ion-icon name="menu"></ion-icon>
 		</button>
-		<ion-fab-list side="right">
+		<ion-fab-list side="top">
+			<button ion-fab icon-only (click)="findLocation()" color="primary">
+				<ion-icon name="pin"></ion-icon>
+			</button>
 			<button ion-fab icon-only (click)="refresh()" color="primary" large big>
-				<ion-icon name="sync"></ion-icon>
+				<ion-icon name="refresh"></ion-icon>
 			</button>
 		</ion-fab-list>
 	</ion-fab>

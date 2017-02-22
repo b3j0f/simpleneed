@@ -320,15 +320,9 @@ var styles = {};
 
 function getLocatedElementStyle(elt) {
 	var key = elt.type + elt.needs.join() + elt.emergency;
-	if (styles[key] === undefined) {
-		var colors = {
-			needlocation: 'blue',
-			roam: 'orange',
-			supplylocation: 'green'
-		};
-		var strokecolor = (elt.emergency ? '#ff0000' : '#fff');
+	var result = styles[key];
+	if (result === undefined) {
 		var src = '{% static 'img' %}/pin-' + elt.type + (elt.emergency ? '-emergency' : '')  + '.png';
-		var fillcolor = colors[elt.type];
 		var text = elt.needs.length.toString();
 		var style = new ol.style.Style({
 			image: new ol.style.Icon({
@@ -336,9 +330,8 @@ function getLocatedElementStyle(elt) {
 				anchor: [0.5, 1]
 			})
 		});
-		styles[key] = style;
+		result = styles[key] = style;
 	}
-	result = styles[key];
 	return result;
 }
 

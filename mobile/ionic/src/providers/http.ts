@@ -41,21 +41,21 @@ export class HTTP {
         return result;
     }
 
-    post(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('Post', lookup, data, headers);
+    post(lookup: string, data: any = undefined, headers: any = undefined, load: boolean = true) {
+        return this.process('Post', lookup, data, headers, load);
     }
-    get(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('Get', this.getpath(lookup, data), data, headers);
+    get(lookup: string, data: any = undefined, headers: any = undefined, load: boolean = true) {
+        return this.process('Get', this.getpath(lookup, data), data, headers, load);
     }
-    put(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('Put', lookup, data, headers);
+    put(lookup: string, data: any = undefined, headers: any = undefined, load: boolean = true) {
+        return this.process('Put', lookup, data, headers, load);
     }
-    delete(lookup: string, data: any = undefined, headers: any = undefined) {
-        return this.process('Delete', this.getpath(lookup, data), data, headers);
+    delete(lookup: string, data: any = undefined, headers: any = undefined, load: boolean = true) {
+        return this.process('Delete', this.getpath(lookup, data), data, headers, load);
     }
 
     process(
-        method: string, path: string, data: any, headers: any
+        method: string, path: string, data: any, headers: any, load: boolean = true
     ) {
         let body = JSON.stringify(data);
         let _headers = new Headers(
@@ -70,7 +70,9 @@ export class HTTP {
         })
 
         let loading = this.loadingCtrl.create();
-        loading.present();
+        if (load) {
+            loading.present();
+        }
 
         return new Promise(
             resolve =>

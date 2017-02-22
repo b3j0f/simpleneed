@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 
 
 @Component({
@@ -6,7 +6,5 @@ import { Component, ViewChild } from '@angular/core';
 	templateUrl: 'menu.html'
 })
 export class MenuComponent {
-
-	//@ViewChild('menu') menu;
 
 }

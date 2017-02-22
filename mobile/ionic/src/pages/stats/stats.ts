@@ -1,62 +1,129 @@
 import * as c3 from 'c3';
-import * as d3 from 'd3';
 
 import { Component } from '@angular/core';
+import { HTTP } from '../../providers/http';
 
 @Component({
     selector: 'page-stats',
-    templateUrl: 'stats.html'
+    templateUrl: 'stats.html',
+    providers: [HTTP]
     })
 export class StatsPage {
 
-    daystatschart: any;
-    allstatschart: any;
+    totalchart: any;
+    historychart: any;
+    c3totalchart: any;
+    c3historychart: any;
 
-    start: Date = new Date(new Date().getTime() - 1000 * 3600 * 24 * 365);
-    end: Date = new Date();
+    roams: number = 0;
+    supplies: number = 0;
 
-    alltype: string = 'line';
-    todaytype: string = 'pie';
+    constructor(
+        public http: HTTP
+        ) {
+
+    }
 
     ngAfterViewInit() {
-        this.allstatschart = c3.generate({
-            bindto: '#allstatschart',
+        this.c3totalchart = c3.generate({
+            bindto: '#totalchart',
             data: {
-                columns: [
-                    ['needs', 30, 200, 100, 400, 150, 250],
-                    ['answered needs', 60, 100, 110, 450, 10, 200],
-                    ['roams', 50, 20, 10, 40, 15, 25]
-                ]
-            }
-        });
-        this.daystatschart = c3.generate({
-            bindto: '#daystatschart',
-            data: {
-                type: 'pie',
-                columns: [
-                    ['needs', 3],
-                    ['answered needs', 5],
-                    ['roams', 1]
-                ]
-            },
-            pie: {
-                label: {
-                    format: (value, ratio, id) => {
-                        return d3.format('')(value);// + ' / ' + ratio + '%'; // d3.format('')(value);
+                columns: [],
+                type: 'pie'
+                },
+                tooltip: {
+                    format: {
+                        value: function (value, ratio, id, index) { return value; }
                     }
                 }
             }
-        });
+            );
+
+        this.c3historychart = c3.generate({
+            bindto: '#historychart',
+            data: {
+                x: 'x',
+                columns: [
+                ['x', 0]
+                ],
+                type: 'line'
+                },
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        tick: {
+                            format: '%d/%m/%Y'
+                        }
+                    }
+                }
+            }
+            );
+
+        this.refresh();
+
     }
 
-    changetodaytype() {
-        this.todaytype = (this.todaytype === 'pie' ? 'bar' : 'pie');
-        this.daystatschart.transform(this.todaytype);
+    refresh() {
+        this.http.get(
+            'stats/',
+            {'order_by': 'ts'}
+            ).then(data => {
+                let results = data['results'];
+                let totalcolumns = [];
+                let historycolumns = [];
+                let translate = {'needs': 'needs', 'answeredneeds': 'answered needs', 'roams': 'roams', 'supplies': 'helps'};
+                if (results.length === 0) {
+                    totalcolumns = [
+                    ['needs', 0],
+                    ['answered needs', 0],
+                    ['roams', 0],
+                    ['helps', 0]
+                    ];
+                    historycolumns = [
+                    ['x', 0],
+                    ['needs', 0],
+                    ['answered needs', 0],
+                    ['roams', 0],
+                    ['helps', 0]
+                    ];
+                    } else {
+                        let _totalcolumns = {
+                            'needs': 0,
+                            'answered needs' : 0,
+                            'roams': 0,
+                            'helps': 0
+                        };
+                        let namedcolumns = Array();
+                        namedcolumns.push('x');
+                        results.forEach(stat => namedcolumns.push(stat.ts * 1000));
+                        historycolumns.push(namedcolumns);
+                        for(let name in translate) {
+                            let translation = translate[name];
+                            namedcolumns = [translation];
+                            results.forEach( stat => {
+                                let value = stat[name];
+                                namedcolumns.push(value);
+                                _totalcolumns[translation] += value;
+                                });
+                            historycolumns.push(namedcolumns);
+                        }
+                        ['roams', 'supplies'].forEach( key => {
+                            let value = _totalcolumns[translate[key]];
+                            this[key] = value;
+                            });
+                        ['needs', 'answered needs'].forEach(type => {
+                            totalcolumns.push([type, _totalcolumns[type]]);
+                            });
+                    }
+                    this.c3totalchart.load({
+                        'columns': totalcolumns
+                        });
+                    this.c3historychart.load({
+                        'columns': historycolumns
+                        });
+                    setTimeout(() => this.refresh(), 10000);
+                    return true;
+                }
+                );
+        }
     }
-
-    changealltype() {
-        this.alltype = (this.alltype === 'line' ? 'bar' : 'line');
-        this.allstatschart.transform(this.alltype);
-    }
-
-}

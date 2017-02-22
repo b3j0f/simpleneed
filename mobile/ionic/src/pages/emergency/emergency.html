@@ -5,10 +5,23 @@
 <ion-content padding>
 
 	<ion-list>
-		<ion-label>Emergency call</ion-label>
-		<button ion-button block color="danger" (click)="call()">
-			<ion-icon name="call"></ion-icon> 112
-		</button>
+		<ion-list-header>
+			<ion-icon name="warning"></ion-icon> In case of emergency, check...
+		</ion-list-header>
+		<ion-item>
+			1. Address location
+		</ion-item>
+		<ion-item>
+			2. Breath and conscious
+		</ion-item>
+		<ion-item>
+			3. Sex and age
+		</ion-item>
+		<ion-item>
+			4. <button ion-button color="danger" large (click)="call()">
+				<ion-icon name="call"></ion-icon> 112
+			</button>
+		</ion-item>
 	</ion-list>
 
 </ion-content>
