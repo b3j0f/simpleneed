@@ -8,7 +8,7 @@ all: migrations migrate fixtures
 
 .PHONY: migrations
 migrations:
-	python manage.py makemigrations marketing roles
+	python manage.py makemigrations simpleneed
 
 .PHONY: migrate
 migrate:
@@ -16,7 +16,7 @@ migrate:
 
 .PHONY: fixtures
 fixtures:
-	python manage.py needs
+	python manage.py loaddata needs
 
 .PHONY: superuser
 superuser:

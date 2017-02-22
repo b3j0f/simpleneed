@@ -86,7 +86,7 @@ def faqview(request):
 def aboutview(request):
     """About view."""
     context = basecontext(request, 'About', True)
-    return render(request, 'About.html', context=context)
+    return render(request, 'about.html', context=context)
 
 
 def mapview(request):
