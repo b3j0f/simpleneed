@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 import os
 
-from .private import SECRET_KEY, HOST, reCAPTCHA_SECRET_KEY
+from .local import SECRET_KEY, HOST, reCAPTCHA_SECRET_KEY
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(
