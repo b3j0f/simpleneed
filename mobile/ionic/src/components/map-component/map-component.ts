@@ -83,7 +83,8 @@ export class MapComponent {
 
     toFeatures(elts) {
         let result = {};
-        for(let elt of elts) {
+        for (let key in elts) {
+            let elt = elts[key];
             let feature = new ol.Feature({
                 geometry: new ol.geom.Point(
                     [elt.longitude, elt.latitude]
@@ -122,7 +123,7 @@ export class MapComponent {
             this.refresh();
             // TODO do something when several features are selected.
         } else {
-            let feature = this.features[0];
+            let feature = features[0];
             let elt = feature.get('elt');
             coordinates = coordinates || feature.getGeometry().getCoordinates();
             this.edit(elt, coordinates);
@@ -143,7 +144,7 @@ export class MapComponent {
         });
 
         let selectinteraction = new ol.interaction.Select({
-            style: function(feature) {
+            style: (feature) => {
                 return this.getStyle(feature);
             }
         });

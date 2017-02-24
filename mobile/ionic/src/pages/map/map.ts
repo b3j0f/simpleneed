@@ -59,7 +59,7 @@ export class MapPage {
             {
                 startts__lte: endts,
                 endts__gte: endts,
-                needs: this.needs,
+                needs__in: Object.keys(this.needs).join(),
                 longitude__gte: extent[0],
                 longitude__lte: extent[2],
                 latitude__lte: extent[3],
@@ -68,9 +68,20 @@ export class MapPage {
         ).then(data => {
             let result = data['results'];
             let elts = {};
+            let updateneeds = (elt) => {
+                let needs = [];
+                elt.needs.forEach((need) => {
+                    let splitted = need.split('/');
+                    needs.push(splitted[splitted.length - 2]);
+                });
+                elt.needs = needs;
+            }
             result.forEach((elt) => {
-                if (this.types[elt.type]) {
+                if (this.types[elt.type + 's']) {
                     elts[elt.id] = elt;
+                    elt.name = elt.schild.fields.name;
+                    elt.emergency = elt.schild.fields.emergency;
+                    updateneeds(elt);
                 }
             });
             callback(elts);
@@ -111,7 +122,7 @@ export class MapPage {
                 name: ''
             }
         } else {
-            item = elt.item;
+            item = elt;
         }
         this.navCtrl.push(
             CRUPPage,
@@ -128,18 +139,25 @@ export class MapPage {
             let need = item.needs[pos];
             item.needs[pos] = this.http.root + 'needs/' + need + '/';
         }
-        let method = (url, options) => item.id === undefined ? this.http.post(url, options) : this.http.put(url + item.id, options);
+        let method = (url, options) => item.id === undefined ? this.http.post(url, options) : this.http.put(url + item.id + '/', options);
         method(item.type + 's/', item
             ).then(
-            data => this.refresh()
+            (data) => this.refresh()
         ).catch(error => this.refresh());
     }
 
     delete(item) {
-        this.http.delete(item.type + 's/' + item.id).then(
-            data => this.refresh()
+        let data = {
+            endts: new Date().getTime() / 1000,
+            needs: [],
+            latitude: item.latitude,
+            longitude: item.longitude,
+            messages: item.messages
+        };
+        this.http.put(item.type + 's/' + item.id + '/', data).then(
+            (data) => this.refresh()
         ).catch(
-            data => this.refresh()
+            (data) => this.refresh()
         );
     }
 

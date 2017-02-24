@@ -30,6 +30,7 @@ export class CRUPPage {
     }
 
     delete() {
+        this.navCtrl.pop();
         this.delcallback(this.item);
     }
 

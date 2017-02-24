@@ -194,8 +194,13 @@ function del() {
 		},
 		data: JSON.stringify({
 			endts: new Date().getTime() / 1000,
-			needs: []
+			needs: [],
+			latitude: document.getElementById('latitude').value,
+			longitude: document.getElementById('longitude').value,
+			messages: []
 		}),
+		dataType: 'json',
+		contentType: 'application/json',
 		success: function(){
 			$('#load').modal('close');
 			$('#edit').modal('close');
