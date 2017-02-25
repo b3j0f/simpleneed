@@ -11,7 +11,7 @@ import { Http, Request, RequestMethod, RequestOptions, Response, Headers } from 
 @Injectable()
 export class HTTP {
 
-    root: string = 'http://localhost:8000/api/rest/v1/';
+    root: string = 'http://simpleneed.net:8080/api/rest/v1/';
 
     constructor(
         public http: Http,
@@ -79,11 +79,18 @@ export class HTTP {
                 this.http.request(new Request(requestoptions))
                     .map((res: Response) => { return res.json(); })
                     .subscribe(
-                        data => {
+                        (data) => {
                             loading.dismiss();
                             resolve(data)
                         },
-                        error => {
+                        (error) => {
+                            this.toastCtrl.create({
+                                message: error,
+                                duration: 3000,
+                                dismissOnPageChange: true,
+                                showCloseButton: true,
+                                position: 'middle'
+                            }).present();
                             loading.dismiss();
                             resolve(error);
                         }
