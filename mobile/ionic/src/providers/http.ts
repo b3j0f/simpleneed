@@ -86,7 +86,6 @@ export class HTTP {
                         (error) => {
                             this.toastCtrl.create({
                                 message: error,
-                                duration: 3000,
                                 dismissOnPageChange: true,
                                 showCloseButton: true,
                                 position: 'middle'

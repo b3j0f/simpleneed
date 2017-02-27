@@ -15,3 +15,5 @@ DATABASES = {
 }
 
 STATIC_ROOT = '/var/www/simpleneed/static/'
+
+HOST = 'https://simpleneed.net'

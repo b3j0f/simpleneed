@@ -197,7 +197,9 @@ function del() {
 			needs: [],
 			latitude: document.getElementById('latitude').value,
 			longitude: document.getElementById('longitude').value,
-			messages: []
+			messages: [],
+			name: document.getElementById('name').value,
+			needlocations: []
 		}),
 		dataType: 'json',
 		contentType: 'application/json',

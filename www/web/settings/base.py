@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 import os
 
-from .local import SECRET_KEY, HOST, reCAPTCHA_SECRET_KEY
+from .local import SECRET_KEY, reCAPTCHA_SECRET_KEY
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(
@@ -57,10 +57,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'web.urls'
 
-HOST = HOST
-
-API_PATH = 'api/rest/v1'
-API = '{0}/{1}'.format(HOST, API_PATH)
+API = 'api/rest/v1'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True

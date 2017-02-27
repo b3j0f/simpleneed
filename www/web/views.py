@@ -10,6 +10,14 @@ from simpleneed.models import Roam, NeedLocation, Stats, SupplyLocation
 from time import time
 
 
+def getapi():
+    """Get API PATH.
+
+    :rtype: str
+    """
+    return '{0}/{1}'.format(settings.HOST, settings.API)
+
+
 def roamsview(request):
     """Roam view."""
     context = basecontext(request, 'roams')
@@ -64,7 +72,7 @@ def basecontext(request, page='home', tableofcontents=False):
         'page': page,
         'tableofcontents': tableofcontents,
         'next': request.GET.get('next', page),
-        'host': settings.HOST, 'api': settings.API
+        'host': settings.HOST, 'api': getapi()
     }
 
     return result

@@ -21,14 +21,14 @@ from .views import (
     homeview, mapview, statsview, roamsview, needlocationsview, aboutview,
     faqview, supplylocationsview
 )
-
+print(settings.API)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(
         r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')
     ),
-    url(r'^{0}/'.format(settings.API_PATH), include('simpleneed.urls')),
+    url(r'^{0}/'.format(settings.API), include('simpleneed.urls')),
     url(r'^home', homeview),
     url(r'^map', mapview),
     url(r'^needlocations', needlocationsview),
