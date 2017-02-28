@@ -46,16 +46,16 @@
 	<ion-segment *ngIf="! item.id" [(ngModel)]="item.type">
 		<ion-segment-button value="needlocation">
 			need
-			<ion-icon name="pin"></ion-icon>
-		</ion-segment-button>
-		<ion-segment-button value="supplylocation">
-			<label>help
-				<ion-icon name="help_boay"></ion-icon>
-			</label>
+			<ion-icon name="notifications-outline" color="secondary"></ion-icon>
 		</ion-segment-button>
 		<ion-segment-button value="roam">
 			<label>roam
-				<ion-icon name="contacts"></ion-icon>
+				<ion-icon name="walk"></ion-icon>
+			</label>
+		</ion-segment-button>
+		<ion-segment-button value="supplylocation">
+			<label>help
+				<ion-icon name="person-add"></ion-icon>
 			</label>
 		</ion-segment-button>
 	</ion-segment>

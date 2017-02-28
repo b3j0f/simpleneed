@@ -9,6 +9,7 @@
 		<h1 class="header">
 			Comment agir spontanément pour ceux qui sont dans le besoin ?
 		</h1>
+		<i class="material-icons large">arrow_drop_down</i>
 	</div>
 </div>
 
@@ -20,7 +21,7 @@
 					<div class="center">
 						<i class="material-icons large">healing</i>
 						<p class="grey-text text-darken-3 lighten-3 center">
-							Vous êtes en galère mais vous ne savez pas où trouver de l'aide ?
+							Vous êtes en galère et vous ne savez pas où trouver de l'aide ?
 						</p>
 					</div>
 				</div>
@@ -30,7 +31,7 @@
 					<div class="center">
 						<i class="material-icons large">help</i>
 						<p class="grey-text text-darken-3 lighten-3 center">
-							Vous avez envie d'aider votre prochain mais vous ne savez pas où et comment le faire, ou bien vous n'osez pas le faire seul(e) ?
+							Vous avez envie d'aider votre prochain et vous ne savez pas où et comment le faire, ou bien vous n'osez pas le faire seul(e) ?
 						</p>
 					</div>
 				</div>
@@ -91,14 +92,19 @@
 			<ul id="solution3">
 				<li style="opacity: 0">
 					<div class="col l4 s12">
-						<div class="card hoverable">
-							<div class="card-content">
-								<span class="card-title grey-text text-darken-4">
-									Je veux aider sans me déplacer
-								</span>
-								<p>
-									J'indique l'endroit où j'ai des ressources à donner pour dépanner.
-								</p>
+						<div class="card hoverable horizontal">
+							<div class="card-image">
+								<imge src="{% static 'img/0sdf.png' %}" />
+							</div>
+							<div class="card-stacked">
+								<div class="card-content">
+									<span class="card-title grey-text text-darken-4">
+										Je veux aider sans me déplacer
+									</span>
+									<p>
+										J'indique l'endroit où j'ai des ressources à donner pour dépanner, et/ou j'affiche <a onclick="print0SDF()" class="btn">le flyer 0sdf</a> sur ma façade.
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -114,7 +120,6 @@
 	<h2>À vous de jouer !</h2>
 	{% include 'map-include.html' %}
 </div>
-
 
 <script type="text/javascript" charset="utf-8" async defer>
 	var options = [

@@ -1,7 +1,7 @@
 
 {% load static %}
 
-<div class="">
+<div class="section">
 
 	<div class="center">
 		<button class="btn btn-block waves-effect waves-light" onclick="geoloc()"><i class="material-icons left">location_searching</i>Me localiser</button>
@@ -102,10 +102,12 @@
 					</select>
 					<label>Besoins</label>
 				</div>
-				<div class="input-field needlocation supplylocation roam col 12">
-					<i class="material-icons prefix">assignment</i>
-					<textarea id="description" class="materialize-textarea active"></textarea>
-					<label for="description" class="active">Description</label>
+				<div class="row">
+					<div class="input-field needlocation supplylocation roam col 12">
+						<i class="material-icons prefix">assignment</i>
+						<textarea id="description" class="materialize-textarea"></textarea>
+						<label for="description">Description</label>
+					</div>
 				</div>
 				<div class="needlocation col s12">
 					<p>
@@ -113,21 +115,35 @@
 						<label for="emergency">Urgent</label>
 					</p>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<input type="hidden" name="id" id="id" class="update" />
-				<input type="hidden" name="longitude" id="longitude" />
-				<input type="hidden" name="latitude" id="latitude" />
-				<button type="submit" id="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
-				<a href="#" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
-			</div>
-		</form>
+				<div class="supplylocation col s12">
+					<a onclick="print0SDF()">
+						<div class="card horizontal">
+							<div class="card-image">
+								<img src="{% static 'img/0sdf.png' %}" />
+							</div>
+							<div class="card-content">
+								<span class="card-title">
+									Imprimer ce flyer</span>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="hidden" name="id" id="id" class="update" />
+					<input type="hidden" name="longitude" id="longitude" />
+					<input type="hidden" name="latitude" id="latitude" />
+					<button type="submit" id="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
+					<a href="" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
+				</div>
+			</form>
+		</div>
+
 	</div>
 
-</div>
+	<script type="text/javascript" charset="utf-8">
 
-<script type="text/javascript" charset="utf-8">
+		{% include 'map.js' %}
 
-	{% include 'map.js' %}
+	</script>
 
-</script>

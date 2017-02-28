@@ -11,7 +11,7 @@ import { Http, Request, RequestMethod, RequestOptions, Response, Headers } from 
 @Injectable()
 export class HTTP {
 
-    root: string = 'http://simpleneed.net:8080/api/rest/v1/';
+    root: string = 'https://simpleneed.net/api/rest/v1/';
 
     constructor(
         public http: Http,

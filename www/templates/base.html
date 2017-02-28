@@ -79,6 +79,15 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
         })();
 
+        function print0SDF() {
+            var pdocument = window.open();
+            pdocument.document.write('<img src="{% static 'img/0sdf.png' %}"/>');
+            pdocument.document.close();
+            pdocument.focus();
+            pdocument.print();
+            pdocument.close();
+        }
+
         $( document ).ready(function(){
             $('.dropdown-button').dropdown({
                 constrain_width: false

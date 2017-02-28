@@ -248,7 +248,8 @@ function edit(elt, coordinate) {
 		$('.new').show();
 		$('#type').attr('disabled', false);
 		onchangetype('needlocation');
-		document.getElementById('description').innerText = '';
+		$('#description').val('');
+		$('#description').trigger('autoresize');
 		document.getElementById('emergency').removeAttribute('checked');
 		document.getElementById('name').removeAttribute('text');
 		document.getElementById('id').removeAttribute('value');
@@ -276,7 +277,8 @@ function edit(elt, coordinate) {
 			'roam': 'Maraude',
 			'supplylocation': 'Lieu d\'aide'
 		};
-		document.getElementById('description').innerText = elt.description;
+		$('#description').val(elt.description);
+		$('#description').trigger('autoresize');
 		if (elt.emergency) {
 			document.getElementById('emergency').setAttribute('checked', true);
 		} else {
