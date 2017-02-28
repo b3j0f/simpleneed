@@ -2,7 +2,10 @@
 
 # Presentation and demonstration
 
-Here are a short [presentation](https://prezi.com/embed/tpwlvyeo_ifc/?bgcolor=ffffff&lock_to_path=1) and [Demonstration](http://simpleneed.net:8100)
+Here are 
+- a short [presentation](https://prezi.com/embed/tpwlvyeo_ifc/?bgcolor=ffffff&lock_to_path=1)
+- a [desktop demonstration](http://simpleneed.net:8080/)
+- a [mobile demonstration](http://simpleneed.net:8100/ionic-lab)
 
 <iframe id="iframe_container" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" width="550" height="400" src="https://prezi.com/embed/tpwlvyeo_ifc/?bgcolor=ffffff&amp;lock_to_path=1&amp;autoplay=0&amp;autohide_ctrls=0&amp;landing_data=bHVZZmNaNDBIWnNjdEVENDRhZDFNZGNIUE43MHdLNWpsdFJLb2ZHanI0ejFkVzR4MnZvdHVidTlSWEVxaVdlUVFnPT0&amp;landing_sign=oBYVmxxdV9LyeKc6TaoqKBOlQPs1KKfxltrpTSXwULM"></iframe>
 
