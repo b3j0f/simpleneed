@@ -103,7 +103,7 @@
 					<label>Besoins</label>
 				</div>
 				<div class="row">
-					<div class="input-field needlocation supplylocation roam col 12">
+					<div class="input-field needlocation supplylocation roam col s12">
 						<i class="material-icons prefix">assignment</i>
 						<textarea id="description" class="materialize-textarea"></textarea>
 						<label for="description">Description</label>
@@ -116,34 +116,26 @@
 					</p>
 				</div>
 				<div class="supplylocation col s12">
-					<a onclick="print0SDF()">
-						<div class="card horizontal">
-							<div class="card-image">
-								<img src="{% static 'img/0sdf.png' %}" />
-							</div>
-							<div class="card-content">
-								<span class="card-title">
-									Imprimer ce flyer</span>
-								</div>
-							</div>
-						</a>
-					</div>
+					<a onclick="print0SDF()" class="btn btn-block">
+						Imprimer le flyer
+					</a>
 				</div>
-				<div class="modal-footer">
-					<input type="hidden" name="id" id="id" class="update" />
-					<input type="hidden" name="longitude" id="longitude" />
-					<input type="hidden" name="latitude" id="latitude" />
-					<button type="submit" id="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
-					<a href="" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
-				</div>
-			</form>
-		</div>
-
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" name="id" id="id" class="update" />
+				<input type="hidden" name="longitude" id="longitude" />
+				<input type="hidden" name="latitude" id="latitude" />
+				<button type="submit" id="submit" class="modal-action waves-effect waves-green btn-flat">Valider</button>
+				<a href="" id="delete" onclick="del()" class="update waves-effect waves-green btn-flat">Supprimer</a>
+			</div>
+		</form>
 	</div>
 
-	<script type="text/javascript" charset="utf-8">
+</div>
 
-		{% include 'map.js' %}
+<script type="text/javascript" charset="utf-8">
 
-	</script>
+	{% include 'map.js' %}
+
+</script>
 

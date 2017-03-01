@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { NavController } from 'ionic-angular';
+import { NavController, ToastController } from 'ionic-angular';
 
 import {CallNumber} from 'ionic-native';
 
@@ -10,14 +10,14 @@ import {CallNumber} from 'ionic-native';
 })
 export class EmergencyPage {
 
-    constructor(public navCtrl: NavController) {
+    constructor(public navCtrl: NavController, public ctl: ToastController) {
 
     }
 
     call() {
         CallNumber.callNumber('112', true)
             .then(() => console.log('Launched dialer!'))
-            .catch(() => console.error('Error launching dialer'));
+            .catch((error) => console.error('Error launching dialer: ' + error));
     }
 
 }

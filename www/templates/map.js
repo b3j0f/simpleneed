@@ -250,6 +250,7 @@ function edit(elt, coordinate) {
 		onchangetype('needlocation');
 		$('#description').val('');
 		$('#description').trigger('autoresize');
+		$('#name').val('');
 		document.getElementById('emergency').removeAttribute('checked');
 		document.getElementById('name').removeAttribute('text');
 		document.getElementById('id').removeAttribute('value');
@@ -500,10 +501,11 @@ selectinteraction.on('select', function (evt) {
 	evt.selected.forEach(function (selected) {
 		var features = selected.get('features');
 		if (features.length > 1) {
-			map.getView().setCenter(selected.getGeometry().getCoordinates());
-			map.getView().setZoom(map.getView().getZoom() + 1);
+			/*map.getView().setCenter(selected.getGeometry().getCoordinates());
+			map.getView().setZoom(map.getView().getZoom() + 1);*/
+		} else {
+			interact(features);
 		}
-		interact(features);
 	});
 });
 

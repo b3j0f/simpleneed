@@ -55,7 +55,7 @@
 
 <div class="section scrollspy center" id="solution" name="Solution">
 	<h2 class="header">La solution en trois fonctionnalités et deux clics</h2>
-	<a href="/map">
+	<a href="#mapsection">
 		<div class="row center">
 			<ul id="solution1">
 				<li style="opacity: 0">
@@ -65,8 +65,11 @@
 								<span class="card-title grey-text text-darken-4">
 									Je suis ou je rencontre quelqu'un en galère
 								</span>
+								<br/>
 								<p>
+									<br/>
 									Je clique sur la carte l'endroit où il y a une galère, puis je sélectionne les besoins (nourriture, logement, soins, etc.).
+
 								</p>
 							</div>
 						</div>
@@ -82,6 +85,7 @@
 									J'ai envie d'aider seul ou en groupe
 								</span>
 								<p>
+									<br/>
 									Je cherche ou j'indique les endroits où il y a besoin d'aide. Seul ou en rejoignant une maraude.
 								</p>
 							</div>
@@ -102,11 +106,28 @@
 										Je veux aider sans me déplacer
 									</span>
 									<p>
-										J'indique l'endroit où j'ai des ressources à donner pour dépanner, et/ou j'affiche <a onclick="print0SDF()" class="btn">le flyer 0sdf</a> sur ma façade.
+										J'indique l'endroit où j'ai des ressources à donner pour dépanner sur la carte ou à l'aide du <span class="teal-texts"><b><i>FLYER OSDF</b></i></span> que j'affiche sur ma façade.
 									</p>
 								</div>
 							</div>
 						</div>
+					</div>
+				</li>
+			</ul>
+			<ul id="flyer">
+				<li style="opacity: 0">
+					<div class="col offset-l4 l4 s12">
+						<a onclick="print0SDF()" class="btn">
+						Imprimer le flyer 0SDF
+						</a>
+						<!--a onclick="print0SDF">
+							<div class="card">
+								<div class="card-image">
+									<img src="{% static 'img/0sdf.png' %}" />
+									<span class="card-title black-text">Télécharger le flyer</span>
+								</div>
+							</div>
+						</a-->
 					</div>
 				</li>
 			</ul>
@@ -149,6 +170,12 @@
 	},
 	{
 		selector: '#solution3', offset: 100,
+		callback: function(elt) {
+			Materialize.showStaggeredList($(elt));
+		}
+	},
+	{
+		selector: '#flyer', offset: 100,
 		callback: function(elt) {
 			Materialize.showStaggeredList($(elt));
 		}
