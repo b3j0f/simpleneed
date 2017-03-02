@@ -152,10 +152,11 @@ export class MapComponent {
             evt.selected.forEach((selected) => {
                 let features = selected.get('features');
                 if (features.length > 1) {
-                    this.map.getView().setCenter(selected.getGeometry().getCoordinates());
-                    this.map.getView().setZoom(this.map.getView().getZoom() + 1);
+                    //this.map.getView().setCenter(selected.getGeometry().getCoordinates());
+                    //this.map.getView().setZoom(this.map.getView().getZoom() + 1);
                 }
                 this.interact(features);
+                evt.preventDefault();
             });
         });
 

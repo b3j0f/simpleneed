@@ -60,12 +60,16 @@ export class MapPage {
 
     getLocatedElements(extent, callback) {
         let endts = new Date().getTime() / 1000;
+        let filter_needs = [];
+        Object.keys(this.needs).forEach(
+            (need) => (this.needs[need] && filter_needs.push(need))
+        );
         this.http.get(
             'locatedelements/',
             {
                 startts__lte: endts,
                 endts__gte: endts,
-                needs__in: Object.keys(this.needs).join(),
+                needs__in: filter_needs.join(),
                 longitude__gte: extent[0],
                 longitude__lte: extent[2],
                 latitude__lte: extent[3],
@@ -158,7 +162,9 @@ export class MapPage {
             needs: [],
             latitude: item.latitude,
             longitude: item.longitude,
-            messages: item.messages
+            messages: item.messages || [],
+            name: item.name,
+            needlocations: item.needlocations || []
         };
         this.http.put(item.type + 's/' + item.id + '/', data).then(
             (data) => this.refresh()

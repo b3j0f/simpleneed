@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { NavController } from 'ionic-angular';
 
 import ol from 'openlayers';
 
@@ -26,7 +27,9 @@ export class MapComponent {
     edit: any;  // edition function.
     getelts: any;  // get elements function
 
-    constructor(public storage: Storage) {
+    elt: any; // current editing element
+
+    constructor(public storage: Storage, public navCtrl: NavController) {
     }
 
     getClusterStyle(size) {
@@ -150,11 +153,9 @@ export class MapComponent {
         });
         selectinteraction.on('select', (evt) => {
             evt.selected.forEach((selected) => {
-                let features = selected.get('features');
-                if (features.length == 1) {
+                if (this.navCtrl.getActive().component.name !== 'CRUPPage') {
+                    let features = selected.get('features');
                     this.interact(features);
-                    //this.map.getView().setCenter(selected.getGeometry().getCoordinates());
-                    //this.map.getView().setZoom(this.map.getView().getZoom() + 1);
                 }
             });
         });
@@ -198,12 +199,8 @@ export class MapComponent {
                 });
                 this.map.on('moveend', () => this.refresh());
                 this.map.on('singleclick', (evt, layer) => {
-                    let feature = this.map.forEachFeatureAtPixel(
-                        evt.pixel,
-                        function(feature) { return feature; }
-                        );
-                    if (feature === undefined) {
-                        this.edit(feature, evt.coordinate);
+                    if (this.navCtrl.getActive().component.name !== 'CRUPPage') {
+                        this.edit(undefined, evt.coordinate);
                     }
                 });
                 this.recrefresh();
