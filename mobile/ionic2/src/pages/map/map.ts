@@ -7,6 +7,8 @@ import { CRUPPage } from '../crup/crup';
 import { Geolocation, /*Shake*/ } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 
+import { LegendPage } from '../legend/legend';
+
 @Component({
     selector: 'page-map',
     templateUrl: 'map.html',
@@ -53,7 +55,7 @@ export class MapPage {
     }
 
     showLegend() {
-        //this.navCtrl.push();
+        this.navCtrl.push(LegendPage);
     }
 
     getLocatedElements(extent, callback) {

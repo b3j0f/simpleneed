@@ -15,6 +15,7 @@ import { HTTP } from '../providers/http';
 import { Storage } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { LegendPage } from '../pages/legend/legend'
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { BrowserModule } from '@angular/platform-browser';
     EmergencyPage,
     CRUPPage,
     NavBarComponent,
+    LegendPage
   ],
   imports: [
     IonicModule.forRoot(MyApp), HttpModule, BrowserModule
@@ -45,7 +47,8 @@ import { BrowserModule } from '@angular/platform-browser';
     StatsPage,
     EmergencyPage,
     CRUPPage,
-    NavBarComponent
+    NavBarComponent,
+    LegendPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
