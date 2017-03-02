@@ -119,7 +119,7 @@
 			<ion-item *ngSwitchCase="'needlocation'">
 				<ion-icon item-left name="warning" (click)="item.emergency=!item.emergency"></ion-icon>
 				<ion-label (click)="item.emergency=!item.emergency">Emergency</ion-label>
-				<ion-toggle [checked]="item.emergency" (click)="item.emergency=!item.emergency" color="danger"></ion-toggle>
+				<ion-toggle [(ngModel)]="item.emergency" color="danger"></ion-toggle>
 			</ion-item>
 			<ion-item>
 				<ion-icon name="quote" item-left large></ion-icon>

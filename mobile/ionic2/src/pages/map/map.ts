@@ -68,7 +68,7 @@ export class MapPage {
                 longitude__lte: extent[2],
                 latitude__lte: extent[3],
                 latitude__gte: extent[1],
-            }, undefined, true
+            }, undefined, false
         ).then(data => {
             let result = data['results'];
             let elts = {};

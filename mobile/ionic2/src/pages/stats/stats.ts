@@ -66,7 +66,9 @@ export class StatsPage {
     refresh() {
         this.http.get(
             'stats/',
-            {'order_by': 'ts'}
+            {'order_by': 'ts'},
+            undefined,
+            false
             ).then(data => {
                 let results = data['results'];
                 let totalcolumns = [];
