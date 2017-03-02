@@ -1,0 +1,64 @@
+<ion-header>
+	<navbar-component></navbar-component>
+</ion-header>
+
+<ion-content>
+	<ion-fab top right>
+		<button ion-fab>
+			<ion-icon name="search"></ion-icon>
+		</button>
+		<ion-fab-list side="left">
+			<button ion-fab icon-only (click)="searchLE('supplylocations')" [color]="getLEColor('supplylocations')">
+				<!--ion-icon name="pin"></ion-icon-->
+				<ion-icon name="person-add"></ion-icon>
+			</button>
+			<button ion-fab icon-only (click)="searchLE('roams')" [color]="getLEColor('roams')">
+				<ion-icon name="walk"></ion-icon>
+			</button>
+			<button ion-fab icon-only (click)="searchLE('needlocations')" [color]="getLEColor('needlocations')">
+				<!--ion-icon name="pin"></ion-icon-->
+				<ion-icon name="notifications-outline"></ion-icon>
+			</button>
+		</ion-fab-list>
+		<ion-fab-list side="bottom">
+			<button ion-fab (click)="searchNeed('food')" [color]="getNeedColor('food')" icon-only>
+				<ion-icon name="pizza"></ion-icon>
+			</button>
+			<button ion-fab (click)="searchNeed('money')" [color]="getNeedColor('money')" icon-only>
+				<ion-icon name="cash"></ion-icon>
+			</button>
+			<button ion-fab (click)="searchNeed('clothes')" [color]="getNeedColor('clothes')" icon-only>
+				<ion-icon name="shirt"></ion-icon>
+			</button>
+			<button ion-fab (click)="searchNeed('hygiene')" [color]="getNeedColor('hygiene')" icon-only>
+				<ion-icon name="cube"></ion-icon>
+			</button>
+			<button ion-fab (click)="searchNeed('accomodation')" icon-only [color]="getNeedColor('accomodation')">
+				<ion-icon name="home"></ion-icon>
+			</button>
+			<button ion-fab (click)="searchNeed('company')" icon-only [color]="getNeedColor('company')">
+				<ion-icon name="contacts"></ion-icon>
+			</button>
+			<button ion-fab (click)="searchNeed('health')" icon-only [color]="getNeedColor('health')">
+				<ion-icon name="medkit"></ion-icon>
+			</button>
+		</ion-fab-list>
+	</ion-fab>
+	<ion-fab bottom left>
+		<button ion-fab>
+			<ion-icon name="apps"></ion-icon>
+		</button>
+		<ion-fab-list side="top">
+			<button ion-fab icon-only (click)="showLegend()" color="primary">
+				<ion-icon name="information"></ion-icon>
+			</button>
+			<button ion-fab icon-only (click)="findLocation()" color="primary">
+				<ion-icon name="locate"></ion-icon>
+			</button>
+			<button ion-fab icon-only (click)="refresh()" color="primary" large big>
+				<ion-icon name="refresh"></ion-icon>
+			</button>
+		</ion-fab-list>
+	</ion-fab>
+	<map-component #map></map-component>
+</ion-content>

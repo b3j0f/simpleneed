@@ -1,0 +1,131 @@
+<ion-header>
+	<navbar-component #navbar ></navbar-component>
+</ion-header>
+
+<ion-content id="crup" #crup class="crup">
+	<ion-fab bottom right>
+		<button ion-fab icon-only (click)="save()" color="secondary" [disabled]="!modified()">
+			<ion-icon name="checkmark" large></ion-icon>
+		</button>
+	</ion-fab>
+	<ion-fab bottom center *ngIf="item.id">
+		<button ion-fab icon-only (click)="delete()" color="danger">
+			<ion-icon name="trash" large></ion-icon>
+		</button>
+	</ion-fab>
+	<ion-fab bottom left #sharefab>
+		<button ion-fab>
+			<ion-icon name="md-share"></ion-icon>
+		</button>
+		<ion-fab-list side="top">
+			<button ion-fab (click)="share('facebook')">
+				<ion-icon name="logo-facebook"></ion-icon>
+			</button>
+			<button ion-fab (click)="share('twitter')">
+				<ion-icon name="logo-twitter"></ion-icon>
+			</button>
+			<button ion-fab (click)="share('instagram')">
+				<ion-icon name="logo-instagram"></ion-icon>
+			</button>
+			<button ion-fab (click)="share('whatsapp')">
+				<ion-icon name="logo-whatsapp"></ion-icon>
+			</button>
+			<button ion-fab (click)="share('googleplus')">
+				<ion-icon name="logo-googleplus"></ion-icon>
+			</button>
+			<button ion-fab (click)="share('mail')">
+				<ion-icon name="mail"></ion-icon>
+			</button>
+		</ion-fab-list>
+		<ion-fab-list side="right">
+			<button ion-fab icon-only (click)="copy()">
+				<ion-icon name="copy" large></ion-icon>
+			</button>
+		</ion-fab-list>
+	</ion-fab>
+	<ion-segment *ngIf="! item.id" [(ngModel)]="item.type">
+		<ion-segment-button value="needlocation">
+			need
+			<ion-icon name="notifications-outline"></ion-icon>
+		</ion-segment-button>
+		<ion-segment-button value="roam">
+			<label>roam
+				<ion-icon name="walk"></ion-icon>
+			</label>
+		</ion-segment-button>
+		<ion-segment-button value="supplylocation">
+			<label>help
+				<ion-icon name="person-add"></ion-icon>
+			</label>
+		</ion-segment-button>
+	</ion-segment>
+	<div [ngSwitch]="item.type">
+		<ion-list>
+
+			<ion-list-header *ngIf="item.id">
+				{{ item.type }}
+			</ion-list-header>
+
+			<ion-item *ngSwitchCase="'roam'">
+				<ion-icon name="clipboard" item-left large></ion-icon>
+				<ion-label floating>Name</ion-label>
+				<ion-input [(ngModel)]="item.name" type="search"></ion-input>
+			</ion-item>
+			<ion-item>
+				<ion-label>
+					<button ion-button round [color]="getColor('food')" icon-right block small (click)="clickNeed('food')">
+						food
+						<ion-icon name="pizza"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="getColor('money')" icon-right block round small (click)="clickNeed('money')">money
+						<ion-icon name="cash"></ion-icon>
+					</button>
+				</ion-label>
+			</ion-item>
+			<ion-item>
+				<ion-label>
+					<button ion-button [color]="getColor('clothes')" round icon-right block small (click)="clickNeed('clothes')">
+						clothes
+						<ion-icon name="shirt"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="getColor('company')" round icon-right block small (click)="clickNeed('company')">
+						company
+						<ion-icon name="contacts"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="getColor('hygiene')" round icon-right block small (click)="clickNeed('hygiene')">hygiene
+						<ion-icon name="cube"></ion-icon>
+					</button>
+				</ion-label>
+			</ion-item>
+			<ion-item>
+				<ion-label>
+					<button ion-button [color]="getColor('accomodation')" round icon-right block small (click)="clickNeed('accomodation')">
+						home
+						<ion-icon name="home"></ion-icon>
+					</button>
+				</ion-label>
+				<ion-label>
+					<button ion-button [color]="getColor('health')" round icon-right block small (click)="clickNeed('health')">health
+						<ion-icon name="medkit"></ion-icon>
+					</button>
+				</ion-label>
+			</ion-item>
+			<ion-item *ngSwitchCase="'needlocation'">
+				<ion-icon item-left name="warning" (click)="item.emergency=!item.emergency"></ion-icon>
+				<ion-label (click)="item.emergency=!item.emergency">Emergency</ion-label>
+				<ion-toggle [checked]="item.emergency" (click)="item.emergency=!item.emergency" color="danger"></ion-toggle>
+			</ion-item>
+			<ion-item>
+				<ion-icon name="quote" item-left large></ion-icon>
+				<ion-label floating>Description</ion-label>
+				<ion-textarea [(ngModel)]="item.description"></ion-textarea>
+			</ion-item>
+		</ion-list>
+	</div>
+</ion-content>

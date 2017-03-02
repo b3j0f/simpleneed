@@ -1,0 +1,34 @@
+<ion-header>
+	<navbar-component></navbar-component>
+</ion-header>
+
+<ion-content>
+	<ion-list>
+		<ion-list-header>
+			<ion-icon name="albums" isActive="false"></ion-icon>
+			Total
+		</ion-list-header>
+		<ion-item>
+			<ion-grid>
+				<ion-row>
+					<ion-col width-50>
+						Roams: {{ roams }}
+					</ion-col>
+					<ion-col width-50>
+						Supplies: {{ supplies }}
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</ion-item>
+		<ion-item>
+			<div id="totalchart" #totalchart></div>
+		</ion-item>
+		<ion-list-header>
+			<ion-icon name="clock" isActive="false"></ion-icon>
+			History
+		</ion-list-header>
+		<ion-item>
+			<div id="historychart" #historychart></div>
+		</ion-item>
+	</ion-list>
+</ion-content>

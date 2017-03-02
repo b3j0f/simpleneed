@@ -1,0 +1,30 @@
+<ion-header>
+	<navbar-component #navbar ></navbar-component>
+</ion-header>
+
+<ion-content padding>
+
+	<ion-list>
+		<ion-list-header>
+			<ion-icon name="warning"></ion-icon> In case of emergency, check...
+		</ion-list-header>
+		<ion-item>
+			1. Address location
+		</ion-item>
+		<ion-item>
+			2. Breath and conscious
+		</ion-item>
+		<ion-item>
+			3. Sex and age
+		</ion-item>
+		<ion-item>
+			<button ion-button block color="danger" large (click)="call()">
+				<ion-icon name="call"></ion-icon> 112
+			</button>
+		</ion-item>
+		<ion-item>
+			<a href="http://www.brotmanmedicalcenter.com/images/services/firstaidbrochure.pdf">First helps</a>
+		</ion-item>
+	</ion-list>
+
+</ion-content>
