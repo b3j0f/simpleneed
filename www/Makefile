@@ -44,7 +44,7 @@ install_deps:
 
 .PHONY: clean
 clean:
-	rm -rf static/*
+	rm -rf www/*
 	python manage.py dump > dump
 	python manage.py flush
 	rm db.sql3
