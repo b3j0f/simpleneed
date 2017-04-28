@@ -593,7 +593,15 @@ function setAddress(address) {
 			console.log(data);
 			if (data.length > 0) {
 				var item = data[0];
+				var boundingbox = [
+					item.boundingbox[2],
+					item.boundingbox[0],
+					item.boundingbox[3],
+					item.boundingbox[1]
+				];
+				var size = ol.extent.getSize(boundingbox);
 				setCenter(item.lon, item.lat);
+				//map.setSize(size);
 				refresh();
 				var names = [];
 				data.forEach(function(item) {
