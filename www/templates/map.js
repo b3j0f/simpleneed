@@ -19,7 +19,7 @@ var translate = {
 
 function getCookie(name, def) {
 	var result = $.cookie(name);
-	if (result === undefined) {
+	if (result === undefined || isNaN(result[0])) {
 		result = def;
 	} else {
 		result = result.split(',');
@@ -570,7 +570,7 @@ map.on('singleclick', function(evt, layer) {
 
 function setCenter(longitude, latitude) {
 	console.log(longitude, latitude);
-	map.getView().setCenter([longitude, latitude]);
+	map.getView().setCenter([parseFloat(longitude), parseFloat(latitude)]);
 }
 
 function recrefresh() {
@@ -578,3 +578,41 @@ function recrefresh() {
 	setTimeout(recrefresh, 30000);
 }
 setTimeout(recrefresh, 30000);
+
+function setAddress(address) {
+	$('#load').modal('open');
+	$.ajax({
+		method: 'GET',
+		url: 'http://nominatim.openstreetmap.org/search/',
+		data: {
+			format: 'json',
+			q: address
+		},
+		success: function(data) {
+			$('#load').modal('close');
+			console.log(data);
+			if (data.length > 0) {
+				var item = data[0];
+				setCenter(item.lon, item.lat);
+				refresh();
+				var names = [];
+				data.forEach(function(item) {
+					names.push(item.display_name);
+				});
+				var msg = names.length + ' adresse(s) trouvée(s) : <br/>' + names.join(',<br/>');
+				var $toastContent = $('<p class="green-text">'+msg+'</p>');
+			} else {
+				var msg = 'Aucun adresse trouvée';
+				var $toastContent = $('<p class="red-text">'+msg+'</p>');
+			}
+			Materialize.toast($toastContent, 5000);
+		},
+		error: function(error) {
+			$('#load').modal('close');
+			console.log(error);
+			var msg = 'erreur : ' + error.responseText;
+			var $toastContent = $('<p class="red-text">'+msg+'</p>');
+			Materialize.toast($toastContent, 5000);
+		}
+	}, );
+}
