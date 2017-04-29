@@ -17,6 +17,11 @@ var translate = {
 	supplylocation: 'propose mon aide'
 };
 
+var address = $.cookie('address');
+if (address) {
+	$('#address').val(address);
+}
+
 function getCookie(name, def) {
 	var result = $.cookie(name);
 	if (result === undefined || isNaN(result[0])) {
@@ -371,6 +376,7 @@ function refresh() {
 	var extent = map.getView().calculateExtent(map.getSize());
 	var bottomLeft = [extent[0], extent[1]];
 	var topRight = [extent[2], extent[3]];
+	$.cookie('address', $('#address').val());
 	$.cookie('zoom', map.getView().getZoom());
 	$.cookie('center', map.getView().getCenter());
 	var endts = new Date().getTime() / 1000;
@@ -562,6 +568,8 @@ var map = new ol.Map({
 
 function onMoveEnd(evt) {
 	refresh();
+	var center = map.getView().getCenter();
+	updateAddress(center[0], center[1]);
 }
 
 map.on('moveend', onMoveEnd);
@@ -576,9 +584,7 @@ map.on('singleclick', function(evt, layer) {
 	}
 });
 
-function setCenter(longitude, latitude) {
-	console.log(longitude, latitude);
-	map.getView().setCenter([parseFloat(longitude), parseFloat(latitude)]);
+function updateAddress(longitude, latitude) {
 	$.ajax({
 		method: 'GET',
 		url: 'http://nominatim.openstreetmap.org/reverse',
@@ -592,7 +598,13 @@ function setCenter(longitude, latitude) {
 				$('#address').val(data.display_name);
 			}
 		}
-	})
+	});
+}
+
+function setCenter(longitude, latitude) {
+	console.log(longitude, latitude);
+	map.getView().setCenter([parseFloat(longitude), parseFloat(latitude)]);
+	updateAddress(longitude, latitude);
 }
 
 function recrefresh() {
@@ -616,10 +628,10 @@ function setAddress(address) {
 			if (data.length > 0) {
 				var item = data[0];
 				var boundingbox = [
-					item.boundingbox[2],
-					item.boundingbox[0],
-					item.boundingbox[3],
-					item.boundingbox[1]
+				item.boundingbox[2],
+				item.boundingbox[0],
+				item.boundingbox[3],
+				item.boundingbox[1]
 				];
 				var size = ol.extent.getSize(boundingbox);
 				setCenter(item.lon, item.lat);
