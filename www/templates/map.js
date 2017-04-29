@@ -454,6 +454,7 @@ function refresh() {
 		}
 	}
 	features.clear();
+	features.refresh({force:true});
 	if (chips.length > 0) {
 		var keywords = [];
 		chips.forEach(function(chip) {
