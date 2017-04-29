@@ -59,22 +59,17 @@ $('#keywords').material_chip({
 	data: data
 });
 
+var filtersdom = document.getElementById('filterneeds');
+var needsdom = document.getElementById('needs');
 Object.keys(needs).forEach(function (need) {
-	var needsdom = document.getElementById('needsbis');
-	var id = 'need' + need;
-	var html = '<div class="col s6 m4 l3">';
-	html += '<input type="checkbox" id="' + id + '" name="' + id + '" />';
-	html += '<label for="' + id + '">' + need + '</label>';
-	html += '</div>';
-	needsdom.insertAdjacentHTML('beforeEnd', html);
-	var divchild = document.createElement('div');
-	divchild.class = "col s4 m3 l2";
-	var needchild = document.createElement('input')
-	var child = document.createElement('option');
-	child.setAttribute('id', 'need'+need);
-	child.setAttribute('value', need);
-	child.innerText = needs[need];
-	document.getElementById('needs').appendChild(child);
+	var filterhtml = '<option id="' + need + 'filter" value="' + need + '">' + need + '</option>';
+	filtersdom.insertAdjacentHTML('beforeEnd', filterhtml);
+
+	var needhtml = '<div class="col s6 m4 l3">';
+	needhtml += '<input type="checkbox" id="need' + need + '" name="' + need + '" onclick="enablesubmit();"/>';
+	needhtml += '<label for="need' + need + '">' + need + '</label>';
+	needhtml += '</div>';
+	needsdom.insertAdjacentHTML('beforeEnd', needhtml);
 });
 
 function save() {
@@ -83,10 +78,12 @@ function save() {
 	var name = $('#name').val();
 	var description = $('#description').val();
 	var emergency = $('#emergency')[0].checked;
-	var needs = $('#needs').val();
+	var needsval = [];
 	var fneeds = new Array();
-	needs.forEach(function(need) {
-		fneeds.push('{{ api }}/needs/' + need + '/');
+	Object.keys(needs).forEach(function(need) {
+		if (document.getElementById('need' + need).checked) {
+			fneeds.push('{{ api }}/needs/' + need + '/');
+		}
 	});
 	var id = $('#id').val();
 	var latitude = $('#latitude').val();
@@ -237,7 +234,13 @@ function enablesubmit() {
 		enable = $('#name').val() && true;
 	}
 	if (enable && gstate === 'new') {
-		enable = $('#needs').val().length > 0;
+		enable = false;
+		for(var need of Object.keys(needs)) {
+			if (document.getElementById('need' + need).checked) {
+				enable = true;
+				break;
+			}
+		}
 	}
 	var submit = document.getElementById('submit');
 	if (enable) {
@@ -265,9 +268,8 @@ function edit(elt, coordinate) {
 		document.getElementById('name').removeAttribute('text');
 		document.getElementById('id').removeAttribute('value');
 		Object.keys(needs).forEach(function (need) {
-			document.getElementById('need' + need).removeAttribute('selected');
+			document.getElementById('need' + need).checked = false;
 		});
-		$('#needs').material_select();
 	} else {
 		gstate = 'update';
 		$('.update').show();
@@ -277,12 +279,11 @@ function edit(elt, coordinate) {
 		onchangetype(elt.type);
 		$('#delete').attr('command', '{{ api }}/' + elt.type + 's/' + elt.id + '/');
 		Object.keys(needs).forEach(function (need) {
-			document.getElementById('need' + need).removeAttribute('selected');
+			document.getElementById('need' + need).checked = false;
 		});
 		elt.needs.forEach(function (need) {
-			document.getElementById('need' + need).setAttribute('selected', true);
+			document.getElementById('need' + need).checked = true;
 		});
-		$('#needs').material_select();
 		var shorttranslation = {
 			'needlocation': 'Galère',
 			'roam': 'Maraude',
