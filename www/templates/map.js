@@ -62,7 +62,7 @@ $('#keywords').material_chip({
 Object.keys(needs).forEach(function (need) {
 	var needsdom = document.getElementById('needsbis');
 	var id = 'need' + need;
-	var html = '<div class="col s6 m4 l2">';
+	var html = '<div class="col s6 m4 l3">';
 	html += '<input type="checkbox" id="' + id + '" name="' + id + '" />';
 	html += '<label for="' + id + '">' + need + '</label>';
 	html += '</div>';
