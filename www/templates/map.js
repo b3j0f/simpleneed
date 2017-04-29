@@ -142,12 +142,7 @@ function geoloc() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(
 			function(pos) {
-				map.getView().setCenter(
-					[
-					pos.coords.longitude,
-					pos.coords.latitude
-					]
-					);
+				setCenter(pos.coords.longitude, pos.coords.latitude);
 				map.getView().setZoom(
 					Math.max(
 						map.getView().getZoom(),
@@ -584,6 +579,20 @@ map.on('singleclick', function(evt, layer) {
 function setCenter(longitude, latitude) {
 	console.log(longitude, latitude);
 	map.getView().setCenter([parseFloat(longitude), parseFloat(latitude)]);
+	$.ajax({
+		method: 'GET',
+		url: 'http://nominatim.openstreetmap.org/reverse',
+		data: {
+			format: 'json',
+			lon: longitude,
+			lat: latitude
+		},
+		success: function(data) {
+			if(data !== undefined) {
+				$('#address').val(data.display_name);
+			}
+		}
+	})
 }
 
 function recrefresh() {
