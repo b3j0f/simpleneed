@@ -215,6 +215,7 @@ function del() {
 			$('#edit').modal('close');
 			var msg = 'Élément supprimée';
 			var $toastContent = $('<p class="green-text">' + msg + '</p>');
+			Materialize.toast($toastContent, 5000);
 			refresh();
 		},
 		failure: function(error) {
