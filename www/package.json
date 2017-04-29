@@ -1,0 +1,23 @@
+{
+  "name": "simpleneed",
+  "version": "0.1.0",
+  "description": "simple need covering platform",
+  "main": "index.js",
+  "dependencies": {
+    "raven-js": "^3.14.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b3j0f/simpleneed.git"
+  },
+  "author": "b3j0f",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/b3j0f/simpleneed/issues"
+  },
+  "homepage": "https://github.com/b3j0f/simpleneed#readme"
+}
