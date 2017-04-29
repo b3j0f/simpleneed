@@ -60,6 +60,16 @@ $('#keywords').material_chip({
 });
 
 Object.keys(needs).forEach(function (need) {
+	var needsdom = document.getElementById('needsbis');
+	var id = 'need' + need;
+	var html = '<div class="col s6 m4 l2">';
+	html += '<input type="checkbox" id="' + id + '" name="' + id + '" />';
+	html += '<label for="' + id + '">' + need + '</label>';
+	html += '</div>';
+	needsdom.insertAdjacentHTML('beforeEnd', html);
+	var divchild = document.createElement('div');
+	divchild.class = "col s4 m3 l2";
+	var needchild = document.createElement('input')
 	var child = document.createElement('option');
 	child.setAttribute('id', 'need'+need);
 	child.setAttribute('value', need);
