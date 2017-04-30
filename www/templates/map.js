@@ -67,12 +67,14 @@ $('#keywords').material_chip({
 var filtersdom = document.getElementById('filterneeds');
 var needsdom = document.getElementById('needs');
 Object.keys(needs).forEach(function (need) {
-	var filterhtml = '<option id="' + need + 'filter" value="' + need + '">' + need + '</option>';
+	var name = needs[need];
+
+	var filterhtml = '<option id="' + need + 'filter" value="' + need + '">' + name + '</option>';
 	filtersdom.insertAdjacentHTML('beforeEnd', filterhtml);
 
 	var needhtml = '<div class="col s6 m4 l3">';
 	needhtml += '<input type="checkbox" id="need' + need + '" name="' + need + '" onclick="enablesubmit();"/>';
-	needhtml += '<label for="need' + need + '">' + need + '</label>';
+	needhtml += '<label for="need' + need + '">' + name + '</label>';
 	needhtml += '</div>';
 	needsdom.insertAdjacentHTML('beforeEnd', needhtml);
 });
@@ -213,7 +215,7 @@ function del() {
 		success: function(){
 			$('#load').modal('close');
 			$('#edit').modal('close');
-			var msg = 'Élément supprimée';
+			var msg = 'Élément supprimé';
 			var $toastContent = $('<p class="green-text">' + msg + '</p>');
 			Materialize.toast($toastContent, 5000);
 			refresh();
